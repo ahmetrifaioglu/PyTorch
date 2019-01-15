@@ -32,6 +32,8 @@ device = "cpu"
 if use_gpu:
     print("GPU is available on this device!")
     device = "cuda"
+else:
+    print("CPU is available on this device!")
 
 datasets_path = "../trainingFiles/IDGDreamChallenge"
 comp_feature_list = ["comp_dummy_feat_1", "comp_dummy_feat_2"]
@@ -49,29 +51,6 @@ loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold
 
 original_number_of_comp_features = int(number_of_comp_features)
 original_number_of_target_features = int(number_of_target_features)
-
-"""
-for fold_id in range(5):
-    # Just to check if everything is OK.
-    # Remove this when you finish testing.
-    train_loader, valid_loader = loader_fold_dict[fold_id]
-    print("-----FOLD {} -------".format(fold_id+1))
-    print("Training dataset:")
-    # dataiter = iter(train_loader)
-    for i, data in enumerate(train_loader):
-        print("Training Batch")
-        comp_feature_vectors, target_feature_vectors, labels, comp_ids, target_ids, number_of_comp_features, number_of_target_features = data
-        for ind in range(len(labels)):
-            print(comp_ids[ind], target_ids[ind], labels[ind], comp_feature_vectors[ind], target_feature_vectors[ind])
-
-    for i, data in enumerate(valid_loader):
-        print("Validation dataset:")
-        #dataiter = iter(valid_loader)
-        print("Validation Batch")
-        comp_feature_vectors, target_feature_vectors, labels, comp_ids, target_ids, number_of_comp_features, number_of_target_features = data
-        for ind in range(len(labels)):
-            print(comp_ids[ind], target_ids[ind], labels[ind], comp_feature_vectors[ind], target_feature_vectors[ind])
-"""
 
 
 total_number_of_features = number_of_comp_features+number_of_target_features
@@ -132,16 +111,10 @@ for fold in range(num_of_folds):
             comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(target_feature_vectors).to(device), Variable(labels).to(device)
             inputs = None
             y_pred = None
-            # print("Training FOLD : {} Epoch : {} Batch: {}".format((fold+1), epoch, batch_number))
-            #inputs, labels = Variable(inputs).to(device), Variable(labels).to(device)
-            #inputs, labels = Variable(inputs).to(device), Variable(labels).to(device)
-
-
 
             total_training_count += comp_feature_vectors.shape[0]
             if modeltype in concat_models:
                 inputs = torch.cat((comp_feature_vectors, target_feature_vectors), 1)
-                # print(inputs.shape)
                 y_pred = model(inputs)
             else:
             # Forward pass: Compute predicted y by passing x to the model
@@ -150,10 +123,6 @@ for fold in range(num_of_folds):
             loss = criterion(y_pred.squeeze(), labels)
             total_training_loss += float(loss.data[0])
 
-            # print("Epoch:{}, Number:{}, Loss:{}".format(epoch, i, loss.data[0]))
-            # for i in range(len(y_pred.squeeze())):
-            #    print(labels[i], y_pred.squeeze()[i])
-            # Zero gradients, perform a backward pass, and update the weights.
             loss.backward()
             optimizer.step()
             # clear gradient DO NOT forget you fool!
@@ -165,18 +134,6 @@ for fold in range(num_of_folds):
             for i, data in enumerate(valid_loader):
                 #print("Validation")
                 val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
-
-                """
-                print("Validation Batch")
-
-                for ind in range(len(labels)):
-                    print(val_compound_ids[ind], val_target_ids[ind], val_labels[ind], val_comp_feature_vectors[ind],
-                          val_target_feature_vectors[ind])
-                """
-                # wrap them in Variable
-                #comp_feature_vectors_val, target_feature_vectors_val, labels_val = Variable(comp_feature_vectors_val).to(
-                #    device), Variable(target_feature_vectors_val).to(device), Variable(labels_val).to(device)
-                #print(comp_ids_val, target_ids_val)
                 val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(val_comp_feature_vectors).to(
                     device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
                 # val_inputs = torch.cat((val_comp_feature_vectors, val_target_feature_vectors), 1)
@@ -209,7 +166,7 @@ for fold in range(num_of_folds):
         ci_score = ci(np.asarray(validation_labels), np.asarray(validation_predictions))
         f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
         ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
-
+        print("================================================================================")
         print("Fold:{}, Epoch:{}, Training Loss:{}, Validation Loss:{}".format(fold, epoch, total_training_loss, total_validation_loss))
         print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
         print("Pearson:\t{}".format(pearson_score))
