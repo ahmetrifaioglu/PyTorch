@@ -6,9 +6,10 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import sklearn
 from sklearn import preprocessing
 import math
-idg_training_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/"
-prot_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/protein_feature_vectors"
-comp_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/compound_feature_vectors"
+idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/"
+prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/protein_feature_vectors"
+heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
+comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_vectors"
 
 def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
 
@@ -63,7 +64,8 @@ class TrainingValidationShuffledDataLoader(Dataset):
                 tar_features = dict_target_features[tar_id]
                 self.comp_feature_vectors.append(comp_features)
                 self.target_feature_vectors.append(tar_features)
-                valid_labels.append(-math.log10(10e-9*float(lbl)))
+                #valid_labels.append(-math.log10(10e-10*float(lbl)))
+                valid_labels.append(float(lbl))
                 valid_compound_ids.append(comp_id)
                 valid_target_ids.append(tar_id)
             except:
@@ -183,14 +185,15 @@ def create_normalized_feature_vector_files(target_or_compound):
     # feature_types = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
     feature_types = None
     if target_or_compound=="target":
-        feature_types = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
+        #feature_types = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
+        feature_types = ["spmap_final", "pfam", "k-sep-bigrams", "DDE", "APAAC"]
     elif target_or_compound == "compound":
         feature_types = ["ecfp4", "fcfp4", "rdk5"]
 
     for feat in feature_types:
         dataset_path = None
         if target_or_compound =="target":
-            dataset_path = "{}/{}.tsv".format(prot_feature_vector_path, feat)
+            dataset_path = "{}/{}.tsv".format(heval_prot_feature_vector_path, feat)
         elif target_or_compound=="compound":
             dataset_path = "{}/{}.tsv".format(comp_feature_vector_path, feat)
 

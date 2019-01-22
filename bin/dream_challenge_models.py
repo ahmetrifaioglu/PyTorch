@@ -20,10 +20,10 @@ class FC_1_Layer(torch.nn.Module):
         # well as arbitrary operators on Variables.
 
         out1 = F.dropout(self.relu(self.bn1(self.l1(x))), self.drop_rate)
-        # print("BURAYA ")
+
         return out1
 
-class FCModel1_M(torch.nn.Module):
+class FCModel_2_Hidden_Layer_M(torch.nn.Module):
 
     def __init__(self, number_of_features):
         # In the constructor we instantiate two nn.Linear module
@@ -344,56 +344,4 @@ class FCModel2(torch.nn.Module):
         return y_pred
 
 
-class FCPINNModel1(torch.nn.Module):
-
-    def __init__(self, number_of_comp_features, number_of_target_features):
-
-        # In the constructor we instantiate two nn.Linear module
-
-        super(FCPINNModel1, self).__init__()
-        # print(type(number_of_comp_features), type(number_of_target_features))
-        self.l1_comp = torch.nn.Linear(number_of_comp_features, 1024)
-        self.bn1_comp = torch.nn.BatchNorm1d(num_features=1024)
-        self.l2_comp = torch.nn.Linear(1024, 1024)
-        self.bn2_comp = torch.nn.BatchNorm1d(num_features=1024)
-        self.l3_comp = torch.nn.Linear(1024, 256)
-        self.bn3_comp = torch.nn.BatchNorm1d(num_features=256)
-        self.l4_comp = torch.nn.Linear(256, 32)
-        self.bn4_comp = torch.nn.BatchNorm1d(num_features=32)
-
-        self.l1_tar = torch.nn.Linear(int(number_of_target_features), 1024)
-        self.bn1_tar = torch.nn.BatchNorm1d(num_features=1024)
-        self.l2_tar = torch.nn.Linear(1024, 1024)
-        self.bn2_tar = torch.nn.BatchNorm1d(num_features=1024)
-        self.l3_tar = torch.nn.Linear(1024, 256)
-        self.bn3_tar = torch.nn.BatchNorm1d(num_features=256)
-        self.l4_tar = torch.nn.Linear(256, 32)
-        self.bn4_tar = torch.nn.BatchNorm1d(num_features=32)
-
-        self.fc1 = torch.nn.Linear(64, 64)
-        self.fc2 = torch.nn.Linear(64, 32)
-
-        self.output = torch.nn.Linear(32, 1)
-        self.relu = torch.nn.ReLU()
-
-
-    def forward(self, x_comp, x_tar):
-        # Compound part
-        out1_comp = F.dropout(self.relu(self.bn1_comp(self.l1_comp(x_comp))), 0.5)
-        out2_comp = F.dropout(self.relu(self.bn2_comp(self.l2_comp(out1_comp))), 0.5)
-        out3_comp = F.dropout(self.relu(self.bn3_comp(self.l3_comp(out2_comp))), 0.5)
-        out4_comp = F.dropout(self.relu(self.bn4_comp(self.l4_comp(out3_comp))), 0.5)
-
-        # Target part
-        out1_tar = F.dropout(self.relu(self.bn1_tar(self.l1_tar(x_tar))), 0.5)
-        out2_tar = F.dropout(self.relu(self.bn2_tar(self.l2_tar(out1_tar))), 0.5)
-        out3_tar = F.dropout(self.relu(self.bn3_tar(self.l3_tar(out2_tar))), 0.5)
-        out4_tar = F.dropout(self.relu(self.bn4_tar(self.l4_tar(out3_tar))), 0.5)
-
-        combined_layer = torch.cat((out4_comp, out4_tar), 1)
-        out_fc1 = self.fc1(combined_layer)
-        out_fc2 = self.fc2(out_fc1)
-        y_pred = self.output(out_fc2)
-
-        return y_pred
 

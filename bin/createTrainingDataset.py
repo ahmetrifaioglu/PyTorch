@@ -43,7 +43,7 @@ def target():
     for line in lst_assoc_fl:
         if line!="":
             comp_id, tar_id, bioac_va = line.split(",")
-            bioac_va = -1*math.log10(10e-9*float(bioac_va))
+            bioac_va = -1*math.log10(10e-10*float(bioac_va))
             try:
                 str_prt = "{},{},{},{},{}".format(comp_id, tar_id, str(bioac_va),com_dict[comp_id],tar_dict[tar_id])
                 print(str_prt)

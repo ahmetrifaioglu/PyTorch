@@ -3,6 +3,8 @@ import sys
 from rdkit.Chem.AtomPairs import Torsions
 from rdkit.Chem.Pharm2D import Generate
 
+feature_type = sys.argv[1]
+
 def getSMILEsFromFileWithHeader(rep_fl):
     isFirst = True
     prob_count = 0
@@ -10,7 +12,7 @@ def getSMILEsFromFileWithHeader(rep_fl):
     compound_smiles_dict = dict()
     # print("DENEME../trainingFiles/{}".format(rep_fl))
     #with open("/Users/trman/OneDrive/Projects/DEEPScreen/trainingFiles/{}".format(rep_fl)) as f:
-    with open("/Users/trman/Desktop/DEEPScreen_19102018/trainingFiles/{}".format(rep_fl)) as f:
+    with open("/Users/trman/OneDrive/Projects/DEEPScreen/all_trainingFiles/{}".format(rep_fl)) as f:
         for line in f:
             if isFirst:
                 isFirst = False
@@ -25,7 +27,7 @@ def getSMILEsFromFileWithHeader(rep_fl):
                 compound_smiles_dict[chembl_id] = smiles
     return compound_smiles_dict
 
-def training(feature_type):
+def training():
     from rdkit.Chem import AllChem
     from rdkit import Chem
 
@@ -33,15 +35,15 @@ def training(feature_type):
     compound_smiles_dict = getSMILEsFromFileWithHeader("chembl_24_1_chemreps.txt")
 
     # print(compound_smiles_dict["CHEMBL3545297"])
-    file_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt"
+    file_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/idg_comp_targ_uniq_inter_filtered.csv"
     count =0
     nbits = 1024
-
+    problemcount = 0
     str_header = "compound id"
     for i in range(1024):
         str_header+="\t{}".format(i)
     print(str_header)
-
+    problemcount =0
     with open(file_path) as f:
         for line in f:
 
@@ -80,25 +82,27 @@ def training(feature_type):
                     print(str_desc)
 
                 except:
+                    #problemcount += 1
+                    #print("train", problemcount)
                     pass
 
 
-training("ecfp4")
+training()
 """
-python generate_compound_descriptors.py > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/ecfp4.tsv
-python generate_compound_descriptors.py > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/rdk5.tsv
-python generate_compound_descriptors.py > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/fcfp4.tsv
+python generate_compound_descriptors.py ecfp4 > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/ecfp4.tsv
+python generate_compound_descriptors.py rdk5 > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/rdk5.tsv
+python generate_compound_descriptors.py  fcfp4 > ../trainingFiles/IDGDreamChallenge/compound_feature_vectors/fcfp4.tsv
 
 """
 
 
 def test():
-    from dataProcessing import getSMILEsFromFileWithHeader
     from rdkit.Chem import AllChem
     from rdkit import Chem
     ECFP4_dict = dict()
-    file_path = "/Users/trman/OneDrive/Projects/PyTorch/bin/data/round_1_template.csv"
+    file_path = "../trainingFiles/IDGDreamChallenge/round_1_template.csv"
     count = 0
+    nbits = 1024
     with open(file_path) as f:
         for line in f:
 
@@ -111,21 +115,31 @@ def test():
                 found = True
             except:
                 pass
-            if not found:
+            if not found and compound_name!="Compound_Name":
+                #print(compound_name)
                 try:
                     # print(count)
                     count = count + 1
                     ECFP4_dict[compound_name] = ""
                     m1 = Chem.MolFromSmiles(smiles_str)
-                    ecp4 = list(AllChem.GetMorganFingerprintAsBitVect(m1, 2, nBits=1024))
-                    str_desc = "{},".format(compound_name)
-                    for item in ecp4[:-1]:
-                        str_desc += str(item) + ","
-                    str_desc += str(ecp4[-1])
+                    if feature_type=="ecfp4":
+                        feature_values = list(AllChem.GetMorganFingerprintAsBitVect(m1, 2, nBits=nbits))
+                    elif feature_type=="rdk5":
+                        feature_values = list(Chem.RDKFingerprint(m1, maxPath=5, fpSize=nbits, nBitsPerHash=2))
+                    elif feature_type=="fcfp4":
+                        feature_values = list(AllChem.GetMorganFingerprintAsBitVect(m1, 2, useFeatures=True,
+                                                                                      nBits=nbits))
+
+                    str_desc = "{}\t".format(compound_name)
+                    for item in feature_values[:-1]:
+                        str_desc += str(item) + "\t"
+                    str_desc += str(feature_values[-1])
 
                     print(str_desc)
-                    # break
+
                 except:
+                    #problemcount += 1
+                    #print(problemcount)
                     pass
 
-#test()
+test()

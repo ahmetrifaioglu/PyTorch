@@ -13,8 +13,10 @@ from torchvision import datasets
 import torchvision.transforms as transforms
 import itertools
 import warnings
-from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
+# from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
+#from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
+from dream_challenge_PINN_models import FC_PINNModel_2_2_2#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 warnings.filterwarnings("ignore")
 
@@ -35,23 +37,26 @@ if use_gpu:
 else:
     print("CPU is available on this device!")
 
+# comp_tar_pair_dataset = "dummy_Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt"
+comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
 datasets_path = "../trainingFiles/IDGDreamChallenge"
+
 comp_feature_list = ["comp_dummy_feat_1", "comp_dummy_feat_2"]
 tar_feature_list = ["prot_dummy_feat_1", "prot_dummy_feat_2"]
 # comp_feature_list = ["comp_dummy_feat_1"]
 # tar_feature_list = ["prot_dummy_feat_1"]
+#comp_feature_list = ["ecfp4", "fcfp4", "rdk5"]
+#tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam", "spmap_final"]
 comp_feature_list = ["ecfp4"]
-tar_feature_list = ["tri_gram"]
+tar_feature_list = ["k-sep-bigrams"]
 
-# comp_tar_pair_dataset = "dummy_Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt"
-comp_tar_pair_dataset = "Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt"
+
 loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds, 32, comp_feature_list, tar_feature_list, comp_tar_pair_dataset)
-
-
 
 original_number_of_comp_features = int(number_of_comp_features)
 original_number_of_target_features = int(number_of_target_features)
 
+print(original_number_of_comp_features, original_number_of_target_features)
 
 total_number_of_features = number_of_comp_features+number_of_target_features
 # feature_lst = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
@@ -87,7 +92,7 @@ for fold in range(num_of_folds):
     elif modeltype == "FC3M":
         model = FCModel_3_Hidden_with_Modules(total_number_of_features, 1024, 400, 200, 0.5).to(device)
     else:
-        model = FCPINNModel1(number_of_comp_features, number_of_target_features).to(device)
+        model = FC_PINNModel_2_2_2(number_of_comp_features, 200, 200, number_of_target_features, 200, 200, 200, 200).to(device)
     # print(model.parameters)
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
     criterion = torch.nn.MSELoss()
@@ -167,7 +172,7 @@ for fold in range(num_of_folds):
         f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
         ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
         print("================================================================================")
-        print("Fold:{}, Epoch:{}, Training Loss:{}, Validation Loss:{}".format(fold, epoch, total_training_loss, total_validation_loss))
+        print("Fold:{}, Epoch:{}, Training Loss:{}, Validation Loss:{}".format(fold+1, epoch, total_training_loss, total_validation_loss))
         print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
         print("Pearson:\t{}".format(pearson_score))
         print("Spearman:\t{}".format(spearman_score))
@@ -192,9 +197,14 @@ average_ci_fold = sum(ci_fold_lst)/num_of_folds
 average_f1_fold = sum(f1_fold_lst)/num_of_folds
 average_auc_fold = sum(auc_fold_lst)/num_of_folds
 
+print("-----------------------------------------------------------------")
+print("ave_result\tave_rmse\tave_pearson\tave_spearman\taverage_ci\taverage_f1score\tave_ave_auc")
+print("average_results\t{}\t{}\t{}\t{}\t{}\t{}".format(average_rmse_fold, average_pearson_fold, average_spearman_fold, average_ci_fold, average_f1_fold, average_auc_fold))
+"""
 print("Average RMSE:\t{}".format(average_rmse_fold))  # rmse, pearson, spearman, ci, ci, average_AUC
 print("Average Pearson:\t{}".format(average_pearson_fold))
 print("Average Spearman:\t{}".format(average_spearman_fold))
 print("Average Ci:\t{}".format(average_ci_fold))
 print("Average F1-Score:\t{}".format(average_f1_fold))
 print("Average Average_AUC:\t{}".format(average_auc_fold))
+"""
