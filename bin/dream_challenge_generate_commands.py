@@ -67,15 +67,16 @@ for mod in model_types:
                 for fc in n_of_neuron_list_fc:
                     for lr in lst_learning_rate:
                         count += 1
-                        if count ==3:
-                            break
-                        print(count)
+                        #if count ==3:
+                        #    break
+                        #print(count)
                         print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                        subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)
-                        #subprocess.call(
-                        #    "python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4", "pfam", "128_128", "128_128", "64", "64", "0.05"),
-                        #    shell=True)
+                        #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)
 
+                        break
+subprocess.call(
+                            "python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"),
+                            shell=True)
 
 #print(len(lst_decreasing_permutations))
 
