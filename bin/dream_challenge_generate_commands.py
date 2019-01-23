@@ -76,6 +76,7 @@ for mod in model_types:
                         # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
                         if count%800 == 0:
                             fl_command = open("./PINN_first_commands_{}.py".format(cmd_fl_count), "w")
+                            fl_command.write("import subprocess\n")
                             cmd_fl_count += 1
                             for cmd in lst_commands:
 

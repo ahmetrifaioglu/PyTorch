@@ -1,3 +1,4 @@
+import subprocess
 subprocess.call("python dream_challenge.py PINN2 fcfp4 pfam 4096_128 4096_128 64 64 0.05", shell=True)
 subprocess.call("python dream_challenge.py PINN2 fcfp4 pfam 2048_1536 2048_1536 1024 1024 0.0001", shell=True)
 subprocess.call("python dream_challenge.py PINN2 fcfp4 pfam 2048_1536 2048_1536 1024 1024 0.005", shell=True)
