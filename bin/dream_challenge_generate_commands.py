@@ -59,7 +59,10 @@ for perm in lst_n_permutations:
             #print(str_decreasing)
         str_decreasing = str_decreasing[:-1]
         lst_decreasing_permutations.append(str_decreasing)
+
+lst_commands = []
 count = 0
+cmd_fl_count = 1
 for mod in model_types:
     for comp_feat in comb_comp_feat_list:
         for tar_feat in comb_tar_feat_list:
@@ -67,16 +70,24 @@ for mod in model_types:
                 for fc in n_of_neuron_list_fc:
                     for lr in lst_learning_rate:
                         count += 1
-                        #if count ==3:
+                        # if count ==3:
                         #    break
-                        #print(count)
-                        print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                        #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)
+                        # print(count)
+                        # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
+                        if count%800 == 0:
+                            fl_command = open("./PINN_first_commands_{}.py".format(cmd_fl_count), "w")
+                            cmd_fl_count += 1
+                            for cmd in lst_commands:
 
-                        break
-subprocess.call(
-                            "python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"),
-                            shell=True)
+                                fl_command.write("{}\n".format(cmd))
+                            fl_command.close()
+                            lst_commands = []
+
+
+                        lst_commands.append("subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\", shell=True)".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr))
+                        #print(
+                        #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
+                        #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
 
 #print(len(lst_decreasing_permutations))
 

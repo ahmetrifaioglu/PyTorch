@@ -33,7 +33,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 1
+    n_epoch = 5
     num_of_folds = 5
     batch_size = 32
 
@@ -210,8 +210,8 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     average_auc_fold = sum(auc_fold_lst)/num_of_folds
 
     print("-----------------------------------------------------------------")
-    print("ave_result\tave_rmse\tave_pearson\tave_spearman\taverage_ci\taverage_f1score\tave_ave_auc")
-    print("average_results\t{}\t{}\t{}\t{}\t{}\t{}".format(average_rmse_fold, average_pearson_fold, average_spearman_fold, average_ci_fold, average_f1_fold, average_auc_fold))
+    print("ave_result\tmodeltype\tcomp_feature_list\ttar_feature_list\tcomp_hidden_lst\ttar_hidden_lst\tfc1\tfc2\tlearn_rate\tave_rmse\tave_pearson\tave_spearman\taverage_cie\taverage_f1score\tave_ave_auc")
+    print("average_results\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, average_rmse_fold, average_pearson_fold, average_spearman_fold, average_ci_fold, average_f1_fold, average_auc_fold))
     """
     print("Average RMSE:\t{}".format(average_rmse_fold))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("Average Pearson:\t{}".format(average_pearson_fold))
