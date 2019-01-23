@@ -1,6 +1,7 @@
 
 from itertools import permutations, combinations
-
+import subprocess
+lst_learning_rate = [0.0001, 0.005, 0.001, 0.05]
 comp_feature_list = ["ecfp4", "fcfp4", "rdk5"]
 tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
 
@@ -34,7 +35,7 @@ print(comb_comp_feat_list)
 print(comb_tar_feat_list)
 n_of_neuron_list_h = [4096, 2048, 1536, 1024, 512, 128]
 n_of_neuron_list_fc = [1024, 512, 256, 64]
-
+model_types = ["PINN2"]
 n_of_h_layers = 2
 n_of_fc_layers = 2
 
@@ -52,12 +53,32 @@ for perm in lst_n_permutations:
         perm_ind += 1
 
     if is_decreasing:
-        lst_decreasing_permutations.append(perm)
-for comp_feat in comb_comp_feat_list:
-    for tar_feat in comb_tar_feat_list:
-        for hidden in lst_decreasing_permutations:
-            for fc in n_of_neuron_list_fc:
-                print(comp_feat, tar_feat, hidden, fc )
+        str_decreasing = ""
+        for neur in perm:
+            str_decreasing += "{}_".format(neur)
+            #print(str_decreasing)
+        str_decreasing = str_decreasing[:-1]
+        lst_decreasing_permutations.append(str_decreasing)
+count = 0
+for mod in model_types:
+    for comp_feat in comb_comp_feat_list:
+        for tar_feat in comb_tar_feat_list:
+            for hidden in lst_decreasing_permutations:
+                for fc in n_of_neuron_list_fc:
+                    for lr in lst_learning_rate:
+                        count += 1
+                        if count ==3:
+                            break
+                        print(count)
+                        print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
+                        subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)
+                        #subprocess.call(
+                        #    "python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4", "pfam", "128_128", "128_128", "64", "64", "0.05"),
+                        #    shell=True)
+
+
 #print(len(lst_decreasing_permutations))
+
+# model_type, comp_feat_type, tar_feat_type, num_comp_lay, num_of_prot_la, h1, h2 ,learn rate
 
 
