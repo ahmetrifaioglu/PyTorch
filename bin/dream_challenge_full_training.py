@@ -35,7 +35,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 50
+    n_epoch = 20
     num_of_folds = 1
     batch_size = 32
 
