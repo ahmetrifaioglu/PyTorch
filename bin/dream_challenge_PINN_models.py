@@ -134,12 +134,12 @@ class FC_PINNModel_2_2_2(torch.nn.Module):
 
     def forward(self, x_comp, x_tar):
         # Compound part
-        out1_comp = F.dropout(self.relu(self.bn1_comp(self.l1_comp(x_comp))), 0.5)
-        out2_comp = F.dropout(self.relu(self.bn2_comp(self.l2_comp(out1_comp))), 0.5)
+        out1_comp = F.dropout(self.relu(self.bn1_comp(self.l1_comp(x_comp))), 0.3)
+        out2_comp = F.dropout(self.relu(self.bn2_comp(self.l2_comp(out1_comp))), 0.3)
 
         # Target part
-        out1_tar = F.dropout(self.relu(self.bn1_tar(self.l1_tar(x_tar))), 0.5)
-        out2_tar = F.dropout(self.relu(self.bn2_tar(self.l2_tar(out1_tar))), 0.5)
+        out1_tar = F.dropout(self.relu(self.bn1_tar(self.l1_tar(x_tar))), 0.3)
+        out2_tar = F.dropout(self.relu(self.bn2_tar(self.l2_tar(out1_tar))), 0.3)
 
         combined_layer = torch.cat((out2_comp, out2_tar), 1)
         out_fc1 = self.fc1(combined_layer)
