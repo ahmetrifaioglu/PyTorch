@@ -15,7 +15,7 @@ import itertools
 import warnings
 # from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 #from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
-from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
+from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict, get_test_loader
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 warnings.filterwarnings("ignore")
@@ -33,11 +33,12 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 50
-    num_of_folds = 5
+    n_epoch = 10
+    num_of_folds = 1
     batch_size = 32
 
     comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
+    comp_tar_pair_test_dataset = "idg_comp_targ_test.csv"
     datasets_path = "../trainingFiles/IDGDreamChallenge"
 
     use_gpu = torch.cuda.is_available()
@@ -61,8 +62,12 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     # comp_feature_list = ["ecfp4"]
     # tar_feature_list = ["k-sep-bigrams"]
 
-
+    test_predictions = []
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, tar_feature_list, comp_tar_pair_dataset)
+    test_loader = get_test_loader(comp_feature_list, tar_feature_list, comp_tar_pair_test_dataset)
+
+
+
 
     original_number_of_comp_features = int(number_of_comp_features)
     original_number_of_target_features = int(number_of_target_features)
@@ -116,6 +121,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             total_training_count = 0
             total_validation_count = 0
             validation_predictions = []
+            test_predictions = []
             validation_labels = []
             batch_number = 0
             model.train()
@@ -175,7 +181,28 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                     for item in val_labels:
                         validation_labels.append(float(item.data[0]))
 
+                for i, data in enumerate(test_loader):
+                    #print("Validation")
+                    test_comp_feature_vectors, test_target_feature_vectors, test_compound_ids, test_target_ids, test_number_of_comp_features, test_number_of_target_features = data
+                    test_comp_feature_vectors, test_target_feature_vectors = Variable(test_comp_feature_vectors).to(
+                        device), Variable(test_target_feature_vectors).to(device)
+                    #print(test_compound_ids)
 
+                    test_inputs = None
+                    test_y_pred = None
+
+                    if modeltype in concat_models:
+                        test_inputs = torch.cat((test_comp_feature_vectors, test_target_feature_vectors), 1)
+                        test_y_pred = model(test_inputs)
+                    else:
+                        # Forward pass: Compute predicted y by passing x to the model
+                        test_y_pred = model(test_comp_feature_vectors, test_target_feature_vectors)
+
+
+                    for item in test_y_pred:
+                        test_predictions.append([test_compound_ids[0], test_target_ids[0], float(item.data[0])])
+
+                print(test_predictions)
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                 validation_predictions))
             pearson_score = pearson(np.asarray(validation_labels), np.asarray(validation_predictions))
