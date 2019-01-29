@@ -16,7 +16,7 @@ import warnings
 # from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 #from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
-from dream_challenge_PINN_models import FC_PINNModel_2_2_2#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
+from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 warnings.filterwarnings("ignore")
 def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr):
@@ -103,7 +103,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         elif modeltype == "FC3M":
             model = FCModel_3_Hidden_with_Modules(total_number_of_features, 1024, 400, 200, 0.5).to(device)
         else:
-            model = FC_PINNModel_2_2_2(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2).to(device)
+            model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2).to(device)
         # print(model.parameters)
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
