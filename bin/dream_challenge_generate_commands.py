@@ -2,9 +2,10 @@
 from itertools import permutations, combinations
 import subprocess
 def generateFirstCommands():
-    comp_feature_list = ["ecfp4", "fcfp4", "rdk5"]
+    comp_feature_list = ["ecfp4"] #, "fcfp4", "rdk5"]
     #comp_feature_list = ["ecfp4",]
-    tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
+    #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
+    tar_feature_list = ["k-sep-bigrams", "trigram"]#, "DDE", "pfam"]
     #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
     lst_learning_rate = [0.0001, 0.005, 0.001, 0.05]
     comb_comp_feat_list = []
@@ -76,8 +77,8 @@ def generateFirstCommands():
                             #    break
                             # print(count)
                             # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                            if count%800 == 0:
-                                fl_command = open("./PINN_first_commands_{}.py".format(cmd_fl_count), "w")
+                            if count%50 == 0:
+                                fl_command = open("./PINN_ECFP4KSEPTRIGRAMfirst_commands_{}.py".format(cmd_fl_count), "w")
                                 fl_command.write("import subprocess\n")
                                 cmd_fl_count += 1
                                 for cmd in lst_commands:
@@ -91,7 +92,14 @@ def generateFirstCommands():
                             #print(
                             #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
                             #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
+    fl_command = open("./PINN_ECFP4KSEPTRIGRAMfirst_commands_{}.py".format(cmd_fl_count), "w")
+    fl_command.write("import subprocess\n")
+    cmd_fl_count += 1
+    for cmd in lst_commands:
+        fl_command.write("{}\n".format(cmd))
+    fl_command.close()
 
+generateFirstCommands()
 #print(len(lst_decreasing_permutations))
 
 # model_type, comp_feat_type, tar_feat_type, num_comp_lay, num_of_prot_la, h1, h2 ,learn rate
@@ -99,12 +107,12 @@ def generateFirstCommands():
 def generateECFPKSEPCommands():
     comp_feature_list = ["ecfp4"]
     # comp_feature_list = ["ecfp4",]
-    tar_feature_list = ["k-sep-bigrams"]
+    tar_feature_list = ["k-sep-bigrams", "trigram"]
     # tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
     lst_learning_rate = [0.0001, 0.005, 0.001, 0.05]
     comb_comp_feat_list = []
     comb_tar_feat_list = []
-    fl_command = open("./PINN_ECFPKSEP_commands.py", "w")
+    fl_command = open("./PINN_ECFPKSEPTRIGRAM_commands.py", "w")
     fl_command.write("import subprocess\n")
 
     for i in range(3):
@@ -185,4 +193,4 @@ def generateECFPKSEPCommands():
 
 
 # print(len(lst_decreasing_permutations))
-generateECFPKSEPCommands()
+# generateECFPKSEPCommands()
