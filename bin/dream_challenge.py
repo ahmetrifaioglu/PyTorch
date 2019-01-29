@@ -184,7 +184,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
             ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
             print("================================================================================")
-            print("Fold:{}, Epoch:{}, Test RMSE:{}, Training Loss:{}, Validation Loss:{}".format(fold+1, epoch, rmse_score, total_training_loss, total_validation_loss))
+            print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold+1, epoch, rmse_score, total_training_loss, total_validation_loss))
             print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
             print("Pearson:\t{}".format(pearson_score))
             print("Spearman:\t{}".format(spearman_score))
