@@ -95,7 +95,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         elif modeltype == "FC3M":
             model = FCModel_3_Hidden_with_Modules(total_number_of_features, 1024, 400, 200, 0.5).to(device)
         else:
-            model = FC_PINNModel_2_2_2(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1],
+            model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1],
                                        number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1,
                                        fc2).to(device)
         # print(model.parameters)
