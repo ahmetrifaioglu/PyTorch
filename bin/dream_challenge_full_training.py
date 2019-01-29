@@ -16,7 +16,7 @@ import warnings
 # from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 #from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict, get_test_loader, get_full_training_data_loader
-from dream_challenge_PINN_models import FC_PINNModel_2_2_2#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
+from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 warnings.filterwarnings("ignore")
 final_training = True
