@@ -213,21 +213,22 @@ class TestDataLoader(Dataset):
         for ind  in range(len(self.compound_ids)):
             total_number_of_data_points += 1
             #print(dict_compound_features[comp_id])
-            try:
-                comp_id = self.compound_ids[ind]
-                tar_id = self.target_ids[ind]
-                #lbl = self.labels[ind]
-                comp_features = dict_compound_features[comp_id]
-                tar_features = dict_target_features[tar_id]
-                self.comp_feature_vectors.append(comp_features)
-                self.target_feature_vectors.append(tar_features)
-                #valid_labels.append(-math.log10(10e-10*float(lbl)))
-                #valid_labels.append(float(lbl))
-                valid_compound_ids.append(comp_id)
-                valid_target_ids.append(tar_id)
-            except:
-                invalid_data_points+=1
-                pass
+            #try:
+            comp_id = self.compound_ids[ind]
+            tar_id = self.target_ids[ind]
+            #lbl = self.labels[ind]
+            comp_features = dict_compound_features[comp_id]
+            tar_features = dict_target_features[tar_id]
+            self.comp_feature_vectors.append(comp_features)
+            self.target_feature_vectors.append(tar_features)
+            #valid_labels.append(-math.log10(10e-10*float(lbl)))
+            #valid_labels.append(float(lbl))
+            valid_compound_ids.append(comp_id)
+            valid_target_ids.append(tar_id)
+            #except:
+            #    invalid_data_points+=1
+            #    print()
+            #    pass
 
         print("{} data points are invalid out of {}!".format(invalid_data_points, total_number_of_data_points))
 
@@ -284,7 +285,8 @@ def create_normalized_feature_vector_files(target_or_compound):
     feature_types = None
     if target_or_compound=="target":
         #feature_types = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
-        feature_types = ["spmap_final", "pfam", "k-sep-bigrams", "DDE", "APAAC"]
+        #feature_types = ["spmap_final", "pfam", "k-sep-bigrams", "DDE", "APAAC"]
+        feature_types = ["trigram"]
     elif target_or_compound == "compound":
         feature_types = ["ecfp4", "fcfp4", "rdk5"]
 
@@ -320,4 +322,4 @@ def create_normalized_feature_vector_files(target_or_compound):
 
 
 
-# create_normalized_feature_vector_files("compound")
+# create_normalized_feature_vector_files("target")

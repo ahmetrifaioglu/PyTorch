@@ -78,7 +78,7 @@ class FC_5_Layer(torch.nn.Module):
         super(FC_5_Layer, self).__init__()
 
         self.first_3_layer = FC_3_Layer(number_of_inputs, neuron_l1, neuron_l2, neuron_l3, drop_rate)
-        self.last_2_layer = FC_2_Layer(neuron_l4, neuron_l5, drop_rate)
+        self.last_2_layer = FC_2_Layer(neuron_l3, neuron_l4, neuron_l5, drop_rate)
 
         self.relu = torch.nn.ReLU()
         self.drop_rate = drop_rate

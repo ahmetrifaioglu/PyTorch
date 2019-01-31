@@ -16,7 +16,7 @@ def getAverageRMSEResult():
     file_dict_val_loss = dict()
     result_file_path = "../resultFiles"
     for fl in os.listdir(result_file_path):
-        if fl.startswith("pinn"):
+        if fl.startswith("ecfp4_trigram_best_result."):
             fl_id = fl.split("_")[1][0]
             file_dict_rmse[fl_id] = [[] for _ in range(5)]
             file_dict_training_loss[fl_id] = [[] for _ in range(5)]

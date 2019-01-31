@@ -73,6 +73,66 @@ class FC_PINNModel_2_2_2_Modules(torch.nn.Module):
 
         return y_pred
 
+class FC_PINNModel_2_3_2_Modules(torch.nn.Module):
+
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, number_of_target_features, tar_l1, tar_l2, tar_l3, fc_l1, fc_l2):
+        # In the constructor we instantiate two nn.Linear module
+
+        super(FC_PINNModel_2_3_2_Modules, self).__init__()
+        # print(type(number_of_comp_features), type(number_of_target_features))
+        self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, 0.5)
+        self.layer_3_tar = FC_3_Layer(number_of_target_features, tar_l1, tar_l2, tar_l3, 0.5)
+
+        self.layer_2_combined = FC_2_Layer(comp_l2+tar_l3, fc_l1, fc_l2, 0.5)
+        self.output = torch.nn.Linear(fc_l2, 1)
+
+        self.relu = torch.nn.ReLU()
+        #self.drop_rate = drop_rate
+
+    def forward(self, x_comp, x_tar):
+        # Compound part
+
+        out2_comp = self.layer_2_comp.forward(x_comp)
+        out3_tar = self.layer_3_tar.forward(x_tar)
+
+
+        combined_layer = torch.cat((out2_comp, out3_tar), 1)
+
+        out_combined = self.layer_2_combined.forward(combined_layer)
+        y_pred = self.output(out_combined)
+
+        return y_pred
+
+class FC_PINNModel_3_5_2_Modules(torch.nn.Module):
+
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, comp_l3, number_of_target_features, tar_l1, tar_l2, tar_l3, tar_l4, tar_l5, fc_l1, fc_l2):
+        # In the constructor we instantiate two nn.Linear module
+
+        super(FC_PINNModel_3_5_2_Modules, self).__init__()
+        # print(type(number_of_comp_features), type(number_of_target_features))
+        self.layer_3_comp = FC_3_Layer(number_of_comp_features, comp_l1, comp_l2, comp_l3, 0.5)
+        self.layer_5_tar = FC_5_Layer(number_of_target_features, tar_l1, tar_l2, tar_l3, tar_l4, tar_l5, 0.5)
+
+        self.layer_2_combined = FC_2_Layer(comp_l3 + tar_l5, fc_l1, fc_l2, 0.5)
+        self.output = torch.nn.Linear(fc_l2, 1)
+
+        self.relu = torch.nn.ReLU()
+        #self.drop_rate = drop_rate
+
+    def forward(self, x_comp, x_tar):
+        # Compound part
+
+        out3_comp = self.layer_3_comp.forward(x_comp)
+        out5_tar = self.layer_5_tar.forward(x_tar)
+
+
+        combined_layer = torch.cat((out3_comp, out5_tar), 1)
+
+        out_combined = self.layer_2_combined.forward(combined_layer)
+        y_pred = self.output(out_combined)
+
+        return y_pred
+
 class FC_PINNModel_4_4_2(torch.nn.Module):
 
     def __init__(self, number_of_comp_features, number_of_target_features):
