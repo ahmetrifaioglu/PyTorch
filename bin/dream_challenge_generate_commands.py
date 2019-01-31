@@ -5,9 +5,9 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
     comp_feature_list = ["ecfp4"] #, "fcfp4", "rdk5"]
     #comp_feature_list = ["ecfp4",]
     #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
-    tar_feature_list = ["k-sep-bigrams", "trigram"]#, "DDE", "pfam"]
+    tar_feature_list = ["trigram"]#, "DDE", "pfam"]
     #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
-    lst_learning_rate = [0.0001, 0.005, 0.001, 0.05]
+    lst_learning_rate = [0.0001, 0.005, 0.001]
     comb_comp_feat_list = []
     comb_tar_feat_list = []
 
@@ -104,7 +104,7 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
                                 #    break
                                 # print(count)
                                 # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                                if count%200 == 0:
+                                if count%100 == 0:
                                     fl_command = open("./PINN_ECFP4KSEPTRIGRAM_{}_{}_commands_{}.py".format(n_of_comp_h_layers, n_of_tar_h_layers, cmd_fl_count), "w")
                                     fl_command.write("import subprocess\n")
                                     cmd_fl_count += 1
@@ -126,7 +126,7 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
         fl_command.write("{}\n".format(cmd))
     fl_command.close()
 
-generateFirstCommands(3, 5)
+generateFirstCommands(2, 3)
 #print(len(lst_decreasing_permutations))
 
 # model_type, comp_feat_type, tar_feat_type, num_comp_lay, num_of_prot_la, h1, h2 ,learn rate
