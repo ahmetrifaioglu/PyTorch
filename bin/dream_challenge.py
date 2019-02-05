@@ -195,6 +195,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             print("Ci:\t{}".format(ci_score))
             print("F1-Score:\t{}".format(f1_score))
             print("Average_AUC:\t{}".format(ave_auc_score))
+            print("IDG File:\t{}".format(comp_tar_pair_dataset))
             print("Number of training samples:\t{}".format(total_training_count))
             print("Number of validation samples:\t{}".format(total_validation_count))
 
@@ -215,7 +216,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
 
     print("-----------------------------------------------------------------")
     print("ave_result\tmodeltype\tcomp_feature_list\ttar_feature_list\tcomp_hidden_lst\ttar_hidden_lst\tfc1\tfc2\tlearn_rate\tave_rmse\tave_pearson\tave_spearman\taverage_cie\taverage_f1score\tave_ave_auc")
-    print("average_results\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, average_rmse_fold, average_pearson_fold, average_spearman_fold, average_ci_fold, average_f1_fold, average_auc_fold))
+    print("average_results\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}".format(comp_tar_pair_dataset, modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, average_rmse_fold, average_pearson_fold, average_spearman_fold, average_ci_fold, average_f1_fold, average_auc_fold))
     """
     print("Average RMSE:\t{}".format(average_rmse_fold))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("Average Pearson:\t{}".format(average_pearson_fold))
