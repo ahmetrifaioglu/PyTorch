@@ -5,8 +5,14 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
     comp_feature_list = ["ecfp4"] #, "fcfp4", "rdk5"]
     #comp_feature_list = ["ecfp4",]
     #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
-    tar_feature_list = ["trigram"]#, "DDE", "pfam"]
+    tar_feature_list = ["k-sep-bigrams", "trigram"]#, "DDE", "pfam"]
     #tar_feature_list = ["k-sep-bigrams", "APAAC", "DDE", "pfam"]
+
+    lst_idg_files = ["idg_comp_targ_uniq_inter_filtered_AGC.csv", "idg_comp_targ_uniq_inter_filtered_CAMK.csv",
+                     "idg_comp_targ_uniq_inter_filtered_CMGC.csv", "idg_comp_targ_uniq_inter_filtered_other.csv",
+                     "idg_comp_targ_uniq_inter_filtered_STE.csv", "idg_comp_targ_uniq_inter_filtered_TK.csv",
+                     "idg_comp_targ_uniq_inter_filtered_TKL.csv"]
+
     lst_learning_rate = [0.0001, 0.005, 0.001]
     comb_comp_feat_list = []
     comb_tar_feat_list = []
@@ -36,7 +42,7 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
 
     # print(comb_comp_feat_list)
     # print(comb_tar_feat_list)
-    n_of_neuron_list_h = [4096, 2048, 1536, 1024, 512, 128]
+    n_of_neuron_list_h = [2048, 1536, 1024, 512, 128]
     n_of_neuron_list_fc = [1024, 512, 256, 64]
     model_types = ["PINN_{}_{}".format(n_of_comp_h_layers, n_of_tar_h_layers)]
     # n_of_h_comp_layers = n_of_comp_h_layers
@@ -99,34 +105,35 @@ def generateFirstCommands(n_of_comp_h_layers, n_of_tar_h_layers):
 
                         for fc in n_of_neuron_list_fc:
                             for lr in lst_learning_rate:
-                                count += 1
-                                # if count ==3:
-                                #    break
-                                # print(count)
-                                # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                                if count%100 == 0:
-                                    fl_command = open("./PINN_ECFP4KSEPTRIGRAM_{}_{}_commands_{}.py".format(n_of_comp_h_layers, n_of_tar_h_layers, cmd_fl_count), "w")
-                                    fl_command.write("import subprocess\n")
-                                    cmd_fl_count += 1
-                                    for cmd in lst_commands:
+                                for idg_fl in lst_idg_files:
+                                    count += 1
+                                    # if count ==3:
+                                    #    break
+                                    # print(count)
+                                    # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
+                                    if count%500 == 0:
+                                        fl_command = open("./pinn_ecfp4kseptrigram_{}_{}_subfamily_commands_{}.py".format(n_of_comp_h_layers, n_of_tar_h_layers, cmd_fl_count), "w")
+                                        fl_command.write("import subprocess\n")
+                                        cmd_fl_count += 1
+                                        for cmd in lst_commands:
 
-                                        fl_command.write("{}\n".format(cmd))
-                                    fl_command.close()
-                                    lst_commands = []
+                                            fl_command.write("{}\n".format(cmd))
+                                        fl_command.close()
+                                        lst_commands = []
 
 
-                                lst_commands.append("subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\", shell=True)".format(mod, comp_feat, tar_feat, hidden_comp, hidden_tar, fc, fc, lr))
-                                #print(
-                                #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
-                                #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
-    fl_command = open("./PINN_ECFP4KSEPTRIGRAM_{}_{}_commands_{}.py".format(n_of_comp_h_layers, n_of_tar_h_layers, cmd_fl_count), "w")
+                                    lst_commands.append("subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {} {}\", shell=True)".format(mod, comp_feat, tar_feat, hidden_comp, hidden_tar, fc, fc, lr, idg_fl))
+                                    #print(
+                                    #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
+                                    #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
+    fl_command = open("./pinn_ecfp4kseptrigram_{}_{}_subfamily_commands_{}.py".format(n_of_comp_h_layers, n_of_tar_h_layers, cmd_fl_count), "w")
     fl_command.write("import subprocess\n")
     cmd_fl_count += 1
     for cmd in lst_commands:
         fl_command.write("{}\n".format(cmd))
     fl_command.close()
 
-generateFirstCommands(2, 3)
+generateFirstCommands(2, 2)
 #print(len(lst_decreasing_permutations))
 
 # model_type, comp_feat_type, tar_feat_type, num_comp_lay, num_of_prot_la, h1, h2 ,learn rate

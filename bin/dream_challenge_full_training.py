@@ -21,7 +21,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 warnings.filterwarnings("ignore")
 final_training = True
 
-def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr):
+def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr, comp_tar_pair_dataset):
 
 
 
@@ -39,9 +39,8 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     num_of_folds = 1
     batch_size = 64
 
-    comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
+    # comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
     comp_tar_pair_test_dataset = "idg_comp_targ_test.csv"
-    datasets_path = "../trainingFiles/IDGDreamChallenge"
 
     use_gpu = torch.cuda.is_available()
 
@@ -355,8 +354,9 @@ tar_hidden_lst = sys.argv[5]
 fc1 = sys.argv[6]
 fc2 = sys.argv[7]
 learn_rate = sys.argv[8]
+comp_tar_pair_dataset_fl = sys.argv[9]
 
-train_networks(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate)
+train_networks(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl)
 
 
 # "PINN2", "ecfp4", "pfam", "512_128", "512_128", "64", "64", "0.05"

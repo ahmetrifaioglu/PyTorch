@@ -6,7 +6,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import sklearn
 from sklearn import preprocessing
 import math
-idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/"
+idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/dti_datasets"
 prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/protein_feature_vectors"
 heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
 comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_vectors"
