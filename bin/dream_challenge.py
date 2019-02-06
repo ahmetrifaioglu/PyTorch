@@ -144,7 +144,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 # Compute and print loss
                 loss = criterion(y_pred.squeeze(), labels)
                 total_training_loss += float(loss.data[0])
-                print(y_pred)
+                # print(y_pred)
                 loss.backward()
                 optimizer.step()
                 # clear gradient DO NOT forget you fool!
@@ -171,7 +171,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                         # Forward pass: Compute predicted y by passing x to the model
                         val_y_pred = model(val_comp_feature_vectors, val_target_feature_vectors)
 
-                    # print(val_y_pred)
+                    print(val_y_pred)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.data[0])
 
