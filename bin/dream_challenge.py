@@ -175,10 +175,11 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                     total_validation_loss += float(loss_val.data[0])
 
                     for item in val_y_pred:
-                        validation_predictions.append(float(item.data[0]))
+                        #validation_predictions.append(float(item.data[0]))
+                        validation_predictions.append(-math.log10(10e-10*float(float(item.data[0]))))
                     for item in val_labels:
-                        validation_labels.append(float(item.data[0]))
-
+                        # validation_predictions.append(float(item.data[0]))
+                        validation_predictions.append(-math.log10(10e-10*float(float(item.data[0]))))
 
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                 validation_predictions))

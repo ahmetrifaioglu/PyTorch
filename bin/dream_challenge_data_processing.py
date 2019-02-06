@@ -65,7 +65,7 @@ class TrainingValidationShuffledDataLoader(Dataset):
                 self.comp_feature_vectors.append(comp_features)
                 self.target_feature_vectors.append(tar_features)
                 #valid_labels.append(-math.log10(10e-10*float(lbl)))
-                valid_labels.append(float(lbl))
+                valid_labels.append(10**(9-float(lbl)))
                 valid_compound_ids.append(comp_id)
                 valid_target_ids.append(tar_id)
             except:

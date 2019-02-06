@@ -16,7 +16,7 @@ def getAverageRMSEResult():
     file_dict_val_loss = dict()
     result_file_path = "../resultFiles"
     for fl in os.listdir(result_file_path):
-        if fl.startswith("unbalanced_2_3_best"):
+        if fl.startswith("idg_comp_targ_uniq_inter_filtered_TKL_results"):
             #print(fl)
             fl_id = fl.split("_")[1][0]
             file_dict_rmse[fl_id] = [[] for _ in range(5)]
@@ -64,7 +64,7 @@ def getAverageRMSEResult():
         print("{}\t{}\t{}\t{}".format(ind, arr_all_mean_fold_rmse[ind], arr_all_mean_fold_train[ind], arr_all_mean_fold_val[ind]))
     # print(arr_all_mean_fold_rmse)
 
-getAverageRMSEResult()
+# getAverageRMSEResult()
 def getMissingCompoundTargetIDs():
     fl_prot_ids = open("{}/{}".format(datasets_path, "idg_train_test_prot_ids.txt"))
     lst_prot_ids = fl_prot_ids.read().split("\n")
@@ -102,7 +102,66 @@ def getMissingCompoundTargetIDs():
     print(len(set(lst_prot_ids)&set_all_prot_ids))
 
 
+def getFamilySpecificScores():
+    training_file_path = "../trainingFiles/IDGDreamChallenge/dti_datasets"
+    result_file_path = "../resultFiles/"
+    lst_fam_spec_fl = [
+    "idg_comp_targ_uniq_inter_filtered_STE.csv",
+    "idg_comp_targ_uniq_inter_filtered_AGC.csv",
+    "idg_comp_targ_uniq_inter_filtered_CAMK.csv",
+    "idg_comp_targ_uniq_inter_filtered_CMGC.csv",
+    "idg_comp_targ_uniq_inter_filtered_other.csv",
+    "idg_comp_targ_uniq_inter_filtered_TK.csv",
+    "idg_comp_targ_uniq_inter_filtered_TKL.csv"]
+    # print(lst_fam_spec_fl)
+    lst_subfam_name = set()
+    dict_fl_prot_ids = dict()
+    for fl in lst_fam_spec_fl:
+        idg_fl = open("{}/{}".format(training_file_path, fl))
+        lst_idg_fl = idg_fl.read().split("\n")
+        idg_fl.close()
+        subfam_name = fl.split("_")[-1].split(".")[0]
+        #print(subfam_name)
+        lst_subfam_name.add(subfam_name)
+        for line in lst_idg_fl[:-1]:
+            comp_id, tar_id, _ = line.split(",")
+            dict_fl_prot_ids[tar_id] = subfam_name
+            """
+            try:
+                dict_fl_prot_ids[subfam_name].append(tar_id)
+            except:
+                dict_fl_prot_ids[subfam_name] = [tar_id]
+           """
+    dict_fl_prot_ids["Q96PN8"] = "CAMK"
+    dict_fam_spec_predictions = dict()
+    for sub_fam in lst_subfam_name:
+        # print(sub_fam)
+        fl_pred = open("{}/{}_predictions.txt".format(result_file_path, sub_fam), "r")
+        lst_fl_pred = fl_pred.read().split("\n")
+        fl_pred.close()
+        dict_fam_spec_predictions[sub_fam] = []
+        for line in lst_fl_pred[106:-1]:
+            dict_fam_spec_predictions[sub_fam].append(line)
+            # comp_id, tar_id, pred = line.split("\t")
+    # print(len(dict_fam_spec_predictions))
+    template_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/round_1_template.csv", "r")
+    lst_template_fl = template_fl.read().split("\n")
+    template_fl.close()
+    for line in lst_template_fl[1:]:
+        fields = line.split(",")
+        # print(fields)
+        uniprot_id = fields[-3]
+        comp_id = fields[-4]
+        # print(uniprot_id)
+        prot_fam = dict_fl_prot_ids[uniprot_id]
+        for pred in dict_fam_spec_predictions[prot_fam]:
+            if pred.startswith("{}\t{}".format(comp_id, uniprot_id)):
+                print(pred)
 
 
+    # print(dict_fam_spec_predictions)
+
+
+getFamilySpecificScores()
 
 # getMissingCompoundTargetIDs()
