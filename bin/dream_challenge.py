@@ -117,7 +117,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = None
         if regression_classifier=="r":
-            criterion = torch.nn.MSELoss()
+            criterion = torch.nn.KLDivLoss()
         else:
             criterion = torch.nn.BCELoss()
         optimizer.zero_grad()
