@@ -155,16 +155,17 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 # print(y_pred, labels)
                 weights = []
                 if regression_classifier=="c":
-                    for _ in range(64):
+                    for lbl in labels:
                         weights.append([3,1])
 
                 weights = torch.FloatTensor(weights).to(device)
-                print(len(weights), len(labels))
+                # print(len(weights), len(labels))
                 loss = None
                 if regression_classifier=="r":
                     loss = criterion(y_pred.squeeze(), labels)
                 else:
-                    criterion.weight = weights
+                    if len(weights)==64:
+                        criterion.weight = weights
                     loss = criterion(y_pred.squeeze(), labels)
                 # print(loss)
                 total_training_loss += float(loss.data[0])
