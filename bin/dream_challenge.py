@@ -155,7 +155,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 # print(y_pred, labels)
                 weights = []
                 if regression_classifier=="c":
-                    for lbl in labels:
+                    for _ in range(64):
                         weights.append([3,1])
 
                 weights = torch.FloatTensor(weights).to(device)
