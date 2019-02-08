@@ -159,7 +159,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                         weights.append([3,1])
 
                 weights = torch.FloatTensor(weights)
-                print(len(weights), len(labels))
+                # print(len(weights), len(labels))
                 loss = None
                 if regression_classifier=="r":
                     loss = criterion(y_pred.squeeze(), labels)
