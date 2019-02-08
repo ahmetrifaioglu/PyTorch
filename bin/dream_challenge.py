@@ -25,7 +25,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 
 class QuantileLoss(torch.nn.Module):
     def __init__(self, quantiles):
-        super().__init__()
+        super(QuantileLoss, self).__init__()
         self.quantiles = quantiles
 
     def forward(self, preds, target):
