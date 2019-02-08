@@ -23,7 +23,7 @@ from dream_challenge_data_processing import TrainingValidationShuffledDataLoader
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 
-class QuantileLoss(nn.Module):
+class QuantileLoss(torch.nn.Module):
     def __init__(self, quantiles):
         super().__init__()
         self.quantiles = quantiles
