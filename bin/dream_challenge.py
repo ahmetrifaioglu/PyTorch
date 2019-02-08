@@ -167,7 +167,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 if regression_classifier=="r":
                     for lbl in labels:
                         if int(lbl) == 1:
-                            weights.append(5)
+                            weights.append(1000)
                         else:
                             weights.append(1)
 
