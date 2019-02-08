@@ -164,10 +164,12 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 if regression_classifier=="r":
                     loss = criterion(y_pred.squeeze(), labels)
                 else:
+                    """
                     if len(weights)==64:
                         criterion.weight = weights
                     else:
                         criterion.weight=None
+                    """
                     loss = criterion(y_pred.squeeze(), labels)
                 # print(loss)
                 total_training_loss += float(loss.data[0])
