@@ -28,7 +28,7 @@ def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
 
 class TrainingValidationShuffledDataLoader(Dataset):
 
-    def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset):
+    def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
 
         comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
 
@@ -64,8 +64,13 @@ class TrainingValidationShuffledDataLoader(Dataset):
                 tar_features = dict_target_features[tar_id]
                 self.comp_feature_vectors.append(comp_features)
                 self.target_feature_vectors.append(tar_features)
-                #valid_labels.append(-math.log10(10e-10*float(lbl)))
-                valid_labels.append(10**(9-float(lbl)))
+                # valid_labels.append(-math.log10(10e-10*float(lbl)))
+                # valid_labels.append(10**(9-float(lbl))) # dogru olan bu
+                if regression_classifier=="r":
+                    valid_labels.append(float(lbl))
+                else:
+                    #print(lbl)
+                    valid_labels.append([1, 0] if int(lbl)==1 else [0, 1])
                 valid_compound_ids.append(comp_id)
                 valid_target_ids.append(tar_id)
             except:
@@ -111,12 +116,12 @@ def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_
     return train_loader, number_of_comp_features, number_of_target_features
 
 
-def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset):
+def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
 
     loader_fold_dict = dict()
     valid_size = round(1.0 / float(num_of_folds), 1)
 
-    train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset)
+    train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
 
     number_of_comp_features = train_val_data.number_of_comp_features
     number_of_target_features = train_val_data.number_of_target_features
@@ -321,5 +326,56 @@ def create_normalized_feature_vector_files(target_or_compound):
             df_normalized.to_csv("{}/{}_normalized.tsv".format(comp_feature_vector_path, feat), sep='\t', index=False)
 
 
+def create_comp_tar_inter_dataset_nM():
+    dataset_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered.csv", "r")
+    lst_dataset_fl = dataset_fl.read().split("\n")
+    dataset_fl.close()
+    nm_dataset_fl = open(
+        "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered_nm.csv",
+        "w")
+    if "" in lst_dataset_fl:
+        lst_dataset_fl.remove("")
 
+    for line in lst_dataset_fl:
+        comp_id, uniprot_id, value = line.split(",")
+        value = 10**(9-float(value))
+        nm_dataset_fl.write("{},{},{}\n".format(comp_id, uniprot_id, value))
+    nm_dataset_fl.close()
+
+def create_comp_tar_inter_dataset_label():
+    import numpy as np
+    from sklearn import preprocessing
+
+    dataset_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered.csv", "r")
+    lst_dataset_fl = dataset_fl.read().split("\n")
+    dataset_fl.close()
+
+    lst_values = []
+    if "" in lst_dataset_fl:
+        lst_dataset_fl.remove("")
+
+    for line in lst_dataset_fl:
+        comp_id, uniprot_id, value = line.split(",")
+        lst_values.append(float(value))
+
+    labels = preprocessing.binarize(np.array(lst_values).reshape(1, -1), threshold=7.0, copy=False)[0]
+    label_dataset_fl = open(
+        "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered_labels.csv",
+        "w")
+
+
+    for line_ind in range(len(lst_dataset_fl)):
+
+        comp_id, uniprot_id, value = lst_dataset_fl[line_ind].split(",")
+        value = int(labels[line_ind])
+        label_dataset_fl.write("{},{},{}\n".format(comp_id, uniprot_id, value))
+    label_dataset_fl.close()
+
+# create_comp_tar_inter_dataset_label()
+
+
+
+
+
+# create_comp_tar_inter_dataset_nM()
 # create_normalized_feature_vector_files("target")

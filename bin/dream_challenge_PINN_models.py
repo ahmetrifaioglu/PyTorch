@@ -45,7 +45,7 @@ class FC_PINNModel_2_2_2(torch.nn.Module):
 
 class FC_PINNModel_2_2_2_Modules(torch.nn.Module):
 
-    def __init__(self, number_of_comp_features, comp_l1, comp_l2, number_of_target_features, tar_l1, tar_l2, fc_l1, fc_l2):
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, number_of_target_features, tar_l1, tar_l2, fc_l1, fc_l2, regression_classifier):
         # In the constructor we instantiate two nn.Linear module
 
         super(FC_PINNModel_2_2_2_Modules, self).__init__()
@@ -54,9 +54,53 @@ class FC_PINNModel_2_2_2_Modules(torch.nn.Module):
         self.layer_2_tar = FC_2_Layer(number_of_target_features, tar_l1, tar_l2, 0.5)
 
         self.layer_2_combined = FC_2_Layer(comp_l2+tar_l2, fc_l1, fc_l2, 0.5)
+
+        self.output = None
+        if regression_classifier=="r":
+            self.output = torch.nn.Linear(fc_l2, 1)
+        else:
+            self.output = torch.nn.Linear(fc_l2, 2)
+
+        self.relu = torch.nn.ReLU()
+        self.sigmoid = torch.nn.Sigmoid()
+        #self.drop_rate = drop_rate
+        self.r_c = regression_classifier
+
+    def forward(self, x_comp, x_tar):
+        # Compound part
+
+        out2_comp = self.layer_2_comp.forward(x_comp)
+        out2_tar = self.layer_2_tar.forward(x_tar)
+
+
+        combined_layer = torch.cat((out2_comp, out2_tar), 1)
+
+        out_combined = self.layer_2_combined.forward(combined_layer)
+
+        y_pred = None
+
+        if self.r_c=="r":
+            y_pred = self.output(out_combined)
+        else:
+            y_pred = self.sigmoid(self.output(out_combined))
+
+        return y_pred
+
+class FC_PINNModel_2_2_2_Modules_Classifier(torch.nn.Module):
+
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, number_of_target_features, tar_l1, tar_l2, fc_l1, fc_l2):
+        # In the constructor we instantiate two nn.Linear module
+
+        super(FC_PINNModel_2_2_2_Modules_Classifier, self).__init__()
+        # print(type(number_of_comp_features), type(number_of_target_features))
+        self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, 0.5)
+        self.layer_2_tar = FC_2_Layer(number_of_target_features, tar_l1, tar_l2, 0.5)
+
+        self.layer_2_combined = FC_2_Layer(comp_l2+tar_l2, fc_l1, fc_l2, 0.5)
         self.output = torch.nn.Linear(fc_l2, 1)
 
         self.relu = torch.nn.ReLU()
+        self.soft = torch.nn.Softmax()
         #self.drop_rate = drop_rate
 
     def forward(self, x_comp, x_tar):
@@ -69,7 +113,7 @@ class FC_PINNModel_2_2_2_Modules(torch.nn.Module):
         combined_layer = torch.cat((out2_comp, out2_tar), 1)
 
         out_combined = self.layer_2_combined.forward(combined_layer)
-        y_pred = self.output(out_combined)
+        y_pred = self.soft(self.output(out_combined))
 
         return y_pred
 

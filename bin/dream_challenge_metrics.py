@@ -120,6 +120,7 @@ def f1(y,f):
 
     y_binary = copy.deepcopy(y)
     y_binary = preprocessing.binarize(y_binary.reshape(1,-1), threshold=7.0, copy=False)[0]
+    # print(y_binary)
     f_binary = copy.deepcopy(f)
     f_binary = preprocessing.binarize(f_binary.reshape(1,-1), threshold=7.0, copy=False)[0]
 
