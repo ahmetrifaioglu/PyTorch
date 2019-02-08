@@ -15,6 +15,7 @@ import itertools
 import warnings
 import math
 from sklearn.metrics import f1_score, accuracy_score
+from sklearn import preprocessing,metrics
 import sklearn
 # from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 #from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
@@ -153,15 +154,35 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                 # Compute and print loss
                 # loss = criterion(y_pred.squeeze(), labels)
                 # print(y_pred, labels)
+
+                # print(len(weights), len(labels))
+
                 weights = []
+
+                binary_labels = preprocessing.binarize(labels.reshape(1,-1), threshold=7.0, copy=False)[0]
+
                 if regression_classifier=="c":
                     for lbl in labels:
                         weights.append([3,1])
+                if regression_classifier=="r":
+                    for lbl in labels:
+                        if int(lbl) == 1:
+                            weights.append(5)
+                        else:
+                            weights.append(1)
+
 
                 weights = torch.FloatTensor(weights).to(device)
-                # print(len(weights), len(labels))
+                # print(labels)
+                # print(weights)
+                # print(binary_labels)
                 loss = None
                 if regression_classifier=="r":
+                    if len(weights) == 64:
+                        criterion.weight = weights
+                    else:
+                        criterion.weight = None
+
                     loss = criterion(y_pred.squeeze(), labels)
                 else:
                     """
