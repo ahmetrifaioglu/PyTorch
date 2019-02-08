@@ -22,6 +22,27 @@ import sklearn
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
+
+class QuantileLoss(nn.Module):
+    def __init__(self, quantiles):
+        super().__init__()
+        self.quantiles = quantiles
+
+    def forward(self, preds, target):
+        assert not target.requires_grad
+        assert preds.size(0) == target.size(0)
+        losses = []
+        for i, q in enumerate(self.quantiles):
+            errors = target - preds[:, i]
+            losses.append(
+                torch.max(
+                    (q - 1) * errors,
+                    q * errors
+                ).unsqueeze(1))
+        loss = torch.mean(
+            torch.sum(torch.cat(losses, dim=1), dim=1))
+        return loss
+
 warnings.filterwarnings("ignore")
 def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr, comp_tar_pair_dataset, regression_classifier):
 
@@ -117,7 +138,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = None
         if regression_classifier=="r":
-            criterion = torch.nn.KLDivLoss()
+            criterion = QuantileLoss()
         else:
             criterion = torch.nn.BCELoss()
         optimizer.zero_grad()
