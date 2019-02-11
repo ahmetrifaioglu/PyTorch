@@ -117,11 +117,12 @@ def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_
 
 
 def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
-
+    from random import choices
     loader_fold_dict = dict()
     valid_size = round(1.0 / float(num_of_folds), 1)
 
     train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
+    print(train_val_data)
 
     number_of_comp_features = train_val_data.number_of_comp_features
     number_of_target_features = train_val_data.number_of_target_features
@@ -145,14 +146,36 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
         val_indices = list(range(val_starting_index, val_end_index))
         train_indices = list(set(range(total_number_of_samples)) - set(val_indices))
 
+        # burada train datayi yeni bir liste al
         # print(len(train_indices))
         # print(len(val_indices))
+        # print(train_indices)
+        #print(val_indices)
+        active_indeces = []
+        inactive_indeces = []
+
+        for ind in train_indices:
+            if float(train_val_data[ind][-5])>7.0:
+                active_indeces.append(ind)
+            else:
+                inactive_indeces.append(ind)
+
+        # print(len(active_indeces))
+        # print(len(inactive_indeces))
+        sample_count = len(inactive_indeces) - len(active_indeces)
+        new_sampled_active_indices = choices(active_indeces, k=sample_count)
+
+        for new_ind in new_sampled_active_indices:
+            train_indices.append(new_ind)
+        # choices(colors, k=4)
+        # for ind in range(len(train_val_data)):
+        #    print(train_val_data[ind][-5])
 
         # define samplers for obtaining training and validation batches
         train_sampler = SubsetRandomSampler(train_indices)
         valid_sampler = SubsetRandomSampler(val_indices)
 
-        # print(fold_id, train_sampler.indices)
+        # print(fold_id, len(train_sampler.indices))
         # print(fold_id, valid_sampler.indices)
         train_loader = torch.utils.data.DataLoader(train_val_data, batch_size=batch_size,
                                                    sampler=train_sampler)
