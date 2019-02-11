@@ -118,6 +118,7 @@ def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_
 
 def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
     from random import choices
+    import numpy as np
     loader_fold_dict = dict()
     valid_size = round(1.0 / float(num_of_folds), 1)
 
@@ -163,7 +164,7 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
         # print(len(active_indeces))
         # print(len(inactive_indeces))
         sample_count = len(inactive_indeces) - len(active_indeces)
-        new_sampled_active_indices = choices(active_indeces, k=sample_count)
+        new_sampled_active_indices = np.random.choice(active_indeces, sample_count)
 
         for new_ind in new_sampled_active_indices:
             train_indices.append(new_ind)
