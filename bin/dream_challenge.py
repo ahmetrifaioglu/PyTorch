@@ -38,7 +38,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 100
+    n_epoch = 500
     num_of_folds = 5
     batch_size = 64
 
@@ -285,6 +285,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                                                                                                    f1_score,
                                                                                                      total_training_loss,
                                                                                                      total_validation_loss))
+
                 print("F1 Score:\t{}".format(f1_score))
                 print("Accuracy:\t{}.".format(accuracy_score))
     if regression_classifier=="r":

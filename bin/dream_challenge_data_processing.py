@@ -10,9 +10,99 @@ idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/dti_datasets"
 prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/protein_feature_vectors"
 heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
 comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_vectors"
+training_files_path = "../trainingFiles"
+
+def getChEMBLTargetIDUniProtMapping():
+    chembl_uniprot_dict = dict()
+
+    with open("{}/{}".format(training_files_path, "chembl24_uniprot_mapping.txt")) as f:
+        for line in f:
+            if not line.startswith("#") and line != "":
+                line=line.split("\n")[0]
+                #print(line.split("\t"))
+                u_id, chembl_id, defin, target_type = line.split("\t")
+
+                if target_type=='SINGLE PROTEIN':
+
+                    try:
+                        chembl_uniprot_dict[chembl_id].append(u_id)
+                        #print("varmis", comp_id, uniprot_id)
+                    except:
+                        chembl_uniprot_dict[chembl_id] = [u_id]
+    #for key in chembl_uniprot_dict.keys():
+    #    if len(chembl_uniprot_dict[key])!=1:
+    #        print(key, chembl_uniprot_dict[key])
+
+    return chembl_uniprot_dict
+
+def getSMILEsForChEMBLIDList(rep_fl, lst_chembl_ids):
+    isFirst = True
+    prob_count = 0
+    dict_ids = dict()
+    for id in lst_chembl_ids:
+        dict_ids[id] = 0
+    # there should be a header in the smiles file
+    compound_smiles_dict = dict()
+    # print("DENEME../trainingFiles/{}".format(rep_fl))
+    with open("/Users/trman/OneDrive/Projects/DEEPScreen/all_trainingFiles/{}".format(rep_fl)) as f:
+        for line in f:
+            if isFirst:
+                isFirst = False
+            else:
+                #print(line)
+                line = line.split("\n")[0]
+                temp_parts = line.split("\t")
+                # print(temp_parts)
+                chembl_id, smiles = temp_parts[0], temp_parts[1]
+                try:
+                    dict_ids[chembl_id]
+                    compound_smiles_dict[chembl_id] = smiles
+                except:
+                    pass
+
+    return compound_smiles_dict
+
+def getChEMBL24KDBioactivities():
+
+    dict_chembl_uniprot_mapping = getChEMBLTargetIDUniProtMapping()
+    df_chembl24_activities = pd.read_csv("/Users/trman/OneDrive/Projects/DEEPScreen/inputDatasets/ChEMBL24_preprocessed_activities_sp_b_pchembl.txt", sep="\t", index_col=False)
+    df_only_kd = df_chembl24_activities[df_chembl24_activities["standard_type"]=="Kd"]
+    df_only_kd_actives = df_only_kd[df_only_kd["pchembl_value"] > 7.0]
+
+    df_dti_original_dataset = pd.read_csv("{}/{}".format(idg_training_dataset_path, "idg_comp_targ_uniq_inter_filtered.csv"), header=None)
+
+    original_comp_tar_pair_set = set()
+    for ind, data in df_dti_original_dataset.iterrows():
+        comp_id, uniprot_id = data[0], data[1]
+        original_comp_tar_pair_set.add("{}_{}".format(comp_id, uniprot_id))
+
+
+
+    new_chembl24_comp_tar_pair_dict = dict()
+    for ind, data in df_only_kd_actives.iterrows():
+        new_chembl24_comp_tar_pair_dict["{}_{}".format(data["Compound_CHEMBL_ID"], dict_chembl_uniprot_mapping[data["Target_CHEMBL_ID"]][0])] = data["pchembl_value"]
+
+    new_data_comp_tar_pairs = set(new_chembl24_comp_tar_pair_dict.keys()) - original_comp_tar_pair_set
+    # print(df_dti_original_dataset)
+
+    new_data_points = []
+    for pair in new_data_comp_tar_pairs:
+        comp_id, uniprot_id = pair.split("_")
+        new_data_points.append([comp_id, uniprot_id, new_chembl24_comp_tar_pair_dict[pair]])
+
+
+    headers = df_dti_original_dataset.columns
+    df_new_data_points = pd.DataFrame(new_data_points, columns=headers)
+
+    df_dti_original_dataset = df_dti_original_dataset.append(df_new_data_points)
+
+    df_dti_original_dataset.to_csv(
+        "{}/{}".format(idg_training_dataset_path, "idg_comp_targ_uniq_inter_filtered_chembl24.csv"), header=False, index=False)
+
+
+# getChEMBL24KDBioactivities()
 
 def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
-
     sorted(feature_lst)
     feat_vec_path = prot_feature_vector_path if target_or_compound=="target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
