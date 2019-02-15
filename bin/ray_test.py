@@ -101,6 +101,7 @@ class TrainMNIST(Trainable):
         vars(args).update(config)
         args.cuda = not args.no_cuda and torch.cuda.is_available()
         print(args.cuda)
+        args.cuda = True
         torch.manual_seed(args.seed)
         if args.cuda:
             torch.cuda.manual_seed(args.seed)
