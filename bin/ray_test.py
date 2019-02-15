@@ -64,7 +64,7 @@ parser.add_argument(
 parser.add_argument(
     '--no-cuda',
     action='store_true',
-    default=False,
+    default=True,
     help='disables CUDA training')
 parser.add_argument(
     '--seed',
