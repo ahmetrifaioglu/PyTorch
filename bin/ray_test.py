@@ -64,7 +64,7 @@ parser.add_argument(
 parser.add_argument(
     '--no-cuda',
     action='store_true',
-    default=True,
+    default=False,
     help='disables CUDA training')
 parser.add_argument(
     '--seed',
@@ -100,8 +100,7 @@ class TrainMNIST(Trainable):
         args = config.pop("args")
         vars(args).update(config)
         args.cuda = not args.no_cuda and torch.cuda.is_available()
-        print(args.cuda)
-        args.cuda = True
+
         torch.manual_seed(args.seed)
         if args.cuda:
             torch.cuda.manual_seed(args.seed)
@@ -192,7 +191,7 @@ if __name__ == '__main__':
     from ray import tune
     from ray.tune.schedulers import HyperBandScheduler
 
-    ray.init()
+    ray.init(num_gpus=1)
     sched = HyperBandScheduler(
         time_attr="training_iteration", reward_attr="neg_mean_loss")
     tune.run_experiments(
@@ -202,7 +201,10 @@ if __name__ == '__main__':
                     "mean_accuracy": 0.95,
                     "training_iteration": 1 if args.smoke_test else 20,
                 },
-
+                "resources_per_trial": {
+                    "cpu": 1,
+                    "gpu": 1
+                },
                 "run": TrainMNIST,
                 "num_samples": 1 if args.smoke_test else 20,
                 "checkpoint_at_end": True,
