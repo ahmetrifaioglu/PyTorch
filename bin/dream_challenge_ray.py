@@ -352,7 +352,7 @@ if __name__ == '__main__':
                 },
                 "run": TrainDream,
                 "num_samples": 1 if args.smoke_test else 20,
-                "checkpoint_at_end": True,
+                # "checkpoint_at_end": True,
                 "config": {
                     "args": args,
                     "lr": tune.sample_from(
