@@ -337,6 +337,7 @@ def train_dream(args, config, reporter):
             print("Accuracy:\t{}.".format(accuracy_score))
         reporter(mean_loss=total_validation_loss)# , mean_accuracy=accuracy)
     for epoch in range(1, args.epochs + 1):
+        print("Epoch number:\t{}".format(epoch))
         train(epoch)
         test()
 
