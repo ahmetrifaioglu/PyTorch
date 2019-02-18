@@ -197,6 +197,7 @@ class TrainDream(Trainable):
             loss.backward()
             self.optimizer.step()
         print(total_training_loss)
+        return {"neg_mean_loss": -1*total_training_loss}
 
     def _test(self):
         self.model.eval()
@@ -293,33 +294,15 @@ class TrainDream(Trainable):
 
             print("F1 Score:\t{}".format(f1_score))
             print("Accuracy:\t{}.".format(accuracy_score))
-        """    
-        test_loss = 0
-        correct = 0
-        with torch.no_grad():
-            for data, target in self.test_loader:
-                if self.args.cuda:
-                    data, target = data.cuda(), target.cuda()
-                output = self.model(data)
-                # sum up batch loss
-                test_loss += F.nll_loss(output, target, reduction='sum').item()
-                # get the index of the max log-probability
-                pred = output.argmax(dim=1, keepdim=True)
-                correct += pred.eq(
-                    target.data.view_as(pred)).long().cpu().sum()
 
-        test_loss = test_loss / len(self.test_loader.dataset)
-        accuracy = correct.item() / len(self.test_loader.dataset)
-        return {"mean_loss": test_loss, "mean_accuracy": accuracy}
-        """
-        return {"mean_loss": total_validation_loss, "mean_accuracy": accuracy_score}
+        return {"neg_mean_loss": -1*total_validation_loss, "mean_accuracy": accuracy_score}
     def _train(self):
         self._train_iteration()
         return self._test()
 
     def _save(self, checkpoint_dir):
         checkpoint_path = os.path.join(checkpoint_dir, "model.pth")
-        # torch.save(self.model.state_dict(), checkpoint_path)
+        torch.save(self.model.state_dict(), checkpoint_path)
         return checkpoint_path
 
     def _restore(self, checkpoint_path):
@@ -343,7 +326,7 @@ if __name__ == '__main__':
         {
             "exp": {
                 "stop": {
-                    #"mean_accuracy": 0.95,
+                    #"neg_mean_loss": 0.0,
                     "training_iteration": 20 if args.smoke_test else 20,
                 },
                 "resources_per_trial": {
@@ -374,6 +357,7 @@ if __name__ == '__main__':
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
 
                 }
+
             }
         },
         verbose=0,

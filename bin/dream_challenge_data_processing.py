@@ -14,8 +14,8 @@ comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_
 training_files_path = "../trainingFiles"
 """
 
-# training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles"
-training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
+training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles"
+# training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
 prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
 heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
@@ -124,6 +124,10 @@ def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
         df_combined_features = pd.merge(df_combined_features, df_temp_features, on=[common_column])
     # print(df_combined_features)
     df_combined_features = df_combined_features.set_index(common_column).T.to_dict('list')
+    #print(df_combined_features)
+    # print(df_combined_features.keys())
+
+    #print(df_combined_features.columns)
     return df_combined_features
 
 
@@ -226,7 +230,7 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
         valid_size = round(1.0 / float(num_of_folds), 1)
 
     train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
-    print(train_val_data)
+    # print(train_val_data)
 
     number_of_comp_features = train_val_data.number_of_comp_features
     number_of_target_features = train_val_data.number_of_target_features
