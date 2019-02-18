@@ -50,7 +50,7 @@ class FC_PINNModel_2_2_2_Modules(torch.nn.Module):
 
         super(FC_PINNModel_2_2_2_Modules, self).__init__()
         # print(type(number_of_comp_features), type(number_of_target_features))
-        print(comp_l1, comp_l2, tar_l1, tar_l2, fc_l1, fc_l2,)
+        # print(comp_l1, comp_l2, tar_l1, tar_l2, fc_l1, fc_l2,)
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, 0.5)
         self.layer_2_tar = FC_2_Layer(number_of_target_features, tar_l1, tar_l2, 0.5)
 

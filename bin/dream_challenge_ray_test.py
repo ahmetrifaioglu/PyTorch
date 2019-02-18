@@ -322,10 +322,9 @@ def train_dream(args, config, reporter):
             f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
             ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
 
-            print("Test RMSE:{}\tValidation Loss:{}".format(rmse_score, total_validation_loss))
-            print("RMSE:\t{}".format(rmse_score))
-            print("F1-Score:\t{}".format(f1_score))
-            print("Average_AUC:\t{}".format(ave_auc_score))
+            print("Test RMSE:{}\tF1-Score:\t{}\tAverage_AUC:\t{}\tValidation Loss:{}".format(rmse_score, f1_score, ave_auc_score, total_validation_loss))
+            # print("F1-Score:\t{}".format(f1_score))
+            #print("Average_AUC:\t{}".format(ave_auc_score))
 
             #return {"RMSE": rmse_score, "F1-Score": f1_score}
         else:
