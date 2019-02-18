@@ -244,7 +244,7 @@ def train_dream(args, config, reporter):
             total_training_loss += float(loss.item())
             loss.backward()
             optimizer.step()
-        print(total_training_loss)
+        print("Total training loss:\t{}".format(total_training_loss))
 
 
     def test():
@@ -321,7 +321,7 @@ def train_dream(args, config, reporter):
             # ci_score = ci(np.asarray(validation_labels), np.asarray(validation_predictions))
             f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
             ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
-            print("================================================================================")
+
             print("Test RMSE:{}\tValidation Loss:{}".format(rmse_score, total_validation_loss))
             print("RMSE:\t{}".format(rmse_score))
             print("F1-Score:\t{}".format(f1_score))
@@ -340,6 +340,7 @@ def train_dream(args, config, reporter):
             print("Accuracy:\t{}.".format(accuracy_score))
         reporter(mean_loss=total_validation_loss, mean_accuracy=f1_score)
     for epoch in range(1, args.epochs + 1):
+        print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
         train(epoch)
         test()
