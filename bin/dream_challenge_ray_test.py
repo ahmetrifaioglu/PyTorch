@@ -180,6 +180,9 @@ def train_dream(args, config, reporter):
     optimizer = optim.SGD(
         model.parameters(), lr=args.lr, momentum=args.momentum)
     """
+    # print(args)
+    #print(args.first_comp_layer, args.second_comp_layer, args.first_tar_layer, args.second_tar_layer,
+    #                                   args.first_comb_layer, args.second_comb_layer, args.lr)
     model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
                                        number_of_target_features, args.first_tar_layer, args.second_tar_layer,
                                        args.first_comb_layer, args.second_comb_layer, "r").to(device)
@@ -324,7 +327,7 @@ def train_dream(args, config, reporter):
             print("F1-Score:\t{}".format(f1_score))
             print("Average_AUC:\t{}".format(ave_auc_score))
 
-            return {"RMSE": rmse_score, "F1-Score": f1_score}
+            #return {"RMSE": rmse_score, "F1-Score": f1_score}
         else:
             f1_score = sklearn.metrics.f1_score(validation_labels, validation_predictions)
             accuracy_score = sklearn.metrics.accuracy_score(validation_labels, validation_predictions)
@@ -335,7 +338,7 @@ def train_dream(args, config, reporter):
 
             print("F1 Score:\t{}".format(f1_score))
             print("Accuracy:\t{}.".format(accuracy_score))
-        reporter(mean_loss=total_validation_loss)# , mean_accuracy=accuracy)
+        reporter(mean_loss=total_validation_loss, mean_accuracy=f1_score)
     for epoch in range(1, args.epochs + 1):
         print("Epoch number:\t{}".format(epoch))
         train(epoch)
@@ -349,14 +352,13 @@ if __name__ == "__main__":
     import numpy as np
     import ray
     from ray import tune
-    from ray.tune.schedulers import AsyncHyperBandScheduler
+    from ray.tune.schedulers import HyperBandScheduler
 
     ray.init()
-    sched = AsyncHyperBandScheduler(
+    sched = HyperBandScheduler(
         time_attr="training_iteration",
         reward_attr="neg_mean_loss",
-        max_t=400,
-        grace_period=20)
+        max_t=400)
     tune.register_trainable("train_dream",
                             lambda cfg, rprtr: train_dream(args, cfg, rprtr))
     tune.run_experiments(
@@ -367,8 +369,8 @@ if __name__ == "__main__":
                     "training_iteration": 50 if args.smoke_test else 50,
                 },
                 "resources_per_trial": {
-                    "cpu": 1,
-                    "gpu": 1
+                    "cpu": 8,
+                    "gpu": 0
                 },
                 "run": "train_dream",
                 "num_samples": 1 if args.smoke_test else 20,
@@ -380,17 +382,17 @@ if __name__ == "__main__":
                     "momentum": tune.sample_from(
                         lambda spec: np.random.uniform(0.1, 0.9)),
 
-                    "first-comp-layer": tune.sample_from(
+                    "first_comp_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second-comp-layer": tune.sample_from(
+                    "second_comp_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "first-tar-layer": tune.sample_from(
+                    "first_tar_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second-tar-layer": tune.sample_from(
+                    "second_tar_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "first-comb-layer": tune.sample_from(
+                    "first_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second-comb-layer": tune.sample_from(
+                    "second_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
 
                 }
