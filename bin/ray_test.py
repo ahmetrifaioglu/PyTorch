@@ -142,7 +142,7 @@ def train_mnist(args, config, reporter):
                     target.data.view_as(pred)).long().cpu().sum()
 
         test_loss = test_loss / len(test_loader.dataset)
-        accuracy = correct.item() / len(test_loader.dataset)
+        accuracy = float(correct.item()) / len(test_loader.dataset)
         print(test_loss, accuracy)
         reporter(mean_loss=test_loss, mean_accuracy=accuracy)
 
