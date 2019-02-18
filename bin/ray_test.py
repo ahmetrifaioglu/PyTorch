@@ -143,6 +143,7 @@ def train_mnist(args, config, reporter):
 
         test_loss = test_loss / len(test_loader.dataset)
         accuracy = correct.item() / len(test_loader.dataset)
+        print(test_loss, accuracy)
         reporter(mean_loss=test_loss, mean_accuracy=accuracy)
 
     for epoch in range(1, args.epochs + 1):
@@ -175,8 +176,8 @@ if __name__ == "__main__":
                     "training_iteration": 1 if args.smoke_test else 20
                 },
                 "resources_per_trial": {
-                    "cpu": 1,
-                    "gpu": int(not args.no_cuda)
+                    "cpu": 8,
+                    "gpu": 0#int(not args.no_cuda)
                 },
                 "run": "train_mnist",
                 "num_samples": 1 if args.smoke_test else 10,
