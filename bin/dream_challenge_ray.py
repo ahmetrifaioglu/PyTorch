@@ -42,7 +42,7 @@ parser.add_argument(
 parser.add_argument(
     '--epochs',
     type=int,
-    default=10,
+    default=50,
     metavar='N',
     help='number of epochs to train (default: 10)')
 parser.add_argument(
@@ -327,7 +327,7 @@ if __name__ == '__main__':
             "exp": {
                 "stop": {
                     #"neg_mean_loss": 0.0,
-                    "training_iteration": 20 if args.smoke_test else 20,
+                    "training_iteration": 50 if args.smoke_test else 50,
                 },
                 "resources_per_trial": {
                     "cpu": 1,
