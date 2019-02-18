@@ -14,12 +14,13 @@ comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_
 training_files_path = "../trainingFiles"
 """
 
-idg_training_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets"
-prot_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/protein_feature_vectors"
-heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
-comp_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/compound_feature_vectors"
-training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/"
-tar_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/protein_feature_vectors"
+#training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles"
+training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
+idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
+prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
+heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
+comp_feature_vector_path = "{}/IDGDreamChallenge/compound_feature_vectors".format(training_files_path)
+tar_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
 
 
 def getChEMBLTargetIDUniProtMapping():
