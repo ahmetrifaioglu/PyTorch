@@ -35,7 +35,7 @@ def training():
     compound_smiles_dict = getSMILEsFromFileWithHeader("chembl_24_1_chemreps.txt")
 
     # print(compound_smiles_dict["CHEMBL3545297"])
-    file_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/idg_comp_targ_uniq_inter_filtered.csv"
+    file_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered_chembl24.csv"
     count =0
     nbits = 1024
     problemcount = 0
@@ -100,7 +100,7 @@ def test():
     from rdkit.Chem import AllChem
     from rdkit import Chem
     ECFP4_dict = dict()
-    file_path = "../trainingFiles/IDGDreamChallenge/round_1_template.csv"
+    file_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/round_1_template.csv"
     count = 0
     nbits = 1024
     with open(file_path) as f:

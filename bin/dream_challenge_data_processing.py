@@ -6,11 +6,21 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import sklearn
 from sklearn import preprocessing
 import math
+"""
 idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/dti_datasets"
 prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/protein_feature_vectors"
 heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
 comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_vectors"
 training_files_path = "../trainingFiles"
+"""
+
+idg_training_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets"
+prot_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/protein_feature_vectors"
+heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
+comp_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/compound_feature_vectors"
+training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/"
+tar_feature_vector_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/protein_feature_vectors"
+
 
 def getChEMBLTargetIDUniProtMapping():
     chembl_uniprot_dict = dict()
@@ -210,7 +220,9 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
     # from random import choices
     import numpy as np
     loader_fold_dict = dict()
-    valid_size = round(1.0 / float(num_of_folds), 1)
+    valid_size = 0.2
+    if num_of_folds > 1:
+        valid_size = round(1.0 / float(num_of_folds), 1)
 
     train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
     print(train_val_data)
@@ -242,6 +254,9 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
         # print(len(val_indices))
         # print(train_indices)
         #print(val_indices)
+        """
+        # this code block is to make positive and negative dataset balanced
+        # by sampling (with replacement) more data from active class until the datasets are balanced
         active_indeces = []
         inactive_indeces = []
 
@@ -258,6 +273,7 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
 
         for new_ind in new_sampled_active_indices:
             train_indices.append(new_ind)
+        """
         # choices(colors, k=4)
         # for ind in range(len(train_val_data)):
         #    print(train_val_data[ind][-5])
@@ -405,17 +421,17 @@ def create_normalized_feature_vector_files(target_or_compound):
     if target_or_compound=="target":
         #feature_types = ["tri_gram", "spmap", "pfam", "k_sep_bigrams", "DDE", "APAAC"]
         #feature_types = ["spmap_final", "pfam", "k-sep-bigrams", "DDE", "APAAC"]
-        feature_types = ["trigram"]
+        feature_types = ["k-sep-bigrams", "trigram"]
     elif target_or_compound == "compound":
         feature_types = ["ecfp4", "fcfp4", "rdk5"]
 
     for feat in feature_types:
         dataset_path = None
         if target_or_compound =="target":
-            dataset_path = "{}/{}.tsv".format(heval_prot_feature_vector_path, feat)
+            dataset_path = "{}/{}.tsv".format(tar_feature_vector_path, feat)
         elif target_or_compound=="compound":
             dataset_path = "{}/{}.tsv".format(comp_feature_vector_path, feat)
-
+        print(dataset_path)
         training_dataset = pd.read_csv(dataset_path, sep="\t")
         columns = training_dataset.columns
         target_column = training_dataset.iloc[:, 0]
@@ -439,6 +455,7 @@ def create_normalized_feature_vector_files(target_or_compound):
             df_normalized.insert(loc=0, column="compound id", value=target_column)
             df_normalized.to_csv("{}/{}_normalized.tsv".format(comp_feature_vector_path, feat), sep='\t', index=False)
 
+# create_normalized_feature_vector_files("target")
 
 def create_comp_tar_inter_dataset_nM():
     dataset_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/idg_comp_targ_uniq_inter_filtered.csv", "r")
@@ -492,4 +509,3 @@ def create_comp_tar_inter_dataset_label():
 
 
 # create_comp_tar_inter_dataset_nM()
-# create_normalized_feature_vector_files("target")

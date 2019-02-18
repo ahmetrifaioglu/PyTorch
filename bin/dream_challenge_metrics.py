@@ -45,19 +45,19 @@ def pearson(y,f):
 
 
 
-def spearman(y,f):
-    """
-    Task:    To compute Spearman's rank correlation coefficient
-
-    Input:   y      Vector with original labels (pKd [M])
-             f      Vector with predicted labels (pKd [M])
-
-    Output:  rs     Spearman's rank correlation coefficient
-    """
-
-    rs = stats.spearmanr(y, f)[0]
-
-    return rs
+#def spearman(y,f):
+#    """
+#    Task:    To compute Spearman's rank correlation coefficient
+#
+#    Input:   y      Vector with original labels (pKd [M])
+#             f      Vector with predicted labels (pKd [M])
+#
+#    Output:  rs     Spearman's rank correlation coefficient
+#    """
+#
+#    rs = stats.spearmanr(y, f)[0]
+#
+#    return rs
 
 
 
