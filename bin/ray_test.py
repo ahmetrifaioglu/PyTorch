@@ -176,8 +176,8 @@ if __name__ == "__main__":
                     "training_iteration": 1 if args.smoke_test else 20
                 },
                 "resources_per_trial": {
-                    "cpu": 8,
-                    "gpu": 0#int(not args.no_cuda)
+                    "cpu": 1,
+                    "gpu": 1#int(not args.no_cuda)
                 },
                 "run": "train_mnist",
                 "num_samples": 1 if args.smoke_test else 10,
