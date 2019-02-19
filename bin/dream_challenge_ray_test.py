@@ -181,8 +181,8 @@ def train_dream(args, config, reporter):
         model.parameters(), lr=args.lr, momentum=args.momentum)
     """
     # print(args)
-    print("Arguments:", args.first_comp_layer, args.second_comp_layer, args.first_tar_layer, args.second_tar_layer,
-                                       args.first_comb_layer, args.second_comb_layer, args.lr)
+    # print("Arguments:", args.first_comp_layer, args.second_comp_layer, args.first_tar_layer, args.second_tar_layer,
+    #                                   args.first_comb_layer, args.second_comb_layer, args.lr, args.momentum)
     model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
                                        number_of_target_features, args.first_tar_layer, args.second_tar_layer,
                                        args.first_comb_layer, args.second_comb_layer, "r").to(device)
@@ -341,6 +341,8 @@ def train_dream(args, config, reporter):
     for epoch in range(1, args.epochs + 1):
         print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
+        print("Arguments:", args.first_comp_layer, args.second_comp_layer, args.first_tar_layer, args.second_tar_layer,
+              args.first_comb_layer, args.second_comb_layer, args.lr, args.momentum)
         train(epoch)
         test()
 
