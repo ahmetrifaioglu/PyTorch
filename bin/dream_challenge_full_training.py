@@ -95,7 +95,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         else:
             model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1],
                                        number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1,
-                                       fc2).to(device)
+                                       fc2, regression_classifier).to(device)
         # print(model.parameters)
         #optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         optimizer = torch.optim.SGD(
