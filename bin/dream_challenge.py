@@ -29,6 +29,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
 
 
     modeltype = mod
+    torch.manual_seed(args.seed)
     comp_feature_list = comp_feat.split("_")
     tar_feature_list = tar_feat.split("_")
     comp_hidden_lst = [int(neuron) for neuron in comp_hidden_lst.split("_")]
@@ -115,7 +116,9 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             model = FC_PINNModel_3_5_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], comp_hidden_lst[2], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], tar_hidden_lst[2], tar_hidden_lst[3], tar_hidden_lst[4], fc1, fc2).to(device)
 
         # print(model.parameters)
-        optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+        # optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+        optimizer = optim.SGD(
+            model.parameters(), lr=learn_rate, momentum=args.momentum)
         criterion = None
         if regression_classifier=="r":
             criterion = torch.nn.MSELoss()
