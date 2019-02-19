@@ -29,7 +29,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
 
 
     modeltype = mod
-    torch.manual_seed(args.seed)
+    torch.manual_seed(1)
     comp_feature_list = comp_feat.split("_")
     tar_feature_list = tar_feat.split("_")
     comp_hidden_lst = [int(neuron) for neuron in comp_hidden_lst.split("_")]
