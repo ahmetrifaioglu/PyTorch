@@ -357,10 +357,12 @@ if __name__ == "__main__":
     from ray.tune.schedulers import HyperBandScheduler
 
     ray.init()
+    """
     sched = HyperBandScheduler(
         time_attr="training_iteration",
         reward_attr="neg_mean_loss",
         max_t=400)
+    """
     tune.register_trainable("train_dream",
                             lambda cfg, rprtr: train_dream(args, cfg, rprtr))
     tune.run_experiments(
@@ -401,5 +403,5 @@ if __name__ == "__main__":
 
             }
         },
-        verbose=0,
-        scheduler=sched)
+        verbose=0) #,
+        #scheduler=sched)
