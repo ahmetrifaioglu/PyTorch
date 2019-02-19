@@ -22,9 +22,7 @@ warnings.filterwarnings("ignore")
 final_training = True
 
 def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr, comp_tar_pair_dataset):
-
-
-
+    torch.manual_seed(1)
     modeltype = mod
     comp_feature_list = comp_feat.split("_")
     tar_feature_list = tar_feat.split("_")
@@ -35,7 +33,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 100
+    n_epoch = 150
     num_of_folds = 1
     batch_size = 64
 
@@ -98,7 +96,9 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                                        number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1,
                                        fc2).to(device)
         # print(model.parameters)
-        optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+        #optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+        optimizer = torch.optim.SGD(
+            model.parameters(), lr=learn_rate, momentum=0.507344802825)
         criterion = torch.nn.MSELoss()
         optimizer.zero_grad()
 
@@ -208,7 +208,9 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             else:
                 model = FC_PINNModel_2_2_2(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2).to(device)
             # print(model.parameters)
-            optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+            #optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+            optimizer = torch.optim.SGD(
+                model.parameters(), lr=learn_rate, momentum=0.507344802825)
             criterion = torch.nn.MSELoss()
             optimizer.zero_grad()
 
