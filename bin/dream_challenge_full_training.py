@@ -359,8 +359,10 @@ fc2 = sys.argv[7]
 learn_rate = sys.argv[8]
 comp_tar_pair_dataset_fl = sys.argv[9]
 regress_classifier = sys.argv[10]
-
-train_networks(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
+print(modeltype,
+               comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
+train_networks(modeltype,
+               comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
 
 
 # "PINN2", "ecfp4", "pfam", "512_128", "512_128", "64", "64", "0.05"
