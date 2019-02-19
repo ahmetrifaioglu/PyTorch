@@ -118,7 +118,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         # print(model.parameters)
         # optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         optimizer = optim.SGD(
-            model.parameters(), lr=learn_rate, momentum=args.momentum)
+            model.parameters(), lr=learn_rate, momentum=0.507344802825)
         criterion = None
         if regression_classifier=="r":
             criterion = torch.nn.MSELoss()
