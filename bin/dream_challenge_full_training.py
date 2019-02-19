@@ -21,7 +21,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 warnings.filterwarnings("ignore")
 final_training = True
 
-def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr, comp_tar_pair_dataset):
+def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc1, fc2, lr, comp_tar_pair_dataset, regression_classifier):
     torch.manual_seed(1)
     modeltype = mod
     comp_feature_list = comp_feat.split("_")
@@ -66,7 +66,8 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         train_loader, number_of_comp_features, number_of_target_features = get_full_training_data_loader(batch_size,
                                                                                                          comp_feature_list,
                                                                                                          tar_feature_list,
-                                                                                                         comp_tar_pair_dataset)
+                                                                                                         comp_tar_pair_dataset,
+                                                                                                         regression_classifier)
 
         test_loader = get_test_loader(comp_feature_list, tar_feature_list, comp_tar_pair_test_dataset)
         test_predictions = []
@@ -164,7 +165,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
 
 
     else:
-        loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, tar_feature_list, comp_tar_pair_dataset)
+        loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, tar_feature_list, comp_tar_pair_dataset, regression_classifier)
         test_loader = get_test_loader(comp_feature_list, tar_feature_list, comp_tar_pair_test_dataset)
 
         original_number_of_comp_features = int(number_of_comp_features)
@@ -206,7 +207,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             elif modeltype == "FC3M":
                 model = FCModel_3_Hidden_with_Modules(total_number_of_features, 1024, 400, 200, 0.5).to(device)
             else:
-                model = FC_PINNModel_2_2_2(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2).to(device)
+                model = FC_PINNModel_2_2_2(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2, regression_classifier).to(device)
             # print(model.parameters)
             #optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
             optimizer = torch.optim.SGD(
@@ -357,8 +358,9 @@ fc1 = sys.argv[6]
 fc2 = sys.argv[7]
 learn_rate = sys.argv[8]
 comp_tar_pair_dataset_fl = sys.argv[9]
+regress_classifier = sys.argv[10]
 
-train_networks(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl)
+train_networks(modeltype, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
 
 
 # "PINN2", "ecfp4", "pfam", "512_128", "512_128", "64", "64", "0.05"
