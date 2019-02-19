@@ -204,10 +204,10 @@ class TrainingValidationShuffledDataLoader(Dataset):
         return len(self.compound_ids)
 
 
-def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset):
+def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
 
 
-    train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset)
+    train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
 
     number_of_comp_features = train_val_data.number_of_comp_features
     number_of_target_features = train_val_data.number_of_target_features

@@ -66,7 +66,8 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         train_loader, number_of_comp_features, number_of_target_features = get_full_training_data_loader(batch_size,
                                                                                                          comp_feature_list,
                                                                                                          tar_feature_list,
-                                                                                                         comp_tar_pair_dataset)
+                                                                                                         comp_tar_pair_dataset,
+                                                                                                         regression_classifier)
 
         test_loader = get_test_loader(comp_feature_list, tar_feature_list, comp_tar_pair_test_dataset)
         test_predictions = []
