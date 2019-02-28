@@ -76,7 +76,7 @@ for fold in range(num_of_folds):
     # print(len(train_loader), len(valid_loader))
     number_of_comp_features = original_number_of_comp_features
     number_of_target_features = original_number_of_target_features
-    model = CompFCNNTarRNN(1024, 100, 100, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, 300, 300)
+    model = CompFCNNTarRNN(1024, 100, 100, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, 300, 300).to(device)
     # print(model)
 
     optimizer = torch.optim.SGD(
@@ -96,7 +96,7 @@ for fold in range(num_of_folds):
         for i, data in enumerate(train_loader):
             print(i)
             batch_number += 1
-            h = tuple([each.data for each in h]).to(device)
+            h = tuple([each.data for each in h])
             # clear gradient DO NOT forget you fool!
             optimizer.zero_grad()
 
