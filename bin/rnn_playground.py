@@ -95,6 +95,7 @@ for fold in range(num_of_folds):
         model.train()
         for i, data in enumerate(train_loader):
             print(i)
+            print(data.shape)
             batch_number += 1
             h = tuple([each.data for each in h])
             # clear gradient DO NOT forget you fool!
