@@ -29,7 +29,7 @@ from rnn_playground_models import CompFCNNTarRNN
 
 
 # learn_rate = sys.argv[2]
-n_epoch = 2
+n_epoch = 10
 num_of_folds = 5
 batch_size = 45
 comp_feature_list = "ecfp4".split("_")
