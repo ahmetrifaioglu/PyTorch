@@ -117,7 +117,7 @@ for fold in range(num_of_folds):
 
                 loss = criterion(y_pred.squeeze(), labels)
 
-                total_training_loss += float(loss.data[0])
+                total_training_loss += float(loss.item())
                 loss.backward()
                 optimizer.step()
         print("Epoch {} training loss:".format(epoch), total_training_loss)
