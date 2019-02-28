@@ -113,7 +113,7 @@ for fold in range(num_of_folds):
                 total_training_count += comp_feature_vectors.shape[0]
 
                 y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
-                print(y_pred)
+                #print(y_pred)
 
                 loss = criterion(y_pred.squeeze(), labels)
 
@@ -139,7 +139,7 @@ for fold in range(num_of_folds):
 
 
                     val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
-
+                    print(val_y_pred)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.data[0])
 
