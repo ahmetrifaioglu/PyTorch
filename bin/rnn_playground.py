@@ -94,8 +94,8 @@ for fold in range(num_of_folds):
         # print(h)
         model.train()
         for i, data in enumerate(train_loader):
-            print(i)
-            print(len(data))
+            # print(i)
+            # print(len(data))
             batch_number += 1
             h = tuple([each.data for each in h])
             # clear gradient DO NOT forget you fool!
@@ -120,9 +120,9 @@ for fold in range(num_of_folds):
                 total_training_loss += float(loss.data[0])
                 loss.backward()
                 optimizer.step()
-        print(total_training_loss)
+        print("Epoch {} training loss:".format(epoch), total_training_loss)
 
-
+        """
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
             for i, data in enumerate(valid_loader):
@@ -167,3 +167,4 @@ for fold in range(num_of_folds):
             print("IDG File:\t{}".format(comp_tar_pair_dataset))
             print("Number of training samples:\t{}".format(total_training_count))
             print("Number of validation samples:\t{}".format(total_validation_count))
+        """
