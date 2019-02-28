@@ -96,7 +96,7 @@ for fold in range(num_of_folds):
         for i, data in enumerate(train_loader):
             print(i)
             batch_number += 1
-            h = tuple([each.data for each in h])
+            h = tuple([each.data for each in h]).to(device)
             # clear gradient DO NOT forget you fool!
             optimizer.zero_grad()
 
