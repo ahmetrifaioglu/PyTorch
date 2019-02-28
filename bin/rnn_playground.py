@@ -147,8 +147,7 @@ for fold in range(num_of_folds):
 
                     for item in val_y_pred:
                         validation_predictions.append(float(item.data[0]))
-        # print("labels", validation_labels)
-        # print("predictions", validation_predictions)
+
         if regression_classifier == "r":
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                 validation_predictions))
