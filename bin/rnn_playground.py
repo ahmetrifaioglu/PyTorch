@@ -133,17 +133,18 @@ for fold in range(num_of_folds):
                     device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
                 total_validation_count += val_comp_feature_vectors.shape[0]
 
-                val_inputs = None
-                val_y_pred = None
+                if val_comp_feature_vectors.shape[0] == batch_size:
+                    val_inputs = None
+                    val_y_pred = None
 
 
-                val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                    val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
 
-                loss_val = criterion(val_y_pred.squeeze(), val_labels)
-                total_validation_loss += float(loss_val.data[0])
+                    loss_val = criterion(val_y_pred.squeeze(), val_labels)
+                    total_validation_loss += float(loss_val.data[0])
 
-                for item in val_y_pred:
-                    validation_predictions.append(float(item.data[0]))
+                    for item in val_y_pred:
+                        validation_predictions.append(float(item.data[0]))
 
         if regression_classifier == "r":
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
