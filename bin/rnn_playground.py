@@ -122,7 +122,7 @@ for fold in range(num_of_folds):
                 optimizer.step()
         print("Epoch {} training loss:".format(epoch), total_training_loss)
 
-        """
+        h = model.init_hidden(batch_size)
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
             for i, data in enumerate(valid_loader):
@@ -137,7 +137,7 @@ for fold in range(num_of_folds):
                 val_y_pred = None
 
 
-                val_y_pred = model(val_comp_feature_vectors, val_target_feature_vectors)
+                val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
 
                 loss_val = criterion(val_y_pred.squeeze(), val_labels)
                 total_validation_loss += float(loss_val.data[0])
