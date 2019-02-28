@@ -113,7 +113,7 @@ for fold in range(num_of_folds):
                 total_training_count += comp_feature_vectors.shape[0]
 
                 y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
-
+                print(y_pred)
 
                 loss = criterion(y_pred.squeeze(), labels)
 
