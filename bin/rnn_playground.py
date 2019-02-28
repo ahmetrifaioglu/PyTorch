@@ -142,11 +142,13 @@ for fold in range(num_of_folds):
                     #print(val_y_pred)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.item())
+                    for item in val_labels:
+                        validation_labels.append(float(item.data[0]))
 
                     for item in val_y_pred:
                         validation_predictions.append(float(item.data[0]))
-        print("labels", validation_labels)
-        print("predictions", validation_predictions)
+        # print("labels", validation_labels)
+        # print("predictions", validation_predictions)
         if regression_classifier == "r":
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                 validation_predictions))
