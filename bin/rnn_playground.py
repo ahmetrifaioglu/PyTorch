@@ -120,6 +120,7 @@ for fold in range(num_of_folds):
                 total_training_loss += float(loss.data[0])
                 loss.backward()
                 optimizer.step()
+        print(total_training_loss)
 
 
         model.eval()
@@ -135,11 +136,8 @@ for fold in range(num_of_folds):
                 val_inputs = None
                 val_y_pred = None
 
-                if modeltype in concat_models:
-                    val_inputs = torch.cat((val_comp_feature_vectors, val_target_feature_vectors), 1)
-                    val_y_pred = model(val_inputs)
-                else:
-                    val_y_pred = model(val_comp_feature_vectors, val_target_feature_vectors)
+
+                val_y_pred = model(val_comp_feature_vectors, val_target_feature_vectors)
 
                 loss_val = criterion(val_y_pred.squeeze(), val_labels)
                 total_validation_loss += float(loss_val.data[0])
