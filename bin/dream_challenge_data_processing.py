@@ -15,7 +15,7 @@ training_files_path = "../trainingFiles"
 """
 
 training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles"
-training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
+# training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
 prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
 heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
@@ -136,7 +136,6 @@ class TrainingValidationShuffledDataLoader(Dataset):
     def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
 
         comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
-
         dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
         dict_target_features = get_dict_combined_feature_vectors("target", target_feature_lst)
 
@@ -180,6 +179,7 @@ class TrainingValidationShuffledDataLoader(Dataset):
                 valid_target_ids.append(tar_id)
             except:
                 invalid_data_points+=1
+                # print(tar_id)
                 pass
 
         print("{} data points are invalid out of {}!".format(invalid_data_points, total_number_of_data_points))
@@ -228,7 +228,7 @@ def get_nfold_data_loader_dict(num_of_folds, batch_size, comp_feature_list, targ
     valid_size = 0.2
     if num_of_folds > 1:
         valid_size = round(1.0 / float(num_of_folds), 1)
-
+    #print(comp_feature_list)
     train_val_data = TrainingValidationShuffledDataLoader(comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier)
     # print(train_val_data)
 
