@@ -106,7 +106,7 @@ for fold in range(num_of_folds):
             # wrap them in Variable
             comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                 target_feature_vectors).to(device), Variable(labels).to(device)
-            print(labels)
+            print(comp_feature_vectors.shape)
             inputs = None
             y_pred = None
 
