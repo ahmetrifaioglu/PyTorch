@@ -49,6 +49,7 @@ batch_size = 64
 
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier):
+    print("PARAMETERS:", comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier)
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
