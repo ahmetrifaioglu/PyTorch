@@ -29,6 +29,151 @@ from rnn_playground_models import CompFCNNTarRNN
 
 
 # learn_rate = sys.argv[2]
+"""
+n_epoch = 10
+num_of_folds = 5
+batch_size = 45
+comp_feature_list = "ecfp4".split("_")
+tar_feature_list = "trigramencodings1000".split("_")
+# comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
+regression_classifier = "r"
+vocab_size = 8000 + 1  # +1 for the 0 padding + our word tokens
+output_size = 100
+embedding_dim = 400
+hidden_dim = 256
+n_layers = 2
+"""
+n_epoch = 20
+num_of_folds = 1
+batch_size = 64
+
+
+def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier):
+    torch.manual_seed(1)
+    use_gpu = torch.cuda.is_available()
+
+    device = "cpu"
+
+    if use_gpu:
+        print("GPU is available on this device!")
+        device = "cuda"
+    else:
+        print("CPU is available on this device!")
+
+    loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds,
+                                                                                                      batch_size,
+                                                                                                      comp_feature_list,
+                                                                                                      tar_feature_list,
+                                                                                                      comp_tar_pair_dataset,
+                                                                                                      regression_classifier)
+
+    original_number_of_comp_features = int(number_of_comp_features)
+    original_number_of_target_features = int(number_of_target_features)
+
+    print(original_number_of_comp_features, original_number_of_target_features)
+
+    for fold in range(num_of_folds):
+        train_loader, valid_loader = loader_fold_dict[fold]
+        print("FOLD : {}".format(fold + 1))
+        number_of_comp_features = original_number_of_comp_features
+        number_of_target_features = original_number_of_target_features
+        print(int(number_of_comp_features), int(comp_hidden_lst[0]), int(comp_hidden_lst[1]), vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2)
+        model = CompFCNNTarRNN(int(number_of_comp_features), int(comp_hidden_lst[0]), int(comp_hidden_lst[1]), vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2).to(device)
+        # print(model)
+
+        #optimizer = torch.optim.SGD(
+        #    model.parameters(), lr=learn_rate, momentum=0.507344802825)
+        optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+        criterion = torch.nn.MSELoss()
+        optimizer.zero_grad()
+
+        for epoch in range(n_epoch):
+            total_training_loss, total_validation_loss = 0.0, 0.0
+            total_training_count, total_validation_count = 0, 0
+            validation_predictions, validation_labels = [], []
+            batch_number = 0
+
+            h = model.init_hidden(batch_size)
+
+            model.train()
+            for i, data in enumerate(train_loader):
+                batch_number += 1
+                h = tuple([each.data for each in h])
+                # clear gradient DO NOT forget you fool!
+                optimizer.zero_grad()
+
+                # get the inputs
+                comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
+                # wrap them in Variable
+                comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
+                    target_feature_vectors).to(device), Variable(labels).to(device)
+                if comp_feature_vectors.shape[0]==batch_size:
+                    inputs = None
+                    y_pred = None
+
+                    total_training_count += comp_feature_vectors.shape[0]
+
+                    y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
+
+                    loss = criterion(y_pred.squeeze(), labels)
+
+                    total_training_loss += float(loss.item())
+                    loss.backward()
+                    optimizer.step()
+
+            print("Epoch {} training loss:".format(epoch), total_training_loss)
+
+            h = model.init_hidden(batch_size)
+            model.eval()
+            with torch.no_grad():  # torch.set_grad_enabled(False):
+                for i, data in enumerate(valid_loader):
+
+                    val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
+                    val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
+                        val_comp_feature_vectors).to(
+                        device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
+                    total_validation_count += val_comp_feature_vectors.shape[0]
+
+                    if val_comp_feature_vectors.shape[0] == batch_size:
+                        val_inputs = None
+                        val_y_pred = None
+
+
+                        val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                        loss_val = criterion(val_y_pred.squeeze(), val_labels)
+                        total_validation_loss += float(loss_val.item())
+                        for item in val_labels:
+                            validation_labels.append(float(item.data[0]))
+
+                        for item in val_y_pred:
+                            validation_predictions.append(float(item.data[0]))
+
+            if regression_classifier == "r":
+                rmse_score = rmse(np.asarray(validation_labels), np.asarray(
+                    validation_predictions))
+                pearson_score = pearson(np.asarray(validation_labels), np.asarray(validation_predictions))
+                spearman_score = spearman(np.asarray(validation_labels), np.asarray(validation_predictions))
+                ci_score = ci(np.asarray(validation_labels), np.asarray(validation_predictions))
+                f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
+                ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
+                print("================================================================================")
+                print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold + 1, epoch,
+                                                                                                     rmse_score,
+                                                                                                     total_training_loss,
+                                                                                                     total_validation_loss))
+                print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
+                print("Pearson:\t{}".format(pearson_score))
+                print("Spearman:\t{}".format(spearman_score))
+                print("Ci:\t{}".format(ci_score))
+                print("F1-Score:\t{}".format(f1_score))
+                print("Average_AUC:\t{}".format(ave_auc_score))
+                print("IDG File:\t{}".format(comp_tar_pair_dataset))
+                print("Number of training samples:\t{}".format(total_training_count))
+                print("Number of validation samples:\t{}".format(total_validation_count))
+
+
+
+"""
 n_epoch = 10
 num_of_folds = 5
 batch_size = 45
@@ -37,137 +182,26 @@ tar_feature_list = "trigramencodings1000".split("_")
 comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
 regression_classifier = "r"
 learn_rate = 0.001
-use_gpu = torch.cuda.is_available()
-
-device = "cpu"
-
-if use_gpu:
-    print("GPU is available on this device!")
-    device = "cuda"
-else:
-    print("CPU is available on this device!")
-
-loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(num_of_folds,
-                                                                                                  batch_size,
-                                                                                                  comp_feature_list,
-                                                                                                  tar_feature_list,
-                                                                                                  comp_tar_pair_dataset,
-                                                                                                  regression_classifier)
-
-original_number_of_comp_features = int(number_of_comp_features)
-original_number_of_target_features = int(number_of_target_features)
-
-print(original_number_of_comp_features, original_number_of_target_features)
-
-
-torch.manual_seed(1)
 vocab_size = 8000 + 1  # +1 for the 0 padding + our word tokens
 output_size = 100
 embedding_dim = 400
 hidden_dim = 256
 n_layers = 2
+"""
 
+comp_feature_list = sys.argv[1].split("_")
+tar_feature_list = sys.argv[2].split("_")
+comp_hidden_lst = sys.argv[3].split("_")
+vocab_size = int(sys.argv[4]) + 1 # 8000 + 1  # +1 for the 0 padding + our word tokens
+output_size = int(sys.argv[5]) # 100
+embedding_dim = int(sys.argv[6]) # 400
+hidden_dim = int(sys.argv[7]) # 256
+n_rnn_layers = int(sys.argv[8]) # 2
+fc1 = int(sys.argv[9])
+fc2 = int(sys.argv[10])
+learn_rate = float(sys.argv[11])
+comp_tar_pair_dataset_fl = sys.argv[12]
+regress_classifier = sys.argv[13]
 
-for fold in range(num_of_folds):
-    train_loader, valid_loader = loader_fold_dict[fold]
-    # Just to check if everything is OK.
-    # Remove this when you finish testing.
-    print("FOLD : {}".format(fold + 1))
-    # print(len(train_loader), len(valid_loader))
-    number_of_comp_features = original_number_of_comp_features
-    number_of_target_features = original_number_of_target_features
-    model = CompFCNNTarRNN(1024, 100, 100, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, 300, 300).to(device)
-    # print(model)
-
-    optimizer = torch.optim.SGD(
-        model.parameters(), lr=learn_rate, momentum=0.507344802825)
-    criterion = torch.nn.MSELoss()
-    optimizer.zero_grad()
-
-    for epoch in range(n_epoch):
-        total_training_loss, total_validation_loss = 0.0, 0.0
-        total_training_count, total_validation_count = 0, 0
-        validation_predictions, validation_labels = [], []
-        batch_number = 0
-
-        h = model.init_hidden(batch_size)
-        # print(h)
-        model.train()
-        for i, data in enumerate(train_loader):
-            # print(i)
-            # print(len(data))
-            batch_number += 1
-            h = tuple([each.data for each in h])
-            # clear gradient DO NOT forget you fool!
-            optimizer.zero_grad()
-
-            # get the inputs
-            comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
-            # wrap them in Variable
-            comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
-                target_feature_vectors).to(device), Variable(labels).to(device)
-            if comp_feature_vectors.shape[0]==batch_size:
-                inputs = None
-                y_pred = None
-
-                total_training_count += comp_feature_vectors.shape[0]
-
-                y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
-                #print(y_pred)
-
-                loss = criterion(y_pred.squeeze(), labels)
-
-                total_training_loss += float(loss.item())
-                loss.backward()
-                optimizer.step()
-        print("Epoch {} training loss:".format(epoch), total_training_loss)
-
-        h = model.init_hidden(batch_size)
-        model.eval()
-        with torch.no_grad():  # torch.set_grad_enabled(False):
-            for i, data in enumerate(valid_loader):
-
-                val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
-                val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
-                    val_comp_feature_vectors).to(
-                    device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
-                total_validation_count += val_comp_feature_vectors.shape[0]
-
-                if val_comp_feature_vectors.shape[0] == batch_size:
-                    val_inputs = None
-                    val_y_pred = None
-
-
-                    val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
-                    #print(val_y_pred)
-                    loss_val = criterion(val_y_pred.squeeze(), val_labels)
-                    total_validation_loss += float(loss_val.item())
-                    for item in val_labels:
-                        validation_labels.append(float(item.data[0]))
-
-                    for item in val_y_pred:
-                        validation_predictions.append(float(item.data[0]))
-
-        if regression_classifier == "r":
-            rmse_score = rmse(np.asarray(validation_labels), np.asarray(
-                validation_predictions))
-            pearson_score = pearson(np.asarray(validation_labels), np.asarray(validation_predictions))
-            spearman_score = spearman(np.asarray(validation_labels), np.asarray(validation_predictions))
-            ci_score = ci(np.asarray(validation_labels), np.asarray(validation_predictions))
-            f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
-            ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
-            print("================================================================================")
-            print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold + 1, epoch,
-                                                                                                 rmse_score,
-                                                                                                 total_training_loss,
-                                                                                                 total_validation_loss))
-            print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
-            print("Pearson:\t{}".format(pearson_score))
-            print("Spearman:\t{}".format(spearman_score))
-            print("Ci:\t{}".format(ci_score))
-            print("F1-Score:\t{}".format(f1_score))
-            print("Average_AUC:\t{}".format(ave_auc_score))
-            print("IDG File:\t{}".format(comp_tar_pair_dataset))
-            print("Number of training samples:\t{}".format(total_training_count))
-            print("Number of validation samples:\t{}".format(total_validation_count))
+train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
 
