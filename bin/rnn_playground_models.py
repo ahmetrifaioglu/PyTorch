@@ -66,7 +66,7 @@ class CompFCNNTarRNN(nn.Module):
         embeds = self.embedding(x_tar)
         # print("embedding shape", embeds.shape)
         lstm_out, hidden = self.lstm(embeds, hidden)
-        # print("lstm_out no reshape", lstm_out.shape)
+        print("lstm_out no reshape", lstm_out.shape)
         # print("hidden", hidden[0][-1].shape)
         # print("compound output shape:", out2_comp.shape)
 
