@@ -45,7 +45,7 @@ n_layers = 2
 """
 n_epoch = 20
 num_of_folds = 1
-batch_size = 64
+batch_size = 256
 
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier):
