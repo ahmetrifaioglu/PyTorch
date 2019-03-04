@@ -27,7 +27,7 @@ class CompFCNNTarRNN(nn.Module):
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
-                            dropout=drop_prob, batch_first=True, bidirectional=True)
+                            dropout=drop_prob, batch_first=True)#, bidirectional=True)
 
         # dropout layer
         self.dropout = nn.Dropout(0.3)
@@ -125,8 +125,10 @@ class CompFCNNTarRNN(nn.Module):
             hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_(),
                       weight.new(self.n_layers, batch_size, self.hidden_dim).zero_())
         """
-        hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
-                  weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
+        hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
+                  weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
+        # hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
+        #          weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
         return hidden
 
 
