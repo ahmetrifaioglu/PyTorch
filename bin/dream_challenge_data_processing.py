@@ -15,7 +15,7 @@ training_files_path = "../trainingFiles"
 """
 
 training_files_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles"
-training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
+# training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
 prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
 heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
