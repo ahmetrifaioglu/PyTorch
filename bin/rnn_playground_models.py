@@ -65,18 +65,25 @@ class CompFCNNTarRNN(nn.Module):
         # print(x_tar.shape)
         embeds = self.embedding(x_tar)
         # print("embedding shape", embeds.shape)
-        lstm_out, hidden = self.lstm(embeds, hidden)
+        lstm_out_tar, hidden = self.lstm(embeds, hidden)
         # print("lstm_out no reshape", lstm_out.shape)
         # print("hidden", hidden[0][-1].shape)
         # print("compound output shape:", out2_comp.shape)
 
         # stack up lstm outputs
-        lstm_out = lstm_out.contiguous().view(-1, self.hidden_dim)
+        #lstm_out_tar = lstm_out.contiguous().view(-1, self.hidden_dim)
         # print("lstm_out", lstm_out.shape)
 
         # dropout and fully-connected layer
-        #out = self.dropout(lstm_out)
-        out_tar = self.fc(hidden[0][-1])
+        #out = self.dropout(lstm_out_tar)
+
+        # Experiment 1
+        # out_tar = self.fc(hidden[0][-1])
+
+        # Experiment 2
+        lstm_out_tar = self.dropout(lstm_out_tar)
+        lstm_out_tar = lstm_out_tar[:, -1, :]
+        out_tar = self.fc(lstm_out_tar)
         combined_layer = torch.cat((out2_comp, out_tar), 1)
         # print(combined_layer.shape)
         out_combined = self.layer_2_combined.forward(combined_layer)

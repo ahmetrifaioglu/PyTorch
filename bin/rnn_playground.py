@@ -45,10 +45,9 @@ n_layers = 2
 """
 n_epoch = 20
 num_of_folds = 1
-batch_size = 256
 
 
-def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier):
+def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
     print("PARAMETERS:", comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier)
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
@@ -203,6 +202,7 @@ fc2 = int(sys.argv[10])
 learn_rate = float(sys.argv[11])
 comp_tar_pair_dataset_fl = sys.argv[12]
 regress_classifier = sys.argv[13]
+batch_size = int(sys.argv[14])
 
-train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier)
+train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset_fl, regress_classifier, batch_size)
 

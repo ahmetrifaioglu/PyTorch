@@ -329,9 +329,10 @@ def generate2_3_Commands():
 
 
 def generate_protein_rnn_commands():
+    name_of_the_experiment = "last_rnn_out_experiment_1"
     comp_feature_list = ["ecfp4"]
     tar_feature_list = ["trigramencodings1000"]#, "DDE", "pfam"]
-
+    batch_size = [32, 64, 128]
     lst_learning_rate = [0.0001, 0.005, 0.001]
     vocab_size = [8000]
     n_of_neuron_list_h = [1024, 512, 256]
@@ -383,39 +384,40 @@ def generate_protein_rnn_commands():
     lst_commands = []
     count = 0
     cmd_fl_count = 1
-    for comp_feat in comp_feature_list:
-        for tar_feat in tar_feature_list:
-            for hidden in lst_decreasing_permutations:
-                for v_s in vocab_size:
-                    for o_s in rnn_output_size:
-                        for e_d in embedding_dim:
-                            for h_d in hidden_dim:
-                                for r_l in rnn_layers:
-                                    for fc in n_of_neuron_list_fc:
-                                        for lr in lst_learning_rate:
-                                            for fl in comp_tar_pair_dataset_fl:
-                                                for r_c in regress_class:
-                                                    count += 1
-                                                    # if count ==3:
-                                                    #    break
-                                                    # print(count)
-                                                    # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
-                                                    if count%50 == 0:
-                                                        fl_command = open("./RNN_first_commands_{}.py".format(cmd_fl_count), "w")
-                                                        fl_command.write("import subprocess\n")
-                                                        cmd_fl_count += 1
-                                                        for cmd in lst_commands:
+    for btch in batch_size:
+        for comp_feat in comp_feature_list:
+            for tar_feat in tar_feature_list:
+                for hidden in lst_decreasing_permutations:
+                    for v_s in vocab_size:
+                        for o_s in rnn_output_size:
+                            for e_d in embedding_dim:
+                                for h_d in hidden_dim:
+                                    for r_l in rnn_layers:
+                                        for fc in n_of_neuron_list_fc:
+                                            for lr in lst_learning_rate:
+                                                for fl in comp_tar_pair_dataset_fl:
+                                                    for r_c in regress_class:
+                                                        count += 1
+                                                        # if count ==3:
+                                                        #    break
+                                                        # print(count)
+                                                        # print(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr)
+                                                        if count%50 == 0:
+                                                            fl_command = open("./{}_{}.py".format(name_of_the_experiment, cmd_fl_count), "w")
+                                                            fl_command.write("import subprocess\n")
+                                                            cmd_fl_count += 1
+                                                            for cmd in lst_commands:
 
-                                                            fl_command.write("{}\n".format(cmd))
-                                                        fl_command.close()
-                                                        lst_commands = []
+                                                                fl_command.write("{}\n".format(cmd))
+                                                            fl_command.close()
+                                                            lst_commands = []
 
 
-                                                    lst_commands.append("subprocess.call(\"python rnn_playground.py {} {} {} {} {} {} {} {} {} {} {} {} {}\", shell=True)".format(comp_feat, tar_feat, hidden, v_s, o_s, e_d, h_d, r_l, fc, fc, lr, fl, r_c))
-                                                    #print(
-                                                    #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
-                                                    #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
-    fl_command = open("./RNN_first_commands_{}.py".format(cmd_fl_count), "w")
+                                                        lst_commands.append("subprocess.call(\"python rnn_playground.py {} {} {} {} {} {} {} {} {} {} {} {} {} {}\", shell=True)".format(comp_feat, tar_feat, hidden, v_s, o_s, e_d, h_d, r_l, fc, fc, lr, fl, r_c, btch))
+                                                        #print(
+                                                        #    "subprocess.call(\"python dream_challenge.py {} {} {} {} {} {} {} {}\".format(mod, comp_feat, tar_feat, hidden, hidden, fc, fc, lr), shell=True)")
+                                                        #subprocess.call("python dream_challenge.py {} {} {} {} {} {} {} {}".format("PINN2", "ecfp4_fcfp4_rdk5", "k-sep-bigrams_pfam_APAAC", "4096_4096", "4096_4096", "1024", "1024", "0.05"), shell=True)
+    fl_command = open("./{}_{}.py".format(name_of_the_experiment, cmd_fl_count), "w")
     fl_command.write("import subprocess\n")
     cmd_fl_count += 1
     for cmd in lst_commands:
