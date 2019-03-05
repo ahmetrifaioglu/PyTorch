@@ -250,7 +250,7 @@ def train_dream(args, config, reporter):
                 val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
                     val_comp_feature_vectors).to(device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
                 total_validation_count += val_comp_feature_vectors.shape[0]
-
+                print(val_labels)
                 if val_comp_feature_vectors.shape[0] == args.batch_size:
                     val_inputs = None
                     val_y_pred = None
