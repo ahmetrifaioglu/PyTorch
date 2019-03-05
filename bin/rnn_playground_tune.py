@@ -250,7 +250,7 @@ def train_dream(args, config, reporter):
                 val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
                     val_comp_feature_vectors).to(device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
                 total_validation_count += val_comp_feature_vectors.shape[0]
-                print(val_labels)
+                # print(val_labels)
                 if val_comp_feature_vectors.shape[0] == args.batch_size:
                     val_inputs = None
                     val_y_pred = None
@@ -258,7 +258,7 @@ def train_dream(args, config, reporter):
                     val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.item())
-
+                    print(len(val_y_pred))
                     for item in val_y_pred:
                         validation_predictions.append(float(item.item()))
 
