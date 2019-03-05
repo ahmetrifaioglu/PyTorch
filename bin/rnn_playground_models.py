@@ -23,7 +23,7 @@ class CompFCNNTarRNN(nn.Module):
         self.output_size = output_size
         self.n_layers = n_layers
         self.hidden_dim = hidden_dim
-        print(vocab_size, embedding_dim)
+        #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
         self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
@@ -34,7 +34,7 @@ class CompFCNNTarRNN(nn.Module):
 
         # linear and sigmoid layers
         self.fc = nn.Linear(hidden_dim, output_size)
-        print(self.fc)
+        # print(self.fc)
         self.layer_2_combined = FC_2_Layer(comp_l2 + output_size, fc_l1, fc_l2, drop_prob)
 
         self.output = None
@@ -62,9 +62,9 @@ class CompFCNNTarRNN(nn.Module):
         # print(batch_size)
         # embeddings and lstm_out
         x_tar = x_tar.long()
-        print("Target shape:", x_tar.shape)
+        #print("Target shape:", x_tar.shape)
         embeds = self.embedding(x_tar)
-        print("embeddings:", embeds)
+        #print("embeddings:", embeds)
         # print("embedding shape", embeds.shape)
         lstm_out_tar, hidden = self.lstm(embeds, hidden)
         # print("lstm_out no reshape", lstm_out.shape)

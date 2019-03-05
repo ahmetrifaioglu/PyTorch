@@ -220,7 +220,7 @@ def train_dream(args, config, reporter):
             if comp_feature_vectors.shape[0] == args.batch_size:
                 inputs = None
                 y_pred = None
-                print("gird")
+                # print("gird")
                 total_training_count += comp_feature_vectors.shape[0]
 
                 y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
