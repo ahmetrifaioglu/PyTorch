@@ -262,7 +262,7 @@ def train_dream(args, config, reporter):
                     for item in val_y_pred:
                         validation_predictions.append(float(item.item()))
 
-        print( validation_predictions)
+        print( len(validation_predictions), len(validation_labels))
         if regression_classifier == "r":
             rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                 validation_predictions))
