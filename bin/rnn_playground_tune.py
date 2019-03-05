@@ -145,7 +145,7 @@ def train_dream(args, config, reporter):
     if use_gpu:
         print("GPU is available on this device!")
         device = "cuda"
-
+    print(device)
     args.cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
