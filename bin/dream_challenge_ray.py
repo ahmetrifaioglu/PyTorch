@@ -134,8 +134,8 @@ class TrainDream(Trainable):
                                                                                                           args.batch_size,
                                                                                                           ["ecfp4"],
                                                                                                           ["k-sep-bigrams"],
-                                                                                                          "idg_comp_targ_uniq_inter_filtered_chembl24.csv",
-                                                                                                          #"idg_comp_targ_uniq_inter_filtered.csv",
+                                                                                                          #"idg_comp_targ_uniq_inter_filtered_chembl24.csv",
+                                                                                                          "idg_comp_targ_uniq_inter_filtered.csv",
                                                                                                           "r")
         self.train_loader = loader_fold_dict[0][0]
         self.test_loader = loader_fold_dict[0][1]
