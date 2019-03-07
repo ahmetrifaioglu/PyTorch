@@ -175,8 +175,8 @@ class SimpleGRU(nn.Module):
 
     def forward(self, seq, lengths, gpu=True):
         # print('Sequence shape', seq.shape)
-        if int(seq[:,0][-1])==0:
-            print(seq[:,0], int(seq[:,0][-1]), lengths[0])
+        # if int(seq[:,0][-1])==0:
+        #    print(seq[:,0], int(seq[:,0][-1]), lengths[0])
         #print('Lengths', lengths)
         bs = seq.size(1)  # batch size
         #print('batch size', bs)

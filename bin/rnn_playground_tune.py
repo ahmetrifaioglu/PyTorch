@@ -324,7 +324,7 @@ if __name__ == "__main__":
                     "epochs": tune.sample_from(
                         lambda spec: np.random.choice([10, 20, 40])),
                     "lr": tune.sample_from(
-                        lambda spec: np.random.uniform(0.001, 0.1)),
+                        lambda spec: np.random.uniform(0.0001, 0.1)),
                     "first_comp_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
                     "second_comp_layer": tune.sample_from(
