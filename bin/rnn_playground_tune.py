@@ -155,7 +155,7 @@ def train_dream(args, config, reporter):
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(1,
                                                                                                       args.batch_size,
                                                                                                       ["ecfp4"],
-                                                                                                      ["trigramencodings1000"],
+                                                                                                      ["trigramencodings100032"],
                                                                                                       "idg_comp_targ_uniq_inter_filtered.csv",
                                                                                                       "r")
 
