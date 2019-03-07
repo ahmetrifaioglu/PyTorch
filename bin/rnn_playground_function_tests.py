@@ -25,7 +25,7 @@ print(features[:100, :10])
 
 # print(get_int2aaword_aaword2int_dicts(3))
 
-# print(get_overlapping_n_grams_list("ABSNC", 2))
+# print(get_overlapping_n_grams_list("ABSNC", 3))
 
 # print(remove_nonstandard_aas("ABSNC"))
 
@@ -36,7 +36,14 @@ print(features[:100, :10])
 # print(pad_encoded_features(encoded_features, seq_length=20))
 
 
-save_encoded_features("idg_train_test.fasta", 3, 1000)
+# save_encoded_features("idg_train_test.fasta", 3, 1000)
 
 
-
+# print(get_overlapping_n_grams_list_by_skipping("ABCNSKABVGA", 3,3))
+# _, encoded_features = get_int_encodings_of_proteins_sequences("dummy_test_targets.fasta", 3, 3)
+# print(encoded_features)
+# print(pad_encoded_features(encoded_features, seq_length=20))
+#python rnn_playground_function_tests.py > ../trainingFiles/IDGDreamChallenge/protein_feature_vectors/trigramencodings100032_normalized.tsv
+#save_encoded_features("idg_train_test.fasta", 3, 2, 1000)
+#python rnn_playground_function_tests.py > ../trainingFiles/IDGDreamChallenge/protein_feature_vectors/trigramencodings1000_normalized.tsv
+#save_encoded_features("idg_train_test.fasta", 3, 0, 1000)

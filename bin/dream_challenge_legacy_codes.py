@@ -647,3 +647,8 @@ if __name__ == '__main__':
         },
         verbose=0,
         scheduler=sched)
+
+
+def get_overlapping_n_grams_list(prot_seq, word_size):
+    prot_seq_overlapping_ngram_list = [prot_seq[ind:ind + word_size] for ind in range(len(prot_seq) - (word_size - 1))]
+    return prot_seq_overlapping_ngram_list

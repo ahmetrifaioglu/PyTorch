@@ -39,10 +39,14 @@ def get_int2aaword_aaword2int_dicts(word_size):
     return int2aaword_dict, aaword2int_dict
 
 
-def get_overlapping_n_grams_list(prot_seq, word_size):
-    prot_seq_overlapping_ngram_list = [prot_seq[ind:ind + word_size] for ind in range(len(prot_seq) - (word_size - 1))]
+def get_overlapping_n_grams_list(prot_seq, word_size, skip_size):
+    prot_seq_overlapping_ngram_list = None
+    if skip_size!=0:
+        prot_seq_overlapping_ngram_list =[prot_seq[ind:ind + word_size] for ind in range(0, (len(prot_seq) - (word_size - 1)), skip_size)]
+    else:
+        prot_seq_overlapping_ngram_list = [prot_seq[ind:ind + word_size] for ind in
+                                           range(len(prot_seq) - (word_size - 1))]
     return prot_seq_overlapping_ngram_list
-
 
 def remove_nonstandard_aas(prot_seq):
     aa_list = get_aa_list()
@@ -53,13 +57,13 @@ def remove_nonstandard_aas(prot_seq):
 '''
 Gets a sequence as an input whose nonstandard aminoacids removed
 '''
-def encode_protein_sequence(prot_seq, word_size, aaword2int_dict):
-    prot_seq_overlapping_ngram_list = get_overlapping_n_grams_list(prot_seq, word_size)
+def encode_protein_sequence(prot_seq, word_size, skip_size, aaword2int_dict):
+    prot_seq_overlapping_ngram_list = get_overlapping_n_grams_list(prot_seq, word_size, skip_size)
     prot_seq_encoded = [aaword2int_dict[aa_word] for aa_word in prot_seq_overlapping_ngram_list]
     return prot_seq_encoded
 
 
-def get_int_encodings_of_proteins_sequences(fasta_fl, word_size):
+def get_int_encodings_of_proteins_sequences(fasta_fl, word_size, skip_size):
     int2aaword_dict, aaword2int_dict = get_int2aaword_aaword2int_dicts(word_size)
     prot_id_list, seq_encoding_list  = [], []
     prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl)
@@ -67,7 +71,7 @@ def get_int_encodings_of_proteins_sequences(fasta_fl, word_size):
         # first remove nonstandard aminoacids
         seq = remove_nonstandard_aas(seq)
         prot_id_list.append(prot_id)
-        seq_encoding_list.append(encode_protein_sequence(seq, word_size, aaword2int_dict))
+        seq_encoding_list.append(encode_protein_sequence(seq, word_size, skip_size, aaword2int_dict))
     return prot_id_list, seq_encoding_list
 
 
@@ -82,13 +86,16 @@ def pad_encoded_features(seq_encoding_list, seq_length=1000):
 
 
     for i, row in enumerate(seq_encoding_list):
-        padded_features[i, -len(row):] = np.array(row)[:seq_length]
+        # padding before
+        # padded_features[i, -len(row):] = np.array(row)[:seq_length]
+        # padding after
+        padded_features[i,:len(row)] = np.array(row)[:seq_length]
 
     return padded_features
 
-def save_encoded_features(fasta_fl, word_size, seq_length):
+def save_encoded_features(fasta_fl, word_size, skip_size, seq_length):
 
-    prot_id_list, seq_encoding_list = get_int_encodings_of_proteins_sequences(fasta_fl, word_size)
+    prot_id_list, seq_encoding_list = get_int_encodings_of_proteins_sequences(fasta_fl, word_size, skip_size)
     padded_features = pad_encoded_features(seq_encoding_list, seq_length)
 
     str_header = "target id\t"+"\t".join([str(num) for num in list(range(seq_length))])
