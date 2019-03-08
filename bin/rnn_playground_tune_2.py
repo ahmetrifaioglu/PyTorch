@@ -84,6 +84,12 @@ parser.add_argument(
     metavar='VOCAB_SIZE',
     help='vocabulary size (default: 8001)')
 parser.add_argument(
+    '--encoding-fl',
+    type=str,
+    default="trigramencodings1000",
+    metavar='ENCODING_FL',
+    help='encoding fl (default: trigramencodings1000)')
+parser.add_argument(
     '--output-size',
     type=int,
     default=256,
@@ -155,7 +161,7 @@ def train_dream(args, config, reporter):
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(1,
                                                                                                       args.batch_size,
                                                                                                       ["ecfp4"],
-                                                                                                      ["trigramencodings100032"],
+                                                                                                      [args.encoding_fl],
                                                                                                       "idg_comp_targ_uniq_inter_filtered.csv",
                                                                                                       "r")
 
@@ -173,7 +179,7 @@ def train_dream(args, config, reporter):
         model.parameters(), lr=args.lr, momentum=args.momentum)
     """
     # print(args)
-    print("Arguments:", number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
+    print("Arguments:", args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
                                 args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
                                 args.first_comb_layer, args.second_comb_layer)
     model = CompFCNNTarRNNPadding(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
@@ -310,8 +316,8 @@ if __name__ == "__main__":
                     "training_iteration": 20 if args.smoke_test else 20,
                 },
                 "resources_per_trial": {
-                    "cpu": 1,
-                    "gpu": 1
+                    "cpu": 8,
+                    "gpu": 0
                 },
                 "run": "train_dream",
                 "num_samples": 1 if args.smoke_test else 20,
@@ -341,6 +347,8 @@ if __name__ == "__main__":
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
                     "second_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
+                    "encoding_fl": tune.sample_from(
+                        lambda spec: np.random.choice(["trigramencodings1000", "trigramencodings100032"])),
 
                 }
 
