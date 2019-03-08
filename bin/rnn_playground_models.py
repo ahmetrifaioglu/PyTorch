@@ -197,14 +197,11 @@ class CompFCNNTarRNNPadding(nn.Module):
         batch_size = x_tar.size(0)
         # print(batch_size)
         # embeddings and lstm_out
-        x_tar = x_tar.long()
-        #print("Target shape:", x_tar.shape)
-        # real_lengths = []
+
         x_tar_with_lenghts = []
         for row_ind in range(batch_size):
-
             n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
-            #print(len(list(x_tar[row_ind])), list(x_tar[row_ind]).count(0))
+            # print(len(list(x_tar[row_ind])), list(x_tar[row_ind]).count(0))
             # real_lengths.append(n_of_nonzero)
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
 
@@ -212,22 +209,17 @@ class CompFCNNTarRNNPadding(nn.Module):
             # print(list(x_tar[row_ind])[:20])
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
 
-
         x_tar = torch.LongTensor([item[0] for item in x_tar_with_lenghts]).to(device)
         x_tar = x_tar.long()
 
-        real_lengths =  [item[1] for item in x_tar_with_lenghts]
+        real_lengths = [item[1] for item in x_tar_with_lenghts]
 
-        # print(real_lengths)
-        #real_lengths = x_tar_with_lenghts[:,1]
-        #print(real_lengths)
-        # print(x_tar_with_lenghts)
-
+        #x_tar = x_tar.long()
         embeds = self.embedding(x_tar)
         embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
-        #print("embeddings:", embeds)
-        # print("embedding shape", embeds.shape)
+
         lstm_out_tar, hidden = self.lstm(embeds, hidden)
+        lstm_out_tar, lengths = pad_packed_sequence(gru_out)
         # print("lstm_out no reshape", lstm_out.shape)
         # print("hidden", hidden[0][-1].shape)
         # print("compound output shape:", out2_comp.shape)
