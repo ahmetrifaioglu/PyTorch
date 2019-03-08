@@ -200,9 +200,8 @@ def train_dream(args, config, reporter):
             loss.backward()
             optimizer.step()
         """
-        # h = model.init_hidden(args.batch_size)
         model.train()
-
+        # h = model.init_hidden(args.batch_size)
         total_training_loss = 0.0
         total_training_count = 0
         batch_number = 0
