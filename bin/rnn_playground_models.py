@@ -197,10 +197,14 @@ class CompFCNNTarRNNPadding(nn.Module):
         # embeddings and lstm_out
         x_tar = x_tar.long()
         print("Target shape:", x_tar.shape)
-
+        real_lengths = []
         for row_ind in range(batch_size):
-            print(list(x_tar[row_ind]).count(0))
-            print(list(x_tar[row_ind])[:20])
+
+            n_of_nonzero = list(x_tar[row_ind]) - list(x_tar[row_ind]).count(0)
+            real_lengths.append(n_of_nonzero)
+            # print(list(x_tar[row_ind]).count(0))
+            # print(list(x_tar[row_ind])[:20])
+        print(real_lengths)
         embeds = self.embedding(x_tar)
 
         #print("embeddings:", embeds)
