@@ -200,7 +200,7 @@ def train_dream(args, config, reporter):
             loss.backward()
             optimizer.step()
         """
-        h = model.init_hidden(args.batch_size)
+        # h = model.init_hidden(args.batch_size)
         model.train()
 
         total_training_loss = 0.0
@@ -210,7 +210,7 @@ def train_dream(args, config, reporter):
         for i, data in enumerate(train_loader):
 
             batch_number += 1
-            h = tuple([each.data for each in h])
+            # h = tuple([each.data for each in h])
             # print(h)
             # clear gradient DO NOT forget you fool!
             optimizer.zero_grad()
@@ -229,8 +229,8 @@ def train_dream(args, config, reporter):
                 # print("gird")
                 total_training_count += comp_feature_vectors.shape[0]
 
-                y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
-
+                y_pred, h = model(comp_feature_vectors, target_feature_vectors)
+                # y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
                 loss = criterion(y_pred.squeeze(), labels)
 
                 total_training_loss += float(loss.item())
@@ -247,7 +247,7 @@ def train_dream(args, config, reporter):
         validation_predictions = []
         validation_labels = []
 
-        h = model.init_hidden(args.batch_size)
+        # h = model.init_hidden(args.batch_size)
 
         with torch.no_grad():  # torch.set_grad_enabled(False):
             for i, data in enumerate(test_loader):
@@ -261,7 +261,8 @@ def train_dream(args, config, reporter):
                     val_inputs = None
                     val_y_pred = None
 
-                    val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                    # val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                    val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.item())
                     #print(len(val_y_pred))

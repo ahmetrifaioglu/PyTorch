@@ -54,17 +54,18 @@ class CompFCNNTarRNN(nn.Module):
         self.r_c = "r"
 
 
-    def forward(self, x_comp, x_tar, hidden):
-
+    def forward(self, x_comp, x_tar):
+    # def forward(self, x_comp, x_tar, hidden):
         # Perform a forward pass of our model on some input and hidden state.
 
         out2_comp = self.layer_2_comp.forward(x_comp)
 
         batch_size = x_tar.size(0)
+        hidden = self.init_hidden(batch_size)
         # print(batch_size)
         # embeddings and lstm_out
         x_tar = x_tar.long()
-        print("Target shape:", x_tar.shape)
+        #print("Target shape:", x_tar.shape)
         embeds = self.embedding(x_tar)
         #print("embeddings:", embeds)
         # print("embedding shape", embeds.shape)
