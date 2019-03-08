@@ -176,7 +176,7 @@ def train_dream(args, config, reporter):
     print("Arguments:", number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
                                 args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
                                 args.first_comb_layer, args.second_comb_layer)
-    model = CompFCNNTarRNN(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
+    model = CompFCNNTarRNNPadding(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
                            args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
                            args.first_comb_layer, args.second_comb_layer).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
