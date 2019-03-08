@@ -2,7 +2,7 @@ import torch.nn as nn
 import torch
 import torch.nn.functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
-
+from operator import itemgetter
 use_gpu = torch.cuda.is_available()
 device = "cpu"
 if use_gpu:
@@ -198,15 +198,21 @@ class CompFCNNTarRNNPadding(nn.Module):
         # embeddings and lstm_out
         x_tar = x_tar.long()
         #print("Target shape:", x_tar.shape)
-        real_lengths = []
+        # real_lengths = []
+        x_tar_with_lenghts = []
         for row_ind in range(batch_size):
 
             n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
             #print(len(list(x_tar[row_ind])), list(x_tar[row_ind]).count(0))
-            real_lengths.append(n_of_nonzero)
+            # real_lengths.append(n_of_nonzero)
+            x_tar_with_lenghts.append([x_tar[row_ind], n_of_nonzero])
+
             # print(list(x_tar[row_ind]).count(0))
             # print(list(x_tar[row_ind])[:20])
-        print(real_lengths)
+        x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
+
+        print(x_tar_with_lenghts)
+
         embeds = self.embedding(x_tar)
         embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
         #print("embeddings:", embeds)
