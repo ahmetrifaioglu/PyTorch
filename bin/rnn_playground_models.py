@@ -197,39 +197,25 @@ class CompFCNNTarRNNPadding(nn.Module):
         batch_size = x_tar.size(0)
         # print(batch_size)
         # embeddings and lstm_out
-
+        print("girdi")
         x_tar_with_lenghts = []
         for row_ind in range(batch_size):
             n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
-            # print(len(list(x_tar[row_ind])), list(x_tar[row_ind]).count(0))
-            # real_lengths.append(n_of_nonzero)
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
 
-            # print(list(x_tar[row_ind]).count(0))
-            # print(list(x_tar[row_ind])[:20])
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
 
         x_tar = torch.LongTensor([item[0] for item in x_tar_with_lenghts]).to(device)
         x_tar = x_tar.long()
 
         real_lengths = [item[1] for item in x_tar_with_lenghts]
-
+        print("cikti")
         #x_tar = x_tar.long()
         embeds = self.embedding(x_tar)
         embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
 
         lstm_out_tar, hidden = self.lstm(embeds, hidden)
         lstm_out_tar, lengths = pad_packed_sequence(lstm_out_tar, batch_first=True)
-        # print("lstm_out no reshape", lstm_out.shape)
-        # print("hidden", hidden[0][-1].shape)
-        # print("compound output shape:", out2_comp.shape)
-
-        # stack up lstm outputs
-        #lstm_out_tar = lstm_out.contiguous().view(-1, self.hidden_dim)
-        # print("lstm_out", lstm_out.shape)
-
-        # dropout and fully-connected layer
-        #out = self.dropout(lstm_out_tar)
 
         # Experiment 1
         # out_tar = self.fc(hidden[0][-1])
@@ -249,29 +235,7 @@ class CompFCNNTarRNNPadding(nn.Module):
             y_pred = self.softmax(self.output(out_combined))
 
         return y_pred, hidden
-        #print(out.shape)
-        #out = out.view(batch_size, -1)
-        #print(out.shape)
-        #out = out[:, -1]
-        #print(out.shape)
-        #out_tar = self.fc(out_tar)
-        #out_tar = out_tar.view(batch_size, -1)
-        #out_tar = out_tar[:, -1]
-        # print("TARGET_OUTPUT:", out_tar.shape)
-        """
-        #print(out2_comp.shape)
-        #combined_layer = torch.cat((out2_comp, out_tar), 1)
-        #out_combined = self.layer_2_combined.forward(combined_layer)
-        y_pred = None
 
-        if self.r_c == "r":
-            y_pred = self.output(out_combined)
-        else:
-            y_pred = self.softmax(self.output(out_combined))
-
-        return y_pred, hidden
-        """
-        #return sig_out, hidden
     def init_hidden(self, batch_size):
         ''' Initializes hidden state '''
         # Create two new tensors with sizes n_layers x batch_size x hidden_dim,
