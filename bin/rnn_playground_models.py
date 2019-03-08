@@ -212,7 +212,7 @@ class CompFCNNTarRNNPadding(nn.Module):
             # print(list(x_tar[row_ind])[:20])
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
 
-        x_tar = np.array(x_tar_with_lenghts)[:,0]
+        x_tar = [item[0] for item in x_tar_with_lenghts]
         print(x_tar)
         #real_lengths = x_tar_with_lenghts[:,1]
         #print(real_lengths)
