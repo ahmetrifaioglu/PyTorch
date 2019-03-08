@@ -360,7 +360,7 @@ if __name__ == "__main__":
                     "second_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
                     "encoding_fl": tune.sample_from(
-                        lambda spec: np.random.choice(["trigramencodings1000_8000", "trigramencodings100032_8000", "bigramencodings100020_401", "bigramencodings100022_401"])),
+                        lambda spec: np.random.choice(["trigramencodings1000_8001", "trigramencodings100032_8001", "bigramencodings100020_401", "bigramencodings100022_401"])),
                     "bidirectional": tune.sample_from(
                         lambda spec: np.random.choice([False])),
 
