@@ -205,7 +205,7 @@ def train_dream(args, config, reporter):
 
             batch_number += 1
             h = tuple([each.data for each in h])
-            print(batch_number)
+            # print(batch_number)
             # clear gradient DO NOT forget you fool!
             optimizer.zero_grad()
 
