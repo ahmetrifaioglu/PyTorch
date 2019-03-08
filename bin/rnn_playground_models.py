@@ -195,14 +195,14 @@ class CompFCNNTarRNNPadding(nn.Module):
         out2_comp = self.layer_2_comp.forward(x_comp)
         # print(type(x_tar))
         batch_size = x_tar.size(0)
-        hidden = init_hidden(batch_size)
+        hidden = self.init_hidden(batch_size)
         # print(batch_size)
         # embeddings and lstm_out
         x_tar_with_lenghts = []
         for row_ind in range(batch_size):
-            n_of_nonzero = len(x_tar[row_ind].nonzero())
             #n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
             # This is faster than above
+            n_of_nonzero = len(x_tar[row_ind].nonzero())
             # print(n_of_nonzero, )
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
