@@ -28,7 +28,7 @@ class CompFCNNTarRNN(nn.Module):
         #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        if bidirectional:
+        if self.birectional:
             self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
                             dropout=drop_prob, batch_first=True, bidirectional=True)
         else:
