@@ -200,7 +200,8 @@ class CompFCNNTarRNNPadding(nn.Module):
         real_lengths = []
         for row_ind in range(batch_size):
 
-            n_of_nonzero = list(x_tar[row_ind]) - list(x_tar[row_ind]).count(0)
+            n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
+            print(len(list(x_tar[row_ind])), list(x_tar[row_ind]).count(0))
             real_lengths.append(n_of_nonzero)
             # print(list(x_tar[row_ind]).count(0))
             # print(list(x_tar[row_ind])[:20])
