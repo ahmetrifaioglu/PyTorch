@@ -216,7 +216,7 @@ class CompFCNNTarRNNPadding(nn.Module):
         print(x_tar)
         #real_lengths = x_tar_with_lenghts[:,1]
         #print(real_lengths)
-        print(x_tar_with_lenghts)
+        # print(x_tar_with_lenghts)
 
         embeds = self.embedding(x_tar)
         # embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
