@@ -202,9 +202,9 @@ class CompFCNNTarRNNPadding(nn.Module):
         for row_ind in range(batch_size):
             n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
-
+        print("cikti 1")
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
-
+        print("cikti 2")
         x_tar = torch.LongTensor([item[0] for item in x_tar_with_lenghts]).to(device)
         x_tar = x_tar.long()
 
