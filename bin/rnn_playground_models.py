@@ -200,7 +200,7 @@ class CompFCNNTarRNNPadding(nn.Module):
         print("girdi")
         x_tar_with_lenghts = []
         for row_ind in range(batch_size):
-            n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
+            #n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
             n_of_nonzero = len(x_tar[row_ind].nonzero())
             # print(n_of_nonzero, )
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
