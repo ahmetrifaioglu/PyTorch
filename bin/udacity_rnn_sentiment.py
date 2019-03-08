@@ -32,9 +32,9 @@
 import numpy as np
 
 # read data from text files
-with open('data/reviews.txt', 'r') as f:
+with open('/Users/trman/OneDrive/Projects/PyTorch/bin/deep-learning-v2-pytorch-master/sentiment-rnn/data/reviews.txt', 'r') as f:
     reviews = f.read()
-with open('data/labels.txt', 'r') as f:
+with open('/Users/trman/OneDrive/Projects/PyTorch/bin/deep-learning-v2-pytorch-master/sentiment-rnn/data/labels.txt', 'r') as f:
     labels = f.read()
 
 # In[71]:
@@ -401,6 +401,7 @@ class SentimentRNN(nn.Module):
 
         # embeddings and lstm_out
         x = x.long()
+        print(x.shape)
         embeds = self.embedding(x)
         lstm_out, hidden = self.lstm(embeds, hidden)
 
