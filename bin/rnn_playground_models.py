@@ -200,6 +200,7 @@ class CompFCNNTarRNNPadding(nn.Module):
 
         for row_ind in range(batch_size):
             print(list(x_tar[row_ind]).count(0))
+            print(list(x_tar[row_ind])[:20])
         embeds = self.embedding(x_tar)
 
         #print("embeddings:", embeds)
