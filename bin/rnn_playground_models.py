@@ -210,13 +210,13 @@ class CompFCNNTarRNNPadding(nn.Module):
 
             # print(list(x_tar[row_ind]).count(0))
             # print(list(x_tar[row_ind])[:20])
-        x_tar_with_lenghts = np.array(sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True))
+        x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
 
-        x_tar = x_tar_with_lenghts[:,0]
-        print(x_tar)
-        real_lengths = x_tar_with_lenghts[:,1]
-        print(real_lengths)
-        # print(x_tar_with_lenghts)
+        #x_tar = x_tar_with_lenghts[:,0]
+        #print(x_tar)
+        #real_lengths = x_tar_with_lenghts[:,1]
+        #print(real_lengths)
+        print(x_tar_with_lenghts)
 
         embeds = self.embedding(x_tar)
         embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
