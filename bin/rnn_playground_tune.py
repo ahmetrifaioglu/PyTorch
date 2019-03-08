@@ -223,19 +223,19 @@ def train_dream(args, config, reporter):
                 target_feature_vectors).to(device), Variable(labels).to(device)
             # print(comp_feature_vectors.shape, target_feature_vectors.shape)
 
-            if comp_feature_vectors.shape[0] == args.batch_size:
-                inputs = None
-                y_pred = None
-                # print("gird")
-                total_training_count += comp_feature_vectors.shape[0]
+            # if comp_feature_vectors.shape[0] == args.batch_size:
+            inputs = None
+            y_pred = None
+            # print("gird")
+            total_training_count += comp_feature_vectors.shape[0]
 
-                y_pred, h = model(comp_feature_vectors, target_feature_vectors)
-                # y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
-                loss = criterion(y_pred.squeeze(), labels)
+            y_pred, h = model(comp_feature_vectors, target_feature_vectors)
+            # y_pred, h = model(comp_feature_vectors, target_feature_vectors, h)
+            loss = criterion(y_pred.squeeze(), labels)
 
-                total_training_loss += float(loss.item())
-                loss.backward()
-                optimizer.step()
+            total_training_loss += float(loss.item())
+            loss.backward()
+            optimizer.step()
 
         print("Total training loss:\t{}".format(total_training_loss))
 
@@ -257,20 +257,20 @@ def train_dream(args, config, reporter):
                     val_comp_feature_vectors).to(device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
                 total_validation_count += val_comp_feature_vectors.shape[0]
                 # print(val_labels)
-                if val_comp_feature_vectors.shape[0] == args.batch_size:
-                    val_inputs = None
-                    val_y_pred = None
+                # if val_comp_feature_vectors.shape[0] == args.batch_size:
+                val_inputs = None
+                val_y_pred = None
 
-                    # val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
-                    val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors)
-                    loss_val = criterion(val_y_pred.squeeze(), val_labels)
-                    total_validation_loss += float(loss_val.item())
-                    #print(len(val_y_pred))
+                # val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors)
+                loss_val = criterion(val_y_pred.squeeze(), val_labels)
+                total_validation_loss += float(loss_val.item())
+                #print(len(val_y_pred))
 
-                    for item in val_labels:
-                        validation_labels.append(float(item.item()))
-                    for item in val_y_pred:
-                        validation_predictions.append(float(item.item()))
+                for item in val_labels:
+                    validation_labels.append(float(item.item()))
+                for item in val_y_pred:
+                    validation_predictions.append(float(item.item()))
 
         # print( len(validation_predictions), len(validation_labels))
         if regression_classifier == "r":
