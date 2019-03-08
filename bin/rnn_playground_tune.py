@@ -179,9 +179,10 @@ def train_dream(args, config, reporter):
         model.parameters(), lr=args.lr, momentum=args.momentum)
     """
     # print(args)
-    print("Arguments:", number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
-                                args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
-                                args.first_comb_layer, args.second_comb_layer)
+    print("Arguments:", args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
+          args.vocab_size,
+          args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
+          args.first_comb_layer, args.second_comb_layer)
     model = CompFCNNTarRNN(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
                            args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
                            args.first_comb_layer, args.second_comb_layer).to(device)
@@ -286,9 +287,10 @@ def train_dream(args, config, reporter):
     for epoch in range(1, args.epochs + 1):
         print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
-        print("Arguments:", args.batch_size, args.epochs, args.lr, args.first_comp_layer, args.second_comp_layer,
-              args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers, args.first_comp_layer,
-              args.second_comb_layer)
+        print("Arguments:", args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
+              args.vocab_size,
+              args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
+              args.first_comb_layer, args.second_comb_layer)
         train()
         test()
 
