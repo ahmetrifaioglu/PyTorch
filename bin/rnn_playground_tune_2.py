@@ -316,8 +316,8 @@ if __name__ == "__main__":
                     "training_iteration": 20 if args.smoke_test else 20,
                 },
                 "resources_per_trial": {
-                    "cpu": 8,
-                    "gpu": 0
+                    "cpu": 1,
+                    "gpu": 1
                 },
                 "run": "train_dream",
                 "num_samples": 1 if args.smoke_test else 20,
