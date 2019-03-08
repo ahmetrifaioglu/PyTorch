@@ -24,7 +24,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
 from rnn_playground_models import CompFCNNTarRNNPadding
 from ray.tune import Trainable
-
+from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 parser = argparse.ArgumentParser(description='Dream  Example')
 
 # general hyper-parameters
