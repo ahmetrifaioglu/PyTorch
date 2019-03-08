@@ -65,7 +65,7 @@ class CompFCNNTarRNN(nn.Module):
         out2_comp = self.layer_2_comp.forward(x_comp)
 
         batch_size = x_tar.size(0)
-        hidden = self.init_hidden(batch_size, self.birectional)
+        hidden = self.init_hidden(batch_size)
         # print(batch_size)
         # embeddings and lstm_out
         x_tar = x_tar.long()
