@@ -192,7 +192,7 @@ class CompFCNNTarRNNPadding(nn.Module):
         # Perform a forward pass of our model on some input and hidden state.
 
         out2_comp = self.layer_2_comp.forward(x_comp)
-
+        print(type(x_tar))
         batch_size = x_tar.size(0)
         # print(batch_size)
         # embeddings and lstm_out
