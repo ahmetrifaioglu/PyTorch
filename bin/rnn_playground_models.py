@@ -24,7 +24,7 @@ class CompFCNNTarRNN(nn.Module):
         self.bidirectional = bidirectional
         self.output_size = output_size
         self.n_layers = n_layers
-        self.hidden_dim = hidden_dim
+        self.hidden_dim = hidden_dim*2 if self.bidirectional else hidden_dim
         #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
