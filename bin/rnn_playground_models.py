@@ -219,7 +219,7 @@ class CompFCNNTarRNNPadding(nn.Module):
         embeds = pack_padded_sequence(embeds, real_lengths, batch_first=True)
 
         lstm_out_tar, hidden = self.lstm(embeds, hidden)
-        lstm_out_tar, lengths = pad_packed_sequence(gru_out)
+        lstm_out_tar, lengths = pad_packed_sequence(lstm_out_tar)
         # print("lstm_out no reshape", lstm_out.shape)
         # print("hidden", hidden[0][-1].shape)
         # print("compound output shape:", out2_comp.shape)
