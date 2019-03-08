@@ -338,7 +338,7 @@ if __name__ == "__main__":
                     "output_size": tune.sample_from(
                         lambda spec: np.random.choice([128, 256, 512])),
                     "embedding_dim": tune.sample_from(
-                        lambda spec: np.random.choice([100, 200, 400])),
+                        lambda spec: np.random.choice([50, 100, 200, 400])),
                     "hidden_dim": tune.sample_from(
                         lambda spec: np.random.choice([128, 256, 512, 1024])),
                     "rnn_layers": tune.sample_from(
