@@ -201,7 +201,7 @@ class CompFCNNTarRNNPadding(nn.Module):
         x_tar_with_lenghts = []
         for row_ind in range(batch_size):
             n_of_nonzero = len(list(x_tar[row_ind])) - list(x_tar[row_ind]).count(0)
-            print(n_of_nonzero, x_tar[row_ind].nonzero())
+            print(n_of_nonzero, len(x_tar[row_ind].nonzero()))
             x_tar_with_lenghts.append([list(x_tar[row_ind]), n_of_nonzero])
         print("cikti 1")
         x_tar_with_lenghts = sorted(x_tar_with_lenghts, key=itemgetter(1), reverse=True)
