@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 from operator import itemgetter
 use_gpu = torch.cuda.is_available()
+import numpy as np
 device = "cpu"
 if use_gpu:
     device = "cuda"
