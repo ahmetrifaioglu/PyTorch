@@ -21,7 +21,7 @@ class CompFCNNTarRNN(nn.Module):
 
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
 
-        self.birectional = bidirectional
+        self.bidirectional = bidirectional
         self.output_size = output_size
         self.n_layers = n_layers
         self.hidden_dim = hidden_dim
