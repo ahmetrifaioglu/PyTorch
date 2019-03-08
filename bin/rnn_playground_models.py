@@ -13,7 +13,7 @@ class CompFCNNTarRNN(nn.Module):
 
     # The RNN model that will be used to perform Sentiment analysis.
 
-    def __init__(self, number_of_comp_features, comp_l1, comp_l2, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, fc_l1, fc_l2, bidirectional, drop_prob=0.5):
 
         # Initialize the model by setting up the layers.
 
@@ -21,15 +21,19 @@ class CompFCNNTarRNN(nn.Module):
 
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
 
-
+        self.birectional = bidirectional
         self.output_size = output_size
         self.n_layers = n_layers
         self.hidden_dim = hidden_dim
         #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
-                            dropout=drop_prob, batch_first=True)#, bidirectional=True)
+        if bidirectional:
+            self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
+                            dropout=drop_prob, batch_first=True, bidirectional=True)
+        else:
+            self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
+                                dropout=drop_prob, batch_first=True)
 
         # dropout layer
         self.dropout = nn.Dropout(0.3)
@@ -61,7 +65,7 @@ class CompFCNNTarRNN(nn.Module):
         out2_comp = self.layer_2_comp.forward(x_comp)
 
         batch_size = x_tar.size(0)
-        hidden = self.init_hidden(batch_size)
+        hidden = self.init_hidden(batch_size, self.birectional)
         # print(batch_size)
         # embeddings and lstm_out
         x_tar = x_tar.long()
@@ -136,11 +140,14 @@ class CompFCNNTarRNN(nn.Module):
             hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_(),
                       weight.new(self.n_layers, batch_size, self.hidden_dim).zero_())
         """
-        hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
-                  weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
-        # hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
-        #          weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
+        if self.bidirectional:
+            hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
+        else:
+            hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
         return hidden
+
 
 
 
@@ -148,7 +155,7 @@ class CompFCNNTarRNNPadding(nn.Module):
 
     # The RNN model that will be used to perform Sentiment analysis.
 
-    def __init__(self, number_of_comp_features, comp_l1, comp_l2, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, fc_l1, fc_l2, bidirectional, drop_prob=0.5):
 
         # Initialize the model by setting up the layers.
 
@@ -163,9 +170,13 @@ class CompFCNNTarRNNPadding(nn.Module):
         #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
-        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
-                            dropout=drop_prob, batch_first=True)#, bidirectional=True)
-
+        self.lstm = None
+        if bidirectional:
+            self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
+                            dropout=drop_prob, batch_first=True, bidirectional=True)
+        else:
+            self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers,
+                                dropout=drop_prob, batch_first=True)
         # dropout layer
         self.dropout = nn.Dropout(0.3)
 
@@ -236,7 +247,7 @@ class CompFCNNTarRNNPadding(nn.Module):
 
         return y_pred, hidden
 
-    def init_hidden(self, batch_size):
+    def init_hidden(self, batch_size, bidirectional):
         ''' Initializes hidden state '''
         # Create two new tensors with sizes n_layers x batch_size x hidden_dim,
         # initialized to zero, for hidden state and cell state of LSTM
@@ -250,10 +261,12 @@ class CompFCNNTarRNNPadding(nn.Module):
             hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_(),
                       weight.new(self.n_layers, batch_size, self.hidden_dim).zero_())
         """
-        hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
-                  weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
-        # hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
-        #          weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
+        if bidirectional:
+            hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
+        else:
+            hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
         return hidden
 
 

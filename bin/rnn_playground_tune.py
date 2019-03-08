@@ -58,6 +58,12 @@ parser.add_argument(
     default=False,
     help='disables CUDA training')
 parser.add_argument(
+    '--bidirectional',
+    type=bool,
+    default=False,
+    help='bidirectional training (default: False)')
+
+parser.add_argument(
     '--seed',
     type=int,
     default=1,
@@ -179,13 +185,14 @@ def train_dream(args, config, reporter):
         model.parameters(), lr=args.lr, momentum=args.momentum)
     """
     # print(args)
-    print("Arguments:", args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
+    print("Arguments:", args.bidirectional, args.encoding_fl, number_of_comp_features, args.first_comp_layer,
+          args.second_comp_layer,
           args.vocab_size,
           args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
           args.first_comb_layer, args.second_comb_layer)
     model = CompFCNNTarRNN(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
                            args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
-                           args.first_comb_layer, args.second_comb_layer).to(device)
+                           args.first_comb_layer, args.second_comb_layer, args.bidirectional).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
     criterion = torch.nn.MSELoss()
 
@@ -287,7 +294,7 @@ def train_dream(args, config, reporter):
     for epoch in range(1, args.epochs + 1):
         print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
-        print("Arguments:", args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
+        print("Arguments:", args.bidirectional, args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
               args.vocab_size,
               args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
               args.first_comb_layer, args.second_comb_layer)
@@ -352,6 +359,8 @@ if __name__ == "__main__":
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
                     "encoding_fl": tune.sample_from(
                         lambda spec: np.random.choice(["trigramencodings1000", "trigramencodings100032"])),
+                    "bidirectional": tune.sample_from(
+                        lambda spec: np.random.choice([True, False])),
 
                 }
 
