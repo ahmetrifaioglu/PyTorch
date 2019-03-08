@@ -84,6 +84,12 @@ parser.add_argument(
     metavar='VOCAB_SIZE',
     help='vocabulary size (default: 8001)')
 parser.add_argument(
+    '--encoding-fl',
+    type=str,
+    default="trigramencodings1000",
+    metavar='ENCODING_FL',
+    help='encoding fl (default: trigramencodings1000)')
+parser.add_argument(
     '--output-size',
     type=int,
     default=256,
@@ -155,7 +161,7 @@ def train_dream(args, config, reporter):
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(1,
                                                                                                       args.batch_size,
                                                                                                       ["ecfp4"],
-                                                                                                      ["trigramencodings100032"],
+                                                                                                      [args.encoding_fl],
                                                                                                       "idg_comp_targ_uniq_inter_filtered.csv",
                                                                                                       "r")
 
@@ -332,7 +338,7 @@ if __name__ == "__main__":
                     "output_size": tune.sample_from(
                         lambda spec: np.random.choice([128, 256, 512])),
                     "embedding_dim": tune.sample_from(
-                        lambda spec: np.random.choice([100, 200, 400])),
+                        lambda spec: np.random.choice([50, 100, 200, 400])),
                     "hidden_dim": tune.sample_from(
                         lambda spec: np.random.choice([128, 256, 512, 1024])),
                     "rnn_layers": tune.sample_from(
@@ -341,6 +347,8 @@ if __name__ == "__main__":
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
                     "second_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
+                    "encoding_fl": tune.sample_from(
+                        lambda spec: np.random.choice(["trigramencodings1000", "trigramencodings100032"])),
 
                 }
 
