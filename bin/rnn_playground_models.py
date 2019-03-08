@@ -24,7 +24,7 @@ class CompFCNNTarRNN(nn.Module):
         self.bidirectional = bidirectional
         self.output_size = output_size
         self.n_layers = n_layers
-        self.hidden_dim = hidden_dim*2 if self.bidirectional else hidden_dim
+        self.hidden_dim = hidden_dim
         #print(vocab_size, embedding_dim)
         # embedding and LSTM layers
         self.embedding = nn.Embedding(vocab_size, embedding_dim)
@@ -141,11 +141,12 @@ class CompFCNNTarRNN(nn.Module):
                       weight.new(self.n_layers, batch_size, self.hidden_dim).zero_())
         """
         if self.bidirectional:
+            hidden = (weight.new(self.n_layers * 2, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.n_layers * 2, batch_size, self.hidden_dim).zero_().to(device))
+
+        else:
             hidden = (weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device),
                       weight.new(self.n_layers, batch_size, self.hidden_dim).zero_().to(device))
-        else:
-            hidden = (weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device),
-                      weight.new(self.n_layers*2, batch_size, self.hidden_dim).zero_().to(device))
         return hidden
 
 
