@@ -39,7 +39,9 @@ print(features[:100, :10])
 # save_encoded_features("idg_train_test.fasta", 3, 1000)
 
 
-# print(get_overlapping_n_grams_list_by_skipping("ABCNSKABVGA", 3,3))
+print(get_overlapping_n_grams_list("ABCNSKABVGA", 2,0))
+_, encoded_features = get_int_encodings_of_proteins_sequences("dummy_test_targets.fasta", 2, 0)
+#print(encoded_features)
 # _, encoded_features = get_int_encodings_of_proteins_sequences("dummy_test_targets.fasta", 3, 3)
 # print(encoded_features)
 # print(pad_encoded_features(encoded_features, seq_length=20))
@@ -47,3 +49,11 @@ print(features[:100, :10])
 #save_encoded_features("idg_train_test.fasta", 3, 2, 1000)
 #python rnn_playground_function_tests.py > ../trainingFiles/IDGDreamChallenge/protein_feature_vectors/trigramencodings1000_normalized.tsv
 #save_encoded_features("idg_train_test.fasta", 3, 0, 1000)
+
+# python rnn_playground_function_tests.py > ../trainingFiles/IDGDreamChallenge/protein_feature_vectors/bigramencodings100022_normalized.tsv
+# save_encoded_features("idg_train_test.fasta", 2, 2, 1000)
+
+# python rnn_playground_function_tests.py > ../trainingFiles/IDGDreamChallenge/protein_feature_vectors/bigramencodings100020_normalized.tsv
+save_encoded_features("idg_train_test.fasta", 2, 0, 1000)
+
+

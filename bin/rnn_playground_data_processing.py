@@ -65,10 +65,12 @@ def encode_protein_sequence(prot_seq, word_size, skip_size, aaword2int_dict):
 
 def get_int_encodings_of_proteins_sequences(fasta_fl, word_size, skip_size):
     int2aaword_dict, aaword2int_dict = get_int2aaword_aaword2int_dicts(word_size)
+    # print(aaword2int_dict)
     prot_id_list, seq_encoding_list  = [], []
     prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl)
     for prot_id, seq in prot_id_seq_dict.items():
         # first remove nonstandard aminoacids
+        # print(seq)
         seq = remove_nonstandard_aas(seq)
         prot_id_list.append(prot_id)
         seq_encoding_list.append(encode_protein_sequence(seq, word_size, skip_size, aaword2int_dict))

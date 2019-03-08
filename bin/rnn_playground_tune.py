@@ -83,18 +83,20 @@ parser.add_argument(
     default=1024,
     metavar='S_COMP_LAYER',
     help='number of neurons in the second compound layer (default: 1024)')
+"""
 parser.add_argument(
     '--vocab-size',
     type=int,
     default=8001,
     metavar='VOCAB_SIZE',
     help='vocabulary size (default: 8001)')
+"""
 parser.add_argument(
     '--encoding-fl',
     type=str,
-    default="trigramencodings1000",
+    default="trigramencodings1000_8000",
     metavar='ENCODING_FL',
-    help='encoding fl (default: trigramencodings1000)')
+    help='encoding fl (default: trigramencodings1000_8000)')
 parser.add_argument(
     '--output-size',
     type=int,
@@ -167,7 +169,7 @@ def train_dream(args, config, reporter):
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_nfold_data_loader_dict(1,
                                                                                                       args.batch_size,
                                                                                                       ["ecfp4"],
-                                                                                                      [args.encoding_fl],
+                                                                                                      [args.encoding_fl.split("_")[0]],
                                                                                                       "idg_comp_targ_uniq_inter_filtered.csv",
                                                                                                       "r")
 
@@ -187,10 +189,10 @@ def train_dream(args, config, reporter):
     # print(args)
     print("Arguments:", args.bidirectional, args.encoding_fl, number_of_comp_features, args.first_comp_layer,
           args.second_comp_layer,
-          args.vocab_size,
+          int(args.encoding_fl.split("_")[1]),
           args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
           args.first_comb_layer, args.second_comb_layer)
-    model = CompFCNNTarRNN(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, args.vocab_size,
+    model = CompFCNNTarRNN(number_of_comp_features, args.first_comp_layer, args.second_comp_layer, int(args.encoding_fl.split("_")[1]),
                            args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
                            args.first_comb_layer, args.second_comb_layer, args.bidirectional).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
@@ -295,7 +297,7 @@ def train_dream(args, config, reporter):
         print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
         print("Arguments:", args.bidirectional, args.encoding_fl, number_of_comp_features, args.first_comp_layer, args.second_comp_layer,
-              args.vocab_size,
+              int(args.encoding_fl.split("_")[1]),
               args.output_size, args.embedding_dim, args.hidden_dim, args.n_rnn_layers,
               args.first_comb_layer, args.second_comb_layer)
         train()
@@ -358,9 +360,9 @@ if __name__ == "__main__":
                     "second_comb_layer": tune.sample_from(
                         lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048])),
                     "encoding_fl": tune.sample_from(
-                        lambda spec: np.random.choice(["trigramencodings1000", "trigramencodings100032"])),
+                        lambda spec: np.random.choice(["trigramencodings1000_8000", "trigramencodings100032_8000", "bigramencodings100020_401", "bigramencodings100022_401"])),
                     "bidirectional": tune.sample_from(
-                        lambda spec: np.random.choice([True, False])),
+                        lambda spec: np.random.choice([False])),
 
                 }
 
