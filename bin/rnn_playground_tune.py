@@ -94,9 +94,9 @@ parser.add_argument(
 parser.add_argument(
     '--encoding-fl',
     type=str,
-    default="trigramencodings1000_8000",
+    default="trigramencodings50032_8001",
     metavar='ENCODING_FL',
-    help='encoding fl (default: trigramencodings1000_8000)')
+    help='encoding fl (default: trigramencodings50032_8001)')
 parser.add_argument(
     '--output-size',
     type=int,
