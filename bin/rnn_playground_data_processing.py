@@ -2,6 +2,7 @@ import numpy as np
 import torch
 from torch.utils.data import TensorDataset, DataLoader
 import itertools
+import torch.nn as nn
 helper_fl_path = "../trainingFiles/IDGDreamChallenge/helper_files"
 
 def get_prot_id_seq_dict_from_fasta_fl(fasta_fl):
@@ -142,6 +143,38 @@ def get_train_test_val_data_loaders(batch_size):
     test_loader = DataLoader(test_data, shuffle=True, batch_size=batch_size)
 
     return train_loader, valid_loader, test_loader
+
+def get_aa_match_encodings():
+    all_aa_matches = get_all_aa_word_list(2)
+    aa_match_encoding_dict = dict()
+    encod_int = 1
+    for aa_pair in all_aa_matches:
+        if aa_pair not in aa_match_encoding_dict.keys():
+            aa_match_encoding_dict[aa_pair] = encod_int
+            aa_match_encoding_dict[aa_pair[::-1]] = encod_int
+            encod_int += 1
+    return aa_match_encoding_dict
+
+
+def create_sequence_matrix(fasta):
+    aa_match_encoding_dict = get_aa_match_encodings()
+    #print(aa_match_encoding_dict)
+    lst = []
+    for i in range(len(fasta)):
+        lst.append([])
+        for j in range(len(fasta)):
+            lst[-1].append(aa_match_encoding_dict[fasta[i]+fasta[j]])
+
+    torch_list = torch.from_numpy(np.asarray(lst))
+    print(torch_list)
+    print(torch_list.shape[0])
+    padding_size = int((1500 - torch_list.shape[0]) / 2)
+    m = nn.ZeroPad2d(padding_size)
+    if torch_list.shape[0]%2!=0:
+        m = nn.ZeroPad2d((padding_size, padding_size+1, padding_size, padding_size+1 ))
+
+
+    print(m(torch_list).shape)
 
 """
 # LEGACY CODE
