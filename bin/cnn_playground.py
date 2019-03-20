@@ -58,7 +58,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         device = "cuda"
     else:
         print("CPU is available on this device!")
-    davis_prot_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
+    davis_prot_fl_path = "../trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_training_validation_data_loaders_for_cnn(1, 32, ["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv", davis_prot_fl_path, "r")
     original_number_of_comp_features = int(number_of_comp_features)
     original_number_of_target_features = int(number_of_target_features)
@@ -89,9 +89,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 # get the inputs
                 comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
                 # wrap them in Variable
-                print(target_feature_vectors.shape)
+                #print(target_feature_vectors.shape)
                 # target_feature_vectors = target_feature_vectors.unsqueeze(0)
-                print(target_feature_vectors.shape)
+                #print(target_feature_vectors.shape)
                 comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                     target_feature_vectors).to(device), Variable(labels).to(device)
                 if comp_feature_vectors.shape[0]==batch_size:
