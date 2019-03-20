@@ -34,10 +34,6 @@ comp_feature_vector_path = "{}/DeepDTA/compound_feature_vectors".format(training
 tar_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
 helper_fl_path = "../trainingFiles/DeepDTA/helper_files"
 
-# davis_dataset_path = "{}/trainingFiles/DeepDTA".format(training_files_path)
-# davis_comp_tar_training_dataset = "{}/dti_datasets".format(davis_dataset_path)
-
-
 def getChEMBLTargetIDUniProtMapping():
     chembl_uniprot_dict = dict()
 
