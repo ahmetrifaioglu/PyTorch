@@ -66,7 +66,7 @@ def getSMILEsForChEMBLIDList(rep_fl, lst_chembl_ids):
     # there should be a header in the smiles file
     compound_smiles_dict = dict()
     # print("DENEME../trainingFiles/{}".format(rep_fl))
-    with open("/Users/trman/OneDrive/Projects/DEEPScreen/all_trainingFiles/{}".format(rep_fl)) as f:
+    with open("../all_trainingFiles/{}".format(rep_fl)) as f:
         for line in f:
             if isFirst:
                 isFirst = False
@@ -239,12 +239,12 @@ class TrainingValidationShuffledDataLoader(Dataset):
 class TrainingValidationShuffledDataLoaderCNN(Dataset):
 
     def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier):
-        print(comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier)
+        # print(comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier)
         comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)[:1000]
         dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
 
         dict_target_features = get_target_dict_combined_feature_vectors("target", target_feature_lst)
-        print(dict_target_features)
+        # print(dict_target_features)
         prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
         training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
 
@@ -297,9 +297,9 @@ class TrainingValidationShuffledDataLoaderCNN(Dataset):
         self.comp_feature_vectors = torch.tensor(self.comp_feature_vectors).type(torch.FloatTensor)
 
         self.target_feature_vectors = np.asarray(self.target_feature_vectors)
-        print(self.target_feature_vectors.shape)
+        # print(self.target_feature_vectors.shape)
         self.target_feature_vectors = torch.tensor(self.target_feature_vectors).type(torch.FloatTensor)
-        print("cikti")
+        # print("cikti")
         self.labels = torch.tensor(valid_labels).type(torch.FloatTensor)
         self.compound_ids = valid_compound_ids
         self.target_ids = valid_target_ids
@@ -862,8 +862,8 @@ def convert_deepdta_davis_dataset_into_our_format():
     import json
     import math
     import os
-    david_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/data/davis"
-    helper_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files"
+    david_dataset_path = "../trainingFiles/DeepDTA/data/davis"
+    helper_fl_path = "../trainingFiles/DeepDTA/helper_files"
 
     prot_id_seq_dict = json.load(open("{}/proteins.txt".format(david_dataset_path)))
     comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(david_dataset_path)))
@@ -910,7 +910,7 @@ def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     import math
     import json
 
-    dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/data/{}".format(davis_kiba)
+    dataset_path = "../trainingFiles/DeepDTA/data/{}".format(davis_kiba)
 
     prot_id_seq_dict = json.load(open("{}/proteins.txt".format(dataset_path)))
     comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(dataset_path)))
@@ -964,7 +964,7 @@ def create_ecfp4_fingerprint_file():
     import numpy as np
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files/"
+    path = "../trainingFiles/DeepDTA/helper_files/"
     fl_name = "davis_comp_smiles.txt"
 
     rep_fl = open("%s/%s" % (path, fl_name), "r")
