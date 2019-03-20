@@ -114,7 +114,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
             if regression_classifier == "r":
                 deep_dta_rmse = get_rm2(np.asarray(validation_labels), np.asarray(
                     validation_predictions))
-                deep_dta_rmse = get_aupr(np.asarray(validation_labels), np.asarray(
+                #deep_dta_aupr = get_aupr(np.asarray(validation_labels), np.asarray(
+                #    validation_predictions))
+                deep_dta_cindex = get_cindex(np.asarray(validation_labels), np.asarray(
                     validation_predictions))
 
                 rmse_score = rmse(np.asarray(validation_labels), np.asarray(
@@ -139,7 +141,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 print("Number of training samples:\t{}".format(total_training_count))
                 print("Number of validation samples:\t{}".format(total_validation_count))
                 print("DeepDTA RMSE:\t{}".format(deep_dta_rmse))
-                print("DeepDTA AUPRC\t{}".format(deep_dta_auprc))
+                #print("DeepDTA AUPRC\t{}".format(deep_dta_auprc))
+                print("DeepDTA c-index\t{}".format(deep_dta_cindex))
 
 
 
