@@ -1,5 +1,5 @@
 import numpy as np
-
+import subprocess
 
 def get_aupr(Y, P):
     if hasattr(Y, 'A'): Y = Y.A
