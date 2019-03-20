@@ -89,7 +89,6 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
 
             print("Epoch {} training loss:".format(epoch), total_training_loss)
 
-            h = model.init_hidden(batch_size)
             model.eval()
             with torch.no_grad():  # torch.set_grad_enabled(False):
                 for i, data in enumerate(valid_loader):
@@ -105,7 +104,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                         val_y_pred = None
 
 
-                        val_y_pred, h = model(val_comp_feature_vectors, val_target_feature_vectors, h)
+                        val_y_pred  = model(val_comp_feature_vectors, val_target_feature_vectors)
                         loss_val = criterion(val_y_pred.squeeze(), val_labels)
                         total_validation_loss += float(loss_val.item())
                         for item in val_labels:
