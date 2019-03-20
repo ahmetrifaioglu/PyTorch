@@ -17,12 +17,10 @@ import math
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
-# from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
-#from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict,get_training_validation_data_loaders_for_cnn
 from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
-
+from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex
 
 n_epoch = 20
 num_of_folds = 1
@@ -114,6 +112,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                             validation_predictions.append(float(item.item()))
 
             if regression_classifier == "r":
+                deep_dta_rmse = get_rm2(np.asarray(validation_labels), np.asarray(
+                    validation_predictions))
                 rmse_score = rmse(np.asarray(validation_labels), np.asarray(
                     validation_predictions))
                 pearson_score = pearson(np.asarray(validation_labels), np.asarray(validation_predictions))
@@ -135,7 +135,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 print("IDG File:\t{}".format(comp_tar_pair_dataset))
                 print("Number of training samples:\t{}".format(total_training_count))
                 print("Number of validation samples:\t{}".format(total_validation_count))
-
+                print("DEEPDTA Validation Labels:\t{}".format(deep_dta_rmse))
 
 
 
