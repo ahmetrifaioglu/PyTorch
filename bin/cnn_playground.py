@@ -76,6 +76,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         optimizer.zero_grad()
 
         for epoch in range(n_epoch):
+            print("Epoch :{}".format(n_epoch))
             total_training_loss, total_validation_loss = 0.0, 0.0
             total_training_count, total_validation_count = 0, 0
             validation_predictions, validation_labels = [], []
