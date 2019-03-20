@@ -24,30 +24,10 @@ from dream_challenge_data_processing import TrainingValidationShuffledDataLoader
 from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
 
 
-
-# number_of_comp_features, comp_l1, comp_l2, vocab_size, output_size, embedding_dim, hidden_dim, n_layers, drop_prob=0.5
-
-
-# learn_rate = sys.argv[2]
-"""
-n_epoch = 10
-num_of_folds = 5
-batch_size = 45
-comp_feature_list = "ecfp4".split("_")
-tar_feature_list = "trigramencodings1000".split("_")
-# comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
-regression_classifier = "r"
-vocab_size = 8000 + 1  # +1 for the 0 padding + our word tokens
-output_size = 100
-embedding_dim = 400
-hidden_dim = 256
-n_layers = 2
-"""
 n_epoch = 20
 num_of_folds = 1
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
-    # print("PARAMETERS:", comp_feature_list, tar_feature_list, comp_hidden_lst, vocab_size, output_size, embedding_dim, hidden_dim, n_rnn_layers, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size)
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
@@ -69,7 +49,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
         number_of_comp_features = original_number_of_comp_features
-        model = CompFCNNTarCNN(number_of_comp_features, 1024, 512, 256, 256, drop_prob=0.5)
+        model = CompFCNNTarCNN(number_of_comp_features, 1024, 512, 256, 256, drop_prob=0.5).to(device)
 
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
@@ -89,10 +69,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
 
                 # get the inputs
                 comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
+
                 # wrap them in Variable
-                #print(target_feature_vectors.shape)
-                # target_feature_vectors = target_feature_vectors.unsqueeze(0)
-                #print(target_feature_vectors.shape)
                 comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                     target_feature_vectors).to(device), Variable(labels).to(device)
                 if comp_feature_vectors.shape[0]==batch_size:
