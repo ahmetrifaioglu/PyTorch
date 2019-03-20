@@ -268,24 +268,24 @@ class TrainingValidationShuffledDataLoaderCNN(Dataset):
             total_number_of_data_points += 1
             #print(dict_compound_features[comp_id])
             try:
-                if len(prot_id_seq_dict[self.target_ids[ind]])<=500:
-                    comp_id = self.compound_ids[ind]
-                    tar_id = self.target_ids[ind]
-                    lbl = self.labels[ind]
-                    comp_features = dict_compound_features[comp_id]
-                    tar_features = dict_target_features[tar_id]
-                    #tar_features = get_sequence_matrix(prot_id_seq_dict[tar_id], size)
-                    self.comp_feature_vectors.append(comp_features)
-                    self.target_feature_vectors.append(tar_features)
-                    # valid_labels.append(-math.log10(10e-10*float(lbl)))
-                    # valid_labels.append(10**(9-float(lbl))) # dogru olan bu
-                    if regression_classifier=="r":
-                        valid_labels.append(float(lbl))
-                    else:
-                        #print(lbl)
-                        valid_labels.append([1, 0] if int(lbl)==1 else [0, 1])
-                    valid_compound_ids.append(comp_id)
-                    valid_target_ids.append(tar_id)
+                #if len(prot_id_seq_dict[self.target_ids[ind]])<=500:
+                comp_id = self.compound_ids[ind]
+                tar_id = self.target_ids[ind]
+                lbl = self.labels[ind]
+                comp_features = dict_compound_features[comp_id]
+                tar_features = dict_target_features[tar_id]
+                #tar_features = get_sequence_matrix(prot_id_seq_dict[tar_id], size)
+                self.comp_feature_vectors.append(comp_features)
+                self.target_feature_vectors.append(tar_features)
+                # valid_labels.append(-math.log10(10e-10*float(lbl)))
+                # valid_labels.append(10**(9-float(lbl))) # dogru olan bu
+                if regression_classifier=="r":
+                    valid_labels.append(float(lbl))
+                else:
+                    #print(lbl)
+                    valid_labels.append([1, 0] if int(lbl)==1 else [0, 1])
+                valid_compound_ids.append(comp_id)
+                valid_target_ids.append(tar_id)
             except:
                 invalid_data_points+=1
                 # print(tar_id)
