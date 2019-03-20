@@ -101,7 +101,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
 
                     total_training_count += comp_feature_vectors.shape[0]
 
-                    y_pred = model(comp_feature_vectors, target_feature_vectors)
+                    y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
 
                     loss = criterion(y_pred.squeeze(), labels)
 
