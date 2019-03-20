@@ -21,7 +21,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict,get_training_validation_data_loaders_for_cnn
 from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
-
+import subprocess
 n_epoch = 20
 num_of_folds = 1
 
