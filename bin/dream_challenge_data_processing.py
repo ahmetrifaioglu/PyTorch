@@ -1,28 +1,41 @@
 import pandas as pd
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch
 import numpy as np
 from torch.utils.data.sampler import SubsetRandomSampler
 import sklearn
 from sklearn import preprocessing
 import math
-"""
-idg_training_dataset_path = "../trainingFiles/IDGDreamChallenge/dti_datasets"
-prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/protein_feature_vectors"
-heval_prot_feature_vector_path = "../trainingFiles/IDGDreamChallenge/DreamChallengeHeval/feature_vectors"
-comp_feature_vector_path = "../trainingFiles/IDGDreamChallenge/compound_feature_vectors"
-training_files_path = "../trainingFiles"
-"""
 import os
+import itertools
+import torch.nn as nn
+
 cwd = os.getcwd()
+
 training_files_path = "{}/../trainingFiles".format(cwd)
+davis_dataset_path = "{}/trainingFiles/DeepDTA".format(training_files_path)
+davis_comp_tar_training_dataset = "{}/dti_datasets".format(davis_dataset_path)
+
 # print(training_files_path)
 # training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
 prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
 heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
 comp_feature_vector_path = "{}/IDGDreamChallenge/compound_feature_vectors".format(training_files_path)
+comp_feature_vector_path = "{}/IDGDreamChallenge/compound_feature_vectors".format(training_files_path)
 tar_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
+helper_fl_path = "../trainingFiles/IDGDreamChallenge/helper_files"
+
+
+idg_training_dataset_path = "{}/DeepDTA/dti_datasets".format(training_files_path)
+prot_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
+# heval_prot_feature_vector_path = "{}/DeepDTA/DreamChallengeHeval/feature_vectors".format(training_files_path)
+comp_feature_vector_path = "{}/DeepDTA/compound_feature_vectors".format(training_files_path)
+tar_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
+helper_fl_path = "../trainingFiles/DeepDTA/helper_files"
+
+# davis_dataset_path = "{}/trainingFiles/DeepDTA".format(training_files_path)
+# davis_comp_tar_training_dataset = "{}/dti_datasets".format(davis_dataset_path)
 
 
 def getChEMBLTargetIDUniProtMapping():
@@ -119,8 +132,9 @@ def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
     sorted(feature_lst)
     feat_vec_path = prot_feature_vector_path if target_or_compound=="target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
+    # print("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0]))
     df_combined_features = pd.read_csv("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0]), sep="\t")
-    #print(df_combined_features.columns)
+    # print(df_combined_features.columns)
     for feat in feature_lst[1:]:
         df_temp_features =  pd.read_csv("{}/{}_normalized.tsv".format(feat_vec_path, feat), sep="\t")
         df_combined_features = pd.merge(df_combined_features, df_temp_features, on=[common_column])
@@ -130,6 +144,26 @@ def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
     # print(df_combined_features.keys())
 
     #print(df_combined_features.columns)
+    return df_combined_features
+
+
+def get_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
+    sorted(feature_lst)
+    feat_vec_path = prot_feature_vector_path if target_or_compound=="target" else comp_feature_vector_path
+    common_column = "target id" if target_or_compound=="target" else "compound id"
+    # print("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0]))
+    df_combined_features = dict()
+    count = 0
+    with open("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
+        for line in f:
+            line = line.split("\t")
+            target_id = line[0]
+            #feat_vec = torch.from_numpy(np.asarray(line[1:], dtype=float)).view(500,500)
+            feat_vec = np.asarray([line[1:]], dtype=float).reshape(1, 500,500)
+            # print(feat_vec.shape)
+            # print(count, len(line))
+            df_combined_features[target_id] = feat_vec
+            count+=1
     return df_combined_features
 
 
@@ -204,6 +238,121 @@ class TrainingValidationShuffledDataLoader(Dataset):
 
     def __len__(self):
         return len(self.compound_ids)
+
+
+class TrainingValidationShuffledDataLoaderCNN(Dataset):
+
+    def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier):
+        print(comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier)
+        comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)[:1000]
+        dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
+
+        dict_target_features = get_target_dict_combined_feature_vectors("target", target_feature_lst)
+        print(dict_target_features)
+        prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+        training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
+
+        training_dataset = training_dataset.sample(frac=1).reset_index(drop=True)
+        self.compound_ids = training_dataset.iloc[:, 0]
+        self.target_ids = training_dataset.iloc[:, 1]
+        self.labels = training_dataset.iloc[:, 2]
+
+
+        valid_compound_ids = []
+        valid_target_ids = []
+        self.comp_feature_vectors = []
+        #self.target_feature_vectors = torch.from_numpy(np.asarray([], dtype=float))
+        self.target_feature_vectors = []
+
+        valid_labels = []
+
+        invalid_data_points = 0
+        total_number_of_data_points = 0
+        for ind in range(len(self.labels)):
+            total_number_of_data_points += 1
+            #print(dict_compound_features[comp_id])
+            try:
+                if len(prot_id_seq_dict[self.target_ids[ind]])<=500:
+                    comp_id = self.compound_ids[ind]
+                    tar_id = self.target_ids[ind]
+                    lbl = self.labels[ind]
+                    comp_features = dict_compound_features[comp_id]
+                    tar_features = dict_target_features[tar_id]
+                    #tar_features = get_sequence_matrix(prot_id_seq_dict[tar_id], size)
+                    self.comp_feature_vectors.append(comp_features)
+                    self.target_feature_vectors.append(tar_features)
+                    # valid_labels.append(-math.log10(10e-10*float(lbl)))
+                    # valid_labels.append(10**(9-float(lbl))) # dogru olan bu
+                    if regression_classifier=="r":
+                        valid_labels.append(float(lbl))
+                    else:
+                        #print(lbl)
+                        valid_labels.append([1, 0] if int(lbl)==1 else [0, 1])
+                    valid_compound_ids.append(comp_id)
+                    valid_target_ids.append(tar_id)
+            except:
+                invalid_data_points+=1
+                # print(tar_id)
+                pass
+
+        print("{} data points are invalid out of {}!".format(invalid_data_points, total_number_of_data_points))
+
+        self.comp_feature_vectors = np.asarray(self.comp_feature_vectors)
+        self.comp_feature_vectors = torch.tensor(self.comp_feature_vectors).type(torch.FloatTensor)
+
+        self.target_feature_vectors = np.asarray(self.target_feature_vectors)
+        print(self.target_feature_vectors.shape)
+        self.target_feature_vectors = torch.tensor(self.target_feature_vectors).type(torch.FloatTensor)
+        print("cikti")
+        self.labels = torch.tensor(valid_labels).type(torch.FloatTensor)
+        self.compound_ids = valid_compound_ids
+        self.target_ids = valid_target_ids
+
+        self.number_of_comp_features = int(self.comp_feature_vectors.shape[1])
+        self.number_of_target_features = int(self.target_feature_vectors.shape[1])
+
+    def __getitem__(self, index):
+        return self.comp_feature_vectors[index], self.target_feature_vectors[index], self.labels[index], self.compound_ids[index], self.target_ids[index], self.number_of_comp_features, self.number_of_target_features
+
+    def __len__(self):
+        return len(self.compound_ids)
+
+def get_training_validation_data_loaders_for_cnn(num_of_folds, batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier):
+    # from random import choices
+    import numpy as np
+    loader_fold_dict = dict()
+    valid_size = 0.2
+    if num_of_folds > 1:
+        valid_size = round(1.0 / float(num_of_folds), 1)
+    train_val_data = TrainingValidationShuffledDataLoaderCNN(comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier)
+
+    number_of_comp_features = train_val_data.number_of_comp_features
+    number_of_target_features = train_val_data.number_of_target_features
+
+    total_number_of_samples = len(train_val_data)
+
+    num_of_valid_samples = int(np.floor(valid_size * total_number_of_samples))
+    num_of_training_samples = total_number_of_samples - num_of_valid_samples
+
+    print("Number of training samples:\t{}".format(num_of_training_samples))
+    print("Number of validation samples:\t{}".format(num_of_valid_samples))
+
+    for fold_id in range(num_of_folds):
+        val_starting_index = fold_id * num_of_valid_samples
+        val_end_index = val_starting_index + num_of_valid_samples
+        val_indices = list(range(val_starting_index, val_end_index))
+        train_indices = list(set(range(total_number_of_samples)) - set(val_indices))
+        # define samplers for obtaining training and validation batches
+        train_sampler = SubsetRandomSampler(train_indices)
+        valid_sampler = SubsetRandomSampler(val_indices)
+        train_loader = torch.utils.data.DataLoader(train_val_data, batch_size=batch_size,
+                                                   sampler=train_sampler)
+
+        valid_loader = torch.utils.data.DataLoader(train_val_data, batch_size=batch_size,
+                                                   sampler=valid_sampler)
+
+        loader_fold_dict[fold_id] = [train_loader, valid_loader]
+    return loader_fold_dict, number_of_comp_features, number_of_target_features
 
 
 def get_full_training_data_loader(batch_size, comp_feature_list, target_feature_lst, comp_target_pair_dataset, regression_classifier):
@@ -516,3 +665,370 @@ def create_comp_tar_inter_dataset_label():
 
 
 # create_comp_tar_inter_dataset_nM()
+
+def get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path):
+    prot_id_seq_dict = dict()
+
+    prot_id = ""
+    with open("{}".format(fasta_fl_path)) as f:
+        for line in f:
+            line = line.split("\n")[0]
+            if line.startswith(">"):
+                prot_id = line.split("|")[1]
+                prot_id_seq_dict[prot_id] = ""
+            else:
+                prot_id_seq_dict[prot_id] = prot_id_seq_dict[prot_id] + line
+
+    return prot_id_seq_dict
+
+
+def get_aa_list():
+    aa_list = ["A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V"]
+    return aa_list
+
+
+def get_all_aa_word_list(word_size):
+    aa_list = get_aa_list()
+    # all_n_gram_list = list(itertools.permutations(aa_list, word_size))
+    all_n_gram_list = list(itertools.product(aa_list, repeat=word_size))
+    all_n_gram_list = [''.join(n_gram_tuple) for n_gram_tuple in all_n_gram_list]
+    return all_n_gram_list
+
+
+def get_int2aaword_aaword2int_dicts(word_size):
+    aa_word_list = get_all_aa_word_list(word_size)
+    int2aaword_dict = dict(enumerate(aa_word_list, 1))
+    aaword2int_dict = {ch: ii for ii, ch in int2aaword_dict.items()}
+    return int2aaword_dict, aaword2int_dict
+
+
+def get_overlapping_n_grams_list(prot_seq, word_size, skip_size):
+    prot_seq_overlapping_ngram_list = None
+    if skip_size != 0:
+        prot_seq_overlapping_ngram_list = [prot_seq[ind:ind + word_size] for ind in
+                                           range(0, (len(prot_seq) - (word_size - 1)), skip_size)]
+    else:
+        prot_seq_overlapping_ngram_list = [prot_seq[ind:ind + word_size] for ind in
+                                           range(len(prot_seq) - (word_size - 1))]
+    return prot_seq_overlapping_ngram_list
+
+
+def remove_nonstandard_aas(prot_seq):
+    aa_list = get_aa_list()
+    prot_seq_list = [aa for aa in prot_seq if aa in aa_list]
+    prot_seq = ''.join(prot_seq_list)
+    return prot_seq
+
+
+'''
+Gets a sequence as an input whose nonstandard aminoacids removed
+'''
+
+
+def encode_protein_sequence(prot_seq, word_size, skip_size, aaword2int_dict):
+    prot_seq_overlapping_ngram_list = get_overlapping_n_grams_list(prot_seq, word_size, skip_size)
+    prot_seq_encoded = [aaword2int_dict[aa_word] for aa_word in prot_seq_overlapping_ngram_list]
+    return prot_seq_encoded
+
+
+def get_int_encodings_of_proteins_sequences(fasta_fl_path, word_size, skip_size):
+    int2aaword_dict, aaword2int_dict = get_int2aaword_aaword2int_dicts(word_size)
+    # print(aaword2int_dict)
+    prot_id_list, seq_encoding_list = [], []
+    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+    for prot_id, seq in prot_id_seq_dict.items():
+        # first remove nonstandard aminoacids
+        # print(seq)
+        seq = remove_nonstandard_aas(seq)
+        prot_id_list.append(prot_id)
+        seq_encoding_list.append(encode_protein_sequence(seq, word_size, skip_size, aaword2int_dict))
+    return prot_id_list, seq_encoding_list
+
+
+def pad_encoded_features(seq_encoding_list, seq_length=1000):
+    '''
+    Return features of review_ints, where each review is padded with 0's
+    or truncated to the input seq_length.
+    '''
+
+    # getting the correct rows x cols shape
+    padded_features = np.zeros((len(seq_encoding_list), seq_length), dtype=int)
+
+    for i, row in enumerate(seq_encoding_list):
+        # padding before
+        # padded_features[i, -len(row):] = np.array(row)[:seq_length]
+        # padding after
+        padded_features[i, :len(row)] = np.array(row)[:seq_length]
+
+    return padded_features
+
+
+def save_encoded_features(fasta_fl, word_size, skip_size, seq_length):
+    prot_id_list, seq_encoding_list = get_int_encodings_of_proteins_sequences(fasta_fl, word_size, skip_size)
+    padded_features = pad_encoded_features(seq_encoding_list, seq_length)
+
+    str_header = "target id\t" + "\t".join([str(num) for num in list(range(seq_length))])
+    print(str_header)
+    for idx, prot_id in enumerate(prot_id_list):
+        # print(idx, prot_id)
+        print(prot_id + "\t" + "\t".join([str(num) for num in padded_features[idx]]))
+
+
+def get_data_lists():
+    split_frac = 0.8
+
+    ## split data into training, validation, and test data (features and labels, x and y)
+
+    split_idx = int(len(features) * split_frac)
+    train_x, remaining_x = features[:split_idx], features[split_idx:]
+    train_y, remaining_y = encoded_labels[:split_idx], encoded_labels[split_idx:]
+
+    test_idx = int(len(remaining_x) * 0.5)
+    val_x, test_x = remaining_x[:test_idx], remaining_x[test_idx:]
+    val_y, test_y = remaining_y[:test_idx], remaining_y[test_idx:]
+
+    ## print out the shapes of your resultant feature data
+    print("\t\t\tFeature Shapes:")
+    print("Train set: \t\t{}".format(train_x.shape),
+          "\nValidation set: \t{}".format(val_x.shape),
+          "\nTest set: \t\t{}".format(test_x.shape))
+    return train_x, train_y, val_x, val_y, test_x, test_y
+
+
+def get_train_test_val_data_loaders(batch_size):
+    # create Tensor datasets
+    train_data = TensorDataset(torch.from_numpy(train_x), torch.from_numpy(train_y))
+    valid_data = TensorDataset(torch.from_numpy(val_x), torch.from_numpy(val_y))
+    test_data = TensorDataset(torch.from_numpy(test_x), torch.from_numpy(test_y))
+
+    # make sure the SHUFFLE your training data
+    train_loader = DataLoader(train_data, shuffle=True, batch_size=batch_size)
+    valid_loader = DataLoader(valid_data, shuffle=True, batch_size=batch_size)
+    test_loader = DataLoader(test_data, shuffle=True, batch_size=batch_size)
+
+    return train_loader, valid_loader, test_loader
+
+
+def get_aa_match_encodings():
+    all_aa_matches = get_all_aa_word_list(2)
+    aa_match_encoding_dict = dict()
+    encod_int = 1
+    for aa_pair in all_aa_matches:
+        if aa_pair not in aa_match_encoding_dict.keys():
+            aa_match_encoding_dict[aa_pair] = encod_int
+            aa_match_encoding_dict[aa_pair[::-1]] = encod_int
+            encod_int += 1
+    return aa_match_encoding_dict
+
+
+def get_sequence_matrix(seq, size):
+    aa_match_encoding_dict = get_aa_match_encodings()
+    # print(aa_match_encoding_dict)
+
+    seq = remove_nonstandard_aas(seq)
+    lst = []
+    for i in range(len(seq)):
+        lst.append([])
+        for j in range(len(seq)):
+            lst[-1].append(aa_match_encoding_dict[seq[i] + seq[j]])
+
+    torch_arr = torch.from_numpy(np.asarray(lst))
+    size_of_tensor = torch_arr.shape[0]
+    # print(torch_list)
+    # print(torch_list.shape[0])
+    if size_of_tensor < size:
+        padding_size = int((size - size_of_tensor) / 2)
+        m = nn.ZeroPad2d(padding_size)
+        if size_of_tensor % 2 != 0:
+            m = nn.ZeroPad2d((padding_size, padding_size + 1, padding_size, padding_size + 1))
+        torch_arr = m(torch_arr)
+    else:
+        torch_arr = torch_arr[:size, :size]
+
+    # print(torch_arr.shape)
+    return torch_arr
+
+
+def save_all_flattened_sequence_matrices(fasta_fl_path, size):
+    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+    str_header = "target id\t" + "\t".join([str(num) for num in list(range(size*size))])
+    print(str_header)
+    for prot_id, seq in prot_id_seq_dict.items():
+
+        seq_torch_matrix = get_sequence_matrix(seq, size)
+        # print(seq_torch_matrix)
+        flattened_seq_matrix_arr = np.array(seq_torch_matrix.contiguous().view(-1))
+        # print(flattened_seq_matrix_arr)
+        print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
+
+
+def convert_deepdta_davis_dataset_into_our_format():
+    import json
+    import math
+    import os
+    david_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/data/davis"
+    helper_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files"
+
+    prot_id_seq_dict = json.load(open("{}/proteins.txt".format(david_dataset_path)))
+    comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(david_dataset_path)))
+
+
+    prot_fasta_file = open(os.path.join(helper_fl_path, "davis_prots.fasta"), "w")
+    ind_prot_id_dict = dict()
+    ind = 0
+    for prot_id, seq in prot_id_seq_dict.items():
+        prot_fasta_file.write(">xxx|{}|xxxx\n".format(prot_id))
+        prot_fasta_file.write("{}\n".format(seq))
+        ind_prot_id_dict[ind] = prot_id
+        ind += 1
+    prot_fasta_file.close()
+
+    comp_smiles_file = open("{}/davis_comp_smiles.fasta".format(helper_fl_path), "w")
+    ind_comp_id_dict = dict()
+    ind = 0
+    for comp_id, smiles in comp_id_smiles_dict.items():
+        comp_smiles_file.write("{}\t{}\n".format(comp_id,smiles))
+        ind_comp_id_dict[ind] = comp_id
+        ind += 1
+    comp_smiles_file.close()
+
+    affinity_matrix_fl = open("{}/drug-target_interaction_affinities_Kd__Davis_et_al.2011v1.txt".format(david_dataset_path),"r")
+    lst_affinity_matrix_fl = affinity_matrix_fl.read().split("\n")
+    affinity_matrix_fl.close()
+
+
+    for row_ind in range(len(lst_affinity_matrix_fl[:-1])):
+        affinity_val_list = lst_affinity_matrix_fl[row_ind].split(" ")
+        for col_ind in range(len(affinity_val_list)):
+            print("{},{},{}".format(ind_comp_id_dict[row_ind], ind_prot_id_dict[col_ind],  -1*math.log10(float(affinity_val_list[col_ind])*1e-9)))
+    # print(lst_affinity_matrix_fl)
+    # print(prot_id_seq_dict)
+    # print(ind_prot_id_dict)
+    # print(comp_id_smiles_dict)
+    # print(ind_comp_id_dict)
+# convert_deepdta_davis_dataset_into_our_format()
+
+def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
+    import pickle
+    import numpy as np
+    import math
+    import json
+
+    dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/data/{}".format(davis_kiba)
+
+    prot_id_seq_dict = json.load(open("{}/proteins.txt".format(dataset_path)))
+    comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(dataset_path)))
+    ind_prot_id_dict, ind_comp_id_dict = dict(), dict()
+    ind = 0
+    for prot_id, seq in prot_id_seq_dict.items():
+        ind_prot_id_dict[ind] = prot_id
+        ind += 1
+
+    ind = 0
+    for comp_id, smiles in comp_id_smiles_dict.items():
+        ind_comp_id_dict[ind] = comp_id
+        ind += 1
+
+    affinity_matrix  = pickle.load(open("{}/Y".format(dataset_path),"rb"), encoding='latin1')
+    label_row_inds, label_col_inds = np.where(np.isnan(affinity_matrix)==False)
+
+    for id in range(len(label_row_inds)):
+        row, col = label_row_inds[id], label_col_inds[id]
+        # print(row, col)
+        print("{},{},{}".format(ind_comp_id_dict[row], ind_prot_id_dict[col], -1*math.log10(affinity_matrix[row, col]*1e-9)))
+    # row = floor((441+442*2)/ 442)
+    # column = (441+442*2)% 442
+    # print(row ,column)
+# convert_deepdta_dataset_into_our_format_using_deepdta_pickle("davis")
+
+
+
+
+# create_ecfp4_fingerprint_file()
+
+# LEGACY CODE
+
+def create_onehot_aa_vector(aa_index):
+    int2aa_dict, aa2int_dict = get_int2aa_aa2int_dicts()
+    # create a zero array and assign 1 to corresponding index
+    aa_onehot_arr = np.zeros(len(aa2int_dict))
+    np.put(aa_onehot_arr, aa_index, 1)
+    return aa_onehot_arr
+
+
+def convert_protein_sequence_into_onehot(prot_seq):
+    lst_encoded_seq = encode_protein_sequence(prot_seq)
+    prot_seq_onehot = [create_onehot_aa_vector(aa_ind) for aa_ind in lst_encoded_seq]
+    return prot_seq_onehot
+
+# this script run in another file
+def create_ecfp4_fingerprint_file():
+    from operator import itemgetter
+    import math
+    import numpy as np
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files/"
+    fl_name = "davis_comp_smiles.txt"
+
+    rep_fl = open("%s/%s" % (path, fl_name), "r")
+    lst_rep_fl = rep_fl.read().split("\n")
+    rep_fl.close()
+    if "" in lst_rep_fl:
+        lst_rep_fl.remove("")
+
+    compound_smiles_inchi_dict = dict()
+    for line in lst_rep_fl:
+        # compund_id, smiles, inchi = line.split("\t")
+        compund_id, smiles = line.split("\t")
+        # compound_smiles_inchi_dict[compund_id] = [smiles, inchi]
+        compound_smiles_inchi_dict[compund_id] = smiles
+
+    # compound_ecfp4_vectors = open("../compound_ecfp4_vectors.tsv", "w")
+    failureCount = 0
+    str_header = "compound id\t" + "\t".join([str(num) for num in range(1024)])
+    print(str_header)
+    for comp in compound_smiles_inchi_dict.keys():
+        isSmilesFailed = False
+        fp = ""
+        #try:
+        m = Chem.MolFromSmiles(compound_smiles_inchi_dict[comp])
+        fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
+        #except:
+        #    isSmilesFailed = True
+        """
+        isInChiFailed = False
+        if isSmilesFailed:
+            try:
+                m = Chem.MolFromInchi(compound_smiles_inchi_dict[comp][1])
+                fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
+            except:
+                isInChiFailed = True
+        if isInChiFailed:
+            print("%s\tBoth Failed" % (comp))
+            failureCount += 1
+        else:
+            compound_ecfp4_vectors.write("%s\t%s\n" % (comp, fp))
+        """
+
+        if not isSmilesFailed:
+            print(comp + "\t" + "\t".join([str(float(dim)) for dim in fp]))
+            #print("{}\t{}".format(comp, fp))
+            #print("")
+        else:
+            print("Failed")
+
+# create_ecfp4_fingerprint_file()
+
+
+def get_prot_seq_lengths_given_fasta(fasta_fl_path):
+    from operator import itemgetter
+
+    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+    seq_len_list = []
+    for prot_id, seq in prot_id_seq_dict.items():
+        seq_len_list.append([prot_id, len(seq)])
+
+    seq_len_list = sorted(seq_len_list, key=itemgetter(1))
+    for prot_ind in range(len(seq_len_list)):
+        print(prot_ind, seq_len_list[prot_ind])

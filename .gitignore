@@ -1,0 +1,10 @@
+trainingFiles/**
+resultFiles/**
+ray_results/**
+old_training_files/**
+experiment_docs/**
+trainingFiles/*
+resultFiles/*
+ray_results/*
+old_training_files/*
+experiment_docs/*
