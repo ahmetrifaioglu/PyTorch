@@ -21,13 +21,13 @@ class CNNModule(torch.nn.Module):
 
     def forward(self, x):
         x = F.relu(self.conv1(x))
-        print(x.shape)
+        #print(x.shape)
         x = self.pool(x)
-        print(x.shape)
+        #print(x.shape)
         x = F.relu(self.conv2(x))
-        print(x.shape)
+        #print(x.shape)
         x = self.pool(x)
-        print(x.shape)
+        #print(x.shape)
         x = x.view(-1, 32 * 41 * 41)
         x = F.relu(self.fc1(x))
         return x
