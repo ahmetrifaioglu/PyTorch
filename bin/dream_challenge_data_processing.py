@@ -260,7 +260,7 @@ class TrainingValidationShuffledDataLoaderCNN(Dataset):
         comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
         dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
 
-        dict_target_features = get_target_dict_combined_feature_vectors("target", target_feature_lst)
+        dict_target_features = get_list_target_dict_combined_feature_vectors("target", target_feature_lst)
         prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
         training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
 
