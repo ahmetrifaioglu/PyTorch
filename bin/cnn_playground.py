@@ -91,7 +91,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
             #print("Epoch :{}".format(epoch))
             total_training_loss, total_validation_loss, total_test_loss = 0.0, 0.0, 0.0
             total_training_count, total_validation_count, total_test_count = 0, 0, 0
-            validation_predictions, validation_labels, test_labels = [], [], []
+            validation_predictions, validation_labels, test_predictions, test_labels = [], [], [], []
             batch_number = 0
             model.train()
             for i, data in enumerate(train_loader):
