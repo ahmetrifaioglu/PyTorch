@@ -41,12 +41,8 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     ci_score = ci(np.asarray(labels), np.asarray(predictions))
     f1_score = f1(np.asarray(labels), np.asarray(predictions))
     ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
-    print("================================================================================")
-    # print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold + 1, epoch,
-    #                                                                                     rmse_score,
-    #                                                                                     total_training_loss,
-    #                                                                                     total_validation_loss))
-    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, total_validation_loss))
+
+    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test, total_validation_loss))
     print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))
