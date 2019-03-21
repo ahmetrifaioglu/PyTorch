@@ -144,10 +144,10 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                             validation_predictions.append(float(item.item()))
 
                 for i, data in enumerate(test_loader):
-                    test_comp_feature_vectors, test_target_feature_vectors, test_labels, test_compound_ids, test_target_ids = data
-                    test_comp_feature_vectors, test_target_feature_vectors, test_labels = Variable(test_comp_feature_vectors).to(
+                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels, test_compound_ids, test_target_ids = data
+                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels = Variable(test_comp_feature_vectors).to(
                         device), Variable(
-                        test_target_feature_vectors).to(device), Variable(test_labels).to(device)
+                        test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
 
                     total_test_count += test_comp_feature_vectors.shape[0]
 
@@ -155,9 +155,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                         test_inputs = None
                         test_y_pred = None
                         test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
-                        loss_test = criterion(test_y_pred.squeeze(), test_labels)
+                        loss_test = criterion(test_y_pred.squeeze(), tst_labels)
                         total_test_loss += float(loss_test.item())
-                        for item in test_labels:
+                        for item in tst_labels:
                             test_labels.append(float(item.item()))
 
                         for item in test_y_pred:
