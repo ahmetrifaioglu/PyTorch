@@ -26,7 +26,7 @@ from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 n_epoch = 20
 num_of_folds = 1
 
-def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset):
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset, total_training_count):
     deep_dta_rmse = get_rm2(np.asarray(labels), np.asarray(
         predictions))
     # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
@@ -42,7 +42,7 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     f1_score = f1(np.asarray(labels), np.asarray(predictions))
     ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
 
-    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test, total_validation_loss))
+    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test))
     print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))
@@ -50,8 +50,8 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     print("{} F1-Score:\t{}".format(validation_test, f1_score))
     print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
     print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
-    print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
-    print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
+    # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
+    # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
     print("{} DeepDTA RMSE:\t{}".format(validation_test, deep_dta_rmse))
     print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
 
