@@ -113,7 +113,7 @@ def get_cnn_test_val_folds_train_data_loader(batch_size=32):
 
     folds = json.load(open("{}/data/davis/folds/train_fold_setting1.txt".format(davis_dataset_path)))
     test = json.load(open("{}/data/davis/folds/test_fold_setting1.txt".format(davis_dataset_path)))
-    print(test)
+    # print(test)
 
     davis_bioactivity_dataset = CNNBioactivityDataset(comp_target_pair_dataset='davis_comp_targ_affinity.csv',
                                          root_dir='{}/deepdta_data'.format(idg_training_dataset_path))
