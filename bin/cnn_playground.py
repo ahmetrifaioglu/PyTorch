@@ -26,6 +26,40 @@ from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 n_epoch = 20
 num_of_folds = 1
 
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss):
+    deep_dta_rmse = get_rm2(np.asarray(labels), np.asarray(
+        predictions))
+    # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
+    #    predictions))
+    deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
+        predictions))
+
+    rmse_score = rmse(np.asarray(labels), np.asarray(
+        predictions))
+    pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
+    spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
+    ci_score = ci(np.asarray(labels), np.asarray(predictions))
+    f1_score = f1(np.asarray(labels), np.asarray(predictions))
+    ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
+    print("================================================================================")
+    # print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold + 1, epoch,
+    #                                                                                     rmse_score,
+    #                                                                                     total_training_loss,
+    #                                                                                     total_validation_loss))
+    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, total_validation_loss))
+    print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
+    print("{} Pearson:\t{}".format(validation_test, pearson_score))
+    print("{} Spearman:\t{}".format(validation_test, spearman_score))
+    print("{} Ci:\t{}".format(validation_test, ci_score))
+    print("{} F1-Score:\t{}".format(validation_test, f1_score))
+    print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
+    print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
+    print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
+    print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
+    print("{} DeepDTA RMSE:\t{}".format(validation_test, deep_dta_rmse))
+    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
+
+
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
@@ -59,9 +93,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
 
         for epoch in range(n_epoch):
             #print("Epoch :{}".format(epoch))
-            total_training_loss, total_validation_loss = 0.0, 0.0
-            total_training_count, total_validation_count = 0, 0
-            validation_predictions, validation_labels = [], []
+            total_training_loss, total_validation_loss, total_test_loss = 0.0, 0.0, 0.0
+            total_training_count, total_validation_count, total_test_count = 0, 0, 0
+            validation_predictions, validation_labels, test_labels = [], [], []
             batch_number = 0
             model.train()
             for i, data in enumerate(train_loader):
@@ -94,15 +128,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
             model.eval()
             with torch.no_grad():  # torch.set_grad_enabled(False):
                 for i, data in enumerate(valid_loader):
-
-                    #val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
-                    #val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
-                    #    val_comp_feature_vectors).to(
-                    #    device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
-
-                    # comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
                     val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids = data
-                    # wrap them in Variable
                     val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(val_comp_feature_vectors).to(
                         device), Variable(
                         val_target_feature_vectors).to(device), Variable(val_labels).to(device)
@@ -112,8 +138,6 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                     if val_comp_feature_vectors.shape[0] == batch_size:
                         val_inputs = None
                         val_y_pred = None
-
-
                         val_y_pred  = model(val_comp_feature_vectors, val_target_feature_vectors)
                         loss_val = criterion(val_y_pred.squeeze(), val_labels)
                         total_validation_loss += float(loss_val.item())
@@ -123,7 +147,34 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                         for item in val_y_pred:
                             validation_predictions.append(float(item.item()))
 
+                for i, data in enumerate(test_loader):
+                    test_comp_feature_vectors, test_target_feature_vectors, test_labels, test_compound_ids, test_target_ids = data
+                    test_comp_feature_vectors, test_target_feature_vectors, test_labels = Variable(test_comp_feature_vectors).to(
+                        device), Variable(
+                        test_target_feature_vectors).to(device), Variable(test_labels).to(device)
+
+                    total_test_count += test_comp_feature_vectors.shape[0]
+
+                    if test_comp_feature_vectors.shape[0] == batch_size:
+                        test_inputs = None
+                        test_y_pred = None
+                        test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
+                        loss_test = criterion(test_y_pred.squeeze(), test_labels)
+                        total_test_loss += float(loss_test.item())
+                        for item in test_labels:
+                            test_labels.append(float(item.item()))
+
+                        for item in test_y_pred:
+                            test_predictions.append(float(item.item()))
+
+
             if regression_classifier == "r":
+                print("==============================================================================")
+                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss)
+                print("------------------------------------------------------------------------------")
+                get_scores(test_labels, test_predictions, "Test", total_training_loss,
+                           total_test_loss)
+                """
                 deep_dta_rmse = get_rm2(np.asarray(validation_labels), np.asarray(
                     validation_predictions))
                 #deep_dta_aupr = get_aupr(np.asarray(validation_labels), np.asarray(
@@ -155,7 +206,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 print("DeepDTA RMSE:\t{}".format(deep_dta_rmse))
                 #print("DeepDTA AUPRC\t{}".format(deep_dta_auprc))
                 print("DeepDTA c-index\t{}".format(deep_dta_cindex))
-
+                """
 
 
 train_networks(["ecfp4"], ["sequencematrix500"], [256, 512], 256, 256, 0.001, "davis_comp_targ_affinity.csv", "r", 32)
