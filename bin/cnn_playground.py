@@ -33,7 +33,7 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     #    predictions))
     deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
         predictions))
-    deep_dta_mse = get_mse(np.asarray(labels), np.asarray(
+    deep_dta_mse = mse(np.asarray(labels), np.asarray(
         predictions))
 
     rmse_score = rmse(np.asarray(labels), np.asarray(
