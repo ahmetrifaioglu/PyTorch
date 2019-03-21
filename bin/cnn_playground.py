@@ -26,7 +26,7 @@ from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 n_epoch = 20
 num_of_folds = 1
 
-def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset, total_training_count):
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset):
     deep_dta_rmse = get_rm2(np.asarray(labels), np.asarray(
         predictions))
     # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
@@ -42,7 +42,7 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     f1_score = f1(np.asarray(labels), np.asarray(predictions))
     ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
 
-    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test))
+    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test, total_validation_test_loss))
     print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))
