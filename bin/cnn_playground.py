@@ -38,10 +38,10 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
     else:
         print("CPU is available on this device!")
     davis_prot_fl_path = "../trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
-    print("1")
+    #print("1")
     #loader_fold_dict, number_of_comp_features, number_of_target_features = get_cnn_test_val_folds_train_data_loader(1, 32, ["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv", davis_prot_fl_path, "r")
     loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader()
-    print("2")
+    #print("2")
     #original_number_of_comp_features = int(number_of_comp_features)
     #original_number_of_target_features = int(number_of_target_features)
 
@@ -58,7 +58,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         optimizer.zero_grad()
 
         for epoch in range(n_epoch):
-            print("Epoch :{}".format(n_epoch))
+            print("Epoch :{}".format(epoch))
             total_training_loss, total_validation_loss = 0.0, 0.0
             total_training_count, total_validation_count = 0, 0
             validation_predictions, validation_labels = [], []
