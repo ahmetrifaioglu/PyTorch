@@ -26,7 +26,7 @@ from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 n_epoch = 20
 num_of_folds = 1
 
-def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss, fold, epoch):
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset):
     deep_dta_rmse = get_rm2(np.asarray(labels), np.asarray(
         predictions))
     # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
@@ -166,10 +166,10 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
 
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, fold, epoch)
+                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset)
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
-                           total_test_loss, fold, epoch)
+                           total_test_loss, fold, epoch, comp_tar_pair_dataset)
                 """
                 deep_dta_rmse = get_rm2(np.asarray(validation_labels), np.asarray(
                     validation_predictions))
