@@ -21,6 +21,7 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict,get_training_validation_data_loaders_for_cnn
 from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
+from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 
 n_epoch = 20
 num_of_folds = 1
@@ -38,15 +39,16 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         print("CPU is available on this device!")
     davis_prot_fl_path = "../trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
     loader_fold_dict, number_of_comp_features, number_of_target_features = get_training_validation_data_loaders_for_cnn(1, 32, ["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv", davis_prot_fl_path, "r")
-    original_number_of_comp_features = int(number_of_comp_features)
-    original_number_of_target_features = int(number_of_target_features)
+    #original_number_of_comp_features = int(number_of_comp_features)
+    #original_number_of_target_features = int(number_of_target_features)
+    loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader()
 
-    print(original_number_of_comp_features, original_number_of_target_features)
+    # print(original_number_of_comp_features, original_number_of_target_features)
 
     for fold in range(num_of_folds):
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
-        number_of_comp_features = original_number_of_comp_features
+        #number_of_comp_features = original_number_of_comp_features
         model = CompFCNNTarCNN(number_of_comp_features, 1024, 512, 256, 256, drop_prob=0.5).to(device)
 
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
@@ -66,24 +68,24 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 optimizer.zero_grad()
 
                 # get the inputs
-                comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
-
+                #comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
+                comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids = data
                 # wrap them in Variable
                 comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                     target_feature_vectors).to(device), Variable(labels).to(device)
-                if comp_feature_vectors.shape[0]==batch_size:
-                    inputs = None
-                    y_pred = None
+                # if comp_feature_vectors.shape[0]==batch_size:
+                inputs = None
+                y_pred = None
 
-                    total_training_count += comp_feature_vectors.shape[0]
+                total_training_count += comp_feature_vectors.shape[0]
 
-                    y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
+                y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
 
-                    loss = criterion(y_pred.squeeze(), labels)
+                loss = criterion(y_pred.squeeze(), labels)
 
-                    total_training_loss += float(loss.item())
-                    loss.backward()
-                    optimizer.step()
+                total_training_loss += float(loss.item())
+                loss.backward()
+                optimizer.step()
 
             print("Epoch {} training loss:".format(epoch), total_training_loss)
 
@@ -91,10 +93,18 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
             with torch.no_grad():  # torch.set_grad_enabled(False):
                 for i, data in enumerate(valid_loader):
 
-                    val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
-                    val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
-                        val_comp_feature_vectors).to(
-                        device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
+                    #val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids, val_number_of_comp_features, val_number_of_target_features = data
+                    #val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(
+                    #    val_comp_feature_vectors).to(
+                    #    device), Variable(val_target_feature_vectors).to(device), Variable(val_labels).to(device)
+
+                    # comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
+                    val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids = data
+                    # wrap them in Variable
+                    val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(val_comp_feature_vectors).to(
+                        device), Variable(
+                        val_target_feature_vectors).to(device), Variable(val_labels).to(device)
+
                     total_validation_count += val_comp_feature_vectors.shape[0]
 
                     if val_comp_feature_vectors.shape[0] == batch_size:

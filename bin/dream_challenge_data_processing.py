@@ -2,7 +2,7 @@ import pandas as pd
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch
 import numpy as np
-from torch.utils.data.sampler import SubsetRandomSampler
+from torch.utils.data.sampler import SubsetRandomSampler, BatchSampler, SequentialSampler
 import sklearn
 from sklearn import preprocessing
 import math
@@ -13,7 +13,7 @@ import torch.nn as nn
 cwd = os.getcwd()
 
 training_files_path = "{}/../trainingFiles".format(cwd)
-davis_dataset_path = "{}/trainingFiles/DeepDTA".format(training_files_path)
+davis_dataset_path = "{}/DeepDTA".format(training_files_path)
 davis_comp_tar_training_dataset = "{}/dti_datasets".format(davis_dataset_path)
 
 # print(training_files_path)
@@ -143,7 +143,7 @@ def get_dict_combined_feature_vectors(target_or_compound, feature_lst):
     return df_combined_features
 
 
-def get_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
+def get_numpy_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
     sorted(feature_lst)
     feat_vec_path = prot_feature_vector_path if target_or_compound=="target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
@@ -152,12 +152,30 @@ def get_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
     count = 0
     with open("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
         for line in f:
+            line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
             #feat_vec = torch.from_numpy(np.asarray(line[1:], dtype=float)).view(500,500)
             feat_vec = np.asarray([line[1:]], dtype=float).reshape(1, 500,500)
             # print(feat_vec.shape)
             # print(count, len(line))
+            df_combined_features[target_id] = feat_vec
+            count+=1
+    return df_combined_features
+
+def get_list_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
+    sorted(feature_lst)
+    feat_vec_path = prot_feature_vector_path if target_or_compound=="target" else comp_feature_vector_path
+    common_column = "target id" if target_or_compound=="target" else "compound id"
+    # print("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0]))
+    df_combined_features = dict()
+    count = 0
+    with open("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
+        for line in f:
+            line = line.split("\n")[0]
+            line = line.split("\t")
+            target_id = line[0]
+            feat_vec = line[1:]
             df_combined_features[target_id] = feat_vec
             count+=1
     return df_combined_features
@@ -239,12 +257,10 @@ class TrainingValidationShuffledDataLoader(Dataset):
 class TrainingValidationShuffledDataLoaderCNN(Dataset):
 
     def __init__(self, comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier):
-        # print(comp_feature_list, target_feature_lst, comp_target_pair_dataset, fasta_fl_path, regression_classifier)
-        comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)[:1000]
+        comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
         dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
 
         dict_target_features = get_target_dict_combined_feature_vectors("target", target_feature_lst)
-        # print(dict_target_features)
         prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
         training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
 
@@ -257,7 +273,6 @@ class TrainingValidationShuffledDataLoaderCNN(Dataset):
         valid_compound_ids = []
         valid_target_ids = []
         self.comp_feature_vectors = []
-        #self.target_feature_vectors = torch.from_numpy(np.asarray([], dtype=float))
         self.target_feature_vectors = []
 
         valid_labels = []
@@ -266,7 +281,6 @@ class TrainingValidationShuffledDataLoaderCNN(Dataset):
         total_number_of_data_points = 0
         for ind in range(len(self.labels)):
             total_number_of_data_points += 1
-            #print(dict_compound_features[comp_id])
             try:
                 #if len(prot_id_seq_dict[self.target_ids[ind]])<=500:
                 comp_id = self.compound_ids[ind]
@@ -1028,3 +1042,106 @@ def get_prot_seq_lengths_given_fasta(fasta_fl_path):
     seq_len_list = sorted(seq_len_list, key=itemgetter(1))
     for prot_ind in range(len(seq_len_list)):
         print(prot_ind, seq_len_list[prot_ind])
+
+def create_interaction_data_file(comp_feature_list, target_feature_lst, comp_target_pair_dataset):
+    comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
+    dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
+
+    dict_target_features = get_list_target_dict_combined_feature_vectors("target", target_feature_lst)
+    #prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+    training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
+    for ind, row in training_dataset.iterrows():
+        print(ind)
+        comp_id = row[0]
+        tar_id = str(row[1])
+        biact_val = str(row[2])
+        str_comp_feats = ",".join([str(item) for item in dict_compound_features[comp_id]])
+        comp_id = str(comp_id)
+        str_tar_feats = ",".join(dict_target_features[tar_id])
+        # print(len(dict_target_features[tar_id]))
+        #print(type(comp_id), type(tar_id), type(biact_val), type(str_comp_feats), type(str_tar_feats))
+        final_str_list = [comp_id, tar_id, biact_val, str_comp_feats, str_tar_feats]
+        data_point_fl = open("{}/deepdta_data/{}_{}_{}.tsv".format(davis_dataset_path, ind, comp_id, tar_id), "w")
+        data_point_fl.write("\t".join(final_str_list))
+        data_point_fl.close()
+
+# create_interaction_data_file(["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv")
+
+class CNNBioactivityDataset(Dataset):
+    def __init__(self, comp_target_pair_dataset, root_dir):
+        comp_target_pair_dataset_path = "{}/{}".format(idg_training_dataset_path, comp_target_pair_dataset)
+        self.training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
+        self.root_dir = root_dir
+
+    def __len__(self):
+        return len(self.training_dataset)
+
+    def __getitem__(self, idx):
+
+        #print(idx)
+        row = self.training_dataset.iloc[idx]
+
+        comp_id, tar_id, biact_val = str(row[0]), str(row[1]), str(row[2])
+        # print(comp_id, tar_id, biact_val)
+        data_point_fl = open("{}/deepdta_data/{}_{}_{}.tsv".format(davis_dataset_path, idx, comp_id, tar_id), "r")
+        fl_comp_id, fl_tar_id, fl_biact_val, comp_feats, tar_feats = data_point_fl.read().split("\t")
+        data_point_fl.close()
+
+        comp_feats = torch.tensor(np.asarray(comp_feats.split(","), dtype=float)).type(torch.FloatTensor)
+        tar_feats = torch.tensor(np.asarray([tar_feats.split(",")], dtype=float).reshape(1, 500,500)).type(torch.FloatTensor)
+        label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
+
+        #print(comp_feats.shape, tar_feats.shape, label.shape)
+
+        return comp_feats, tar_feats, label, comp_id, tar_id
+
+
+
+def get_cnn_test_val_folds_train_data_loader(batch_size=32):
+    # from random import choices
+    import numpy as np
+    import json
+
+    folds = json.load(open("{}/data/davis/folds/train_fold_setting1.txt".format(davis_dataset_path)))
+    test = json.load(open("{}/data/davis/folds/test_fold_setting1.txt".format(davis_dataset_path)))
+    #print(folds)
+
+    davis_bioactivity_dataset = CNNBioactivityDataset(comp_target_pair_dataset='davis_comp_targ_affinity.csv',
+                                         root_dir='{}/deepdta_data'.format(idg_training_dataset_path))
+    loader_fold_dict = dict()
+    for fold_id in range(len(folds)):
+        folds_id_list = list(range(len(folds)))
+        val_indices = folds[fold_id]
+        folds_id_list.remove(fold_id)
+        train_indices  = []
+        for tr_fold_in in folds_id_list:
+            train_indices.extend(folds[tr_fold_in])
+
+        train_sampler = SubsetRandomSampler(train_indices)
+        valid_sampler = SubsetRandomSampler(val_indices)
+
+        train_loader = torch.utils.data.DataLoader(davis_bioactivity_dataset, batch_size=batch_size,
+                                                   sampler=train_sampler)
+
+        valid_loader = torch.utils.data.DataLoader(davis_bioactivity_dataset, batch_size=batch_size,
+                                                   sampler=valid_sampler)
+
+        loader_fold_dict[fold_id] = [train_loader, valid_loader]
+
+    test_sampler = BatchSampler(SequentialSampler(test), batch_size=batch_size, drop_last=False)
+    test_loader = torch.utils.data.DataLoader(davis_bioactivity_dataset, batch_size=batch_size,
+                                                   sampler=test_sampler)
+    return loader_fold_dict, test_loader
+
+
+
+
+loader_fold_dict, test_loader = loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader()
+train_loader = loader_fold_dict[0][0]
+
+for i, data in enumerate(train_loader):
+    # get the inputs
+    print(i)
+    comp_feature_vectors, target_feature_vectors, labels, comp_ids, tar_ids = data
+    print(target_feature_vectors.shape)
+
