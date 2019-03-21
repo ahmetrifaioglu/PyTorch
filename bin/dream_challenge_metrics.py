@@ -25,6 +25,20 @@ def rmse(y,f):
 
     return rmse
 
+def mse(y,f):
+    """
+    Task:    To compute root mean squared error (RMSE)
+
+    Input:   y      Vector with original labels (pKd [M])
+             f      Vector with predicted labels (pKd [M])
+
+    Output:  rmse   RSME
+    """
+
+    mse = ((y - f)**2).mean(axis=0)
+
+    return mse
+
 
 
 

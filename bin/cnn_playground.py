@@ -8,7 +8,7 @@ from torchvision import transforms, utils
 from torch.autograd import Variable
 import torch.nn.functional as F
 import sys
-from dream_challenge_metrics import rmse, pearson, spearman, ci, f1, average_AUC
+from dream_challenge_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
 from torchvision import datasets
 import torchvision.transforms as transforms
 import itertools
@@ -33,6 +33,8 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     #    predictions))
     deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
         predictions))
+    deep_dta_mse = get_mse(np.asarray(labels), np.asarray(
+        predictions))
 
     rmse_score = rmse(np.asarray(labels), np.asarray(
         predictions))
@@ -53,7 +55,9 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
     # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
     print("{} DeepDTA RMSE:\t{}".format(validation_test, deep_dta_rmse))
+    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
     print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
+
 
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
