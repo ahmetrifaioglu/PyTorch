@@ -23,8 +23,8 @@ from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 
-n_epoch = 20
-num_of_folds = 1
+n_epoch = 100
+num_of_folds = 5
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset):
     deep_dta_rmse = get_rm2(np.asarray(labels), np.asarray(
@@ -174,40 +174,6 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset)
-                """
-                deep_dta_rmse = get_rm2(np.asarray(validation_labels), np.asarray(
-                    validation_predictions))
-                #deep_dta_aupr = get_aupr(np.asarray(validation_labels), np.asarray(
-                #    validation_predictions))
-                deep_dta_cindex = get_cindex(np.asarray(validation_labels), np.asarray(
-                    validation_predictions))
-
-                rmse_score = rmse(np.asarray(validation_labels), np.asarray(
-                    validation_predictions))
-                pearson_score = pearson(np.asarray(validation_labels), np.asarray(validation_predictions))
-                spearman_score = spearman(np.asarray(validation_labels), np.asarray(validation_predictions))
-                ci_score = ci(np.asarray(validation_labels), np.asarray(validation_predictions))
-                f1_score = f1(np.asarray(validation_labels), np.asarray(validation_predictions))
-                ave_auc_score = average_AUC(np.asarray(validation_labels), np.asarray(validation_predictions))
-                print("================================================================================")
-                print("Fold:{}\tEpoch:{}\tTest RMSE:{}\tTraining Loss:{}\tValidation Loss:{}".format(fold + 1, epoch,
-                                                                                                     rmse_score,
-                                                                                                     total_training_loss,
-                                                                                                     total_validation_loss))
-                print("RMSE:\t{}".format(rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
-                print("Pearson:\t{}".format(pearson_score))
-                print("Spearman:\t{}".format(spearman_score))
-                print("Ci:\t{}".format(ci_score))
-                print("F1-Score:\t{}".format(f1_score))
-                print("Average_AUC:\t{}".format(ave_auc_score))
-                print("IDG File:\t{}".format(comp_tar_pair_dataset))
-                print("Number of training samples:\t{}".format(total_training_count))
-                print("Number of validation samples:\t{}".format(total_validation_count))
-                print("DeepDTA RMSE:\t{}".format(deep_dta_rmse))
-                #print("DeepDTA AUPRC\t{}".format(deep_dta_auprc))
-                print("DeepDTA c-index\t{}".format(deep_dta_cindex))
-                """
-
 
 train_networks(["ecfp4"], ["sequencematrix500"], [256, 512], 256, 256, 0.001, "davis_comp_targ_affinity.csv", "r", 32)
 
