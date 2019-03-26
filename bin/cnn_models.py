@@ -111,10 +111,10 @@ class CNNModule2(torch.nn.Module):
 
         x = self.inception1(x)
         # 256 * 40 * 40
-        print("after inception", x.shape)
+        # print("after inception", x.shape)
         x = self.pool(x)
         # 256 * 20 * 20
-        print("pooling after inception", x.shape)
+        # print("pooling after inception", x.shape)
 
         x = x.view(-1, 320 * 21 * 21)
         x = F.relu(self.fc1(x))
@@ -175,34 +175,34 @@ class InceptionA(nn.Module):
     def forward(self, x):
         branch1x1 = self.branch1x1(x)
         # 64 x 42 x 42
-        print("branch1x1", branch1x1.shape)
+        # print("branch1x1", branch1x1.shape)
 
         branch7x7 = self.branch7x7dbl_1(x)
-        print("branch7x7", branch7x7.shape)
+        # print("branch7x7", branch7x7.shape)
         # 32 x 42 x 42
         branch7x7 = self.branch7x7dbl_2(branch7x7)
-        print("branch7x7", branch7x7.shape)
+        # print("branch7x7", branch7x7.shape)
         # 64 x 42 x 42
 
         branch5x5 = self.branch5x5_1(x)
         # 32 x 42 x 42
-        print("branch5x5", branch5x5.shape)
+        # print("branch5x5", branch5x5.shape)
         branch5x5 = self.branch5x5_2(branch5x5)
-        print("branch5x5", branch5x5.shape)
+        # print("branch5x5", branch5x5.shape)
         # 64 x 42 x 42
 
         branch3x3dbl = self.branch3x3dbl_1(x)
         # 64 x 42 x 42
-        print("branch3x3dbl", branch3x3dbl.shape)
+        # print("branch3x3dbl", branch3x3dbl.shape)
         branch3x3dbl = self.branch3x3dbl_2(branch3x3dbl)
         # 96 x 42 x 42
-        print("branch3x3dbl", branch3x3dbl.shape)
+        # print("branch3x3dbl", branch3x3dbl.shape)
 
         # branch_pool = F.max_pool2d(x, kernel_size=3, stride=2)
         branch_pool = F.avg_pool2d(x, kernel_size=3, stride=1, padding=1)
         branch_pool = self.branch_pool(branch_pool)
         # 32 x 42 x 42
-        print("branch_pool", branch_pool.shape)
+        # print("branch_pool", branch_pool.shape)
 
         outputs = [branch1x1, branch7x7, branch5x5, branch3x3dbl, branch_pool]
         return torch.cat(outputs, 1)
