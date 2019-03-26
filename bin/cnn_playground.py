@@ -18,8 +18,7 @@ from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
-# from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict,get_training_validation_data_loaders_for_cnn
-from rnn_playground_models import CompFCNNTarRNN, CompFCNNTarCNN
+from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 
@@ -59,7 +58,6 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
 
 
-
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
@@ -85,8 +83,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, fc1, fc
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
         #number_of_comp_features = original_number_of_comp_features
-        model = CompFCNNTarCNN(1024, 1024, 512, 256, 256, drop_prob=0.5).to(device)
-
+        #model = CompFCNNTarCNN(1024, 1024, 512, 256, 256, drop_prob=0.5).to(device)
+        model = CompFCNNTarCNN2(1024, 1024, 512, 256, 256, drop_prob=0.5).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
         optimizer.zero_grad()
