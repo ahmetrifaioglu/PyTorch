@@ -98,16 +98,16 @@ class CNNModule2(torch.nn.Module):
     def forward(self, x):
         print(x.shape)
         x = F.relu(self.conv1(x))
-        print(x.shape)
+        # print(x.shape)
         # (500 - 7 + 2*4 )/3 +1 = 16*168*168
         x = self.pool(x)
         # 16*167*167 -> 16*84*84
-        print(x.shape)
+        # print(x.shape)
         x = F.relu(self.conv2(x))
         # 16*84*84 -> 32*84*84
         x = self.pool(x)
         # 32*80*80 -> 32*42*42
-        print(x.shape)
+        # print(x.shape)
 
         x = self.inception1(x)
         # 256 * 40 * 40
