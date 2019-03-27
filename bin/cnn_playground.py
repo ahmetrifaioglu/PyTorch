@@ -23,7 +23,7 @@ from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_ci
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 import sys
 n_epoch = 2
-num_of_folds = 5
+num_of_folds = 2
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
     deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
@@ -177,10 +177,10 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
-    for epoch_ind in range(len(n_epoch)):
+    for epoch_ind in range(n_epoch):
         test_results_str = ""
         val_results_str = ""
-        for fold_num in num_of_folds:
+        for fold_num in range(num_of_folds):
             test_results_str = "\t".join([str(rslt) for rslt in test_fold_epoch_results[fold_num][epoch_ind]])
             val_results_str = "\t".join([str(rslt) for rslt in validation_fold_epoch_results[fold_num][epoch_ind]])
         print("{}\t{}".format(test_results_str, val_results_str))

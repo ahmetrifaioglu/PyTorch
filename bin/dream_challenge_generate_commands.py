@@ -425,4 +425,5 @@ def generate_protein_rnn_commands():
     fl_command.close()
 # print(len(lst_decreasing_permutations))
 # generateECFPKSEPCommands()
-generate_protein_rnn_commands()
+# generate_protein_rnn_commands()
+
