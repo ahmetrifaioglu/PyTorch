@@ -433,7 +433,14 @@ def generate_protein_cnn_commands():
     after_flattened_conv_layer_neurons = [64, 128, 256, 512]
     last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
 
-    for b_s in batch_size:
-        for l_r in lst_learning_rate:
-            for conb_flat in after_flattened_conv_layer_neurons:
-                for last_fcc in last_2_hidden_layer_list:
+    for conv_flat in after_flattened_conv_layer_neurons:
+        for last_fcc in last_2_hidden_layer_list:
+            for l_r in lst_learning_rate:
+                for b_s in batch_size:
+                    # lst_params = []
+                    print("bsub -q research-rh74 -P gpu -gpu - -M 5120 -R 'rusage[mem=5120]' -o {}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, conv_flat, last_fcc, l_r, b_s
+))
+                    print("sleep 1")
+
+
+generate_protein_cnn_commands()
