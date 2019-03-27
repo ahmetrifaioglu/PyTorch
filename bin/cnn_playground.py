@@ -188,7 +188,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         for fold_num in range(num_of_folds):
             test_results_str = "\t".join([str(rslt) for rslt in test_fold_epoch_results[fold_num][epoch_ind]])
             val_results_str = "\t".join([str(rslt) for rslt in validation_fold_epoch_results[fold_num][epoch_ind]])
-        print("{}\t{}".format(test_results_str, val_results_str))
+        result_line = "{}\t{}".format(test_results_str, val_results_str)
+        print(result_line)
+        result_fl.write(result_line+"\n")
     result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
