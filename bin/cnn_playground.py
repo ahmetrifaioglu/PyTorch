@@ -176,7 +176,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset, validation_fold_epoch_results)
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
-                           total_test_loss, fold, epoch, comp_tar_pair_dataset ,fold_epoch_results, test_fold_epoch_results)
+                           total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
     for epoch_ind in range(len(n_epoch)):
         test_results_str = ""
         val_results_str = ""
