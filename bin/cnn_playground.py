@@ -177,6 +177,11 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
+
+    result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
+    print("test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score"
+          "\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse"
+          "\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score")
     for epoch_ind in range(n_epoch):
         test_results_str = ""
         val_results_str = ""
@@ -184,6 +189,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
             test_results_str = "\t".join([str(rslt) for rslt in test_fold_epoch_results[fold_num][epoch_ind]])
             val_results_str = "\t".join([str(rslt) for rslt in validation_fold_epoch_results[fold_num][epoch_ind]])
         print("{}\t{}".format(test_results_str, val_results_str))
+    result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 after_flattened_conv_layer_neurons = sys.argv[1]

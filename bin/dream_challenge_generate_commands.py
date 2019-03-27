@@ -427,3 +427,13 @@ def generate_protein_rnn_commands():
 # generateECFPKSEPCommands()
 # generate_protein_rnn_commands()
 
+def generate_protein_cnn_commands():
+    batch_size = [32, 64, 128]
+    lst_learning_rate = [0.0001, 0.005, 0.001]
+    after_flattened_conv_layer_neurons = [64, 128, 256, 512]
+    last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
+
+    for b_s in batch_size:
+        for l_r in lst_learning_rate:
+            for conb_flat in after_flattened_conv_layer_neurons:
+                for last_fcc in last_2_hidden_layer_list:
