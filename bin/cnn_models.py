@@ -84,16 +84,16 @@ class CompFCNNTarCNN(nn.Module):
 
 class CNNModule2(torch.nn.Module):
 
-    def __init__(self):
+    def __init__(self, num_of_neurons):
         super(CNNModule2, self).__init__()
         self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=16, kernel_size=7, stride=3, padding=4)
         self.conv2 = torch.nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
         self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
 
-        self.inception1 = InceptionA(32)
+        self.feat_detector1 = VariableLengthFeatureDetector(32)
 
 
-        self.fc1 = torch.nn.Linear(320 * 21 * 21, 64)
+        self.fc1 = torch.nn.Linear(320 * 21 * 21, num_of_neurons)
 
     def forward(self, x):
         # print(x.shape)
@@ -109,7 +109,7 @@ class CNNModule2(torch.nn.Module):
         # 32*80*80 -> 32*42*42
         # print(x.shape)
 
-        x = self.inception1(x)
+        x = self.feat_detector1(x)
         # 256 * 40 * 40
         # print("after inception", x.shape)
         x = self.pool(x)
@@ -122,13 +122,13 @@ class CNNModule2(torch.nn.Module):
 
 
 class CompFCNNTarCNN2(nn.Module):
-    def __init__(self, number_of_comp_features, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
         super(CompFCNNTarCNN2, self).__init__()
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
-        self.cnn_flattened_layer = CNNModule2()
+        self.cnn_flattened_layer = CNNModule2(num_of_tar_neurons)
         # dropout layer
         self.dropout = nn.Dropout(0.3)
-        self.layer_2_combined = FC_2_Layer(comp_l2 + 64, fc_l1, fc_l2, drop_prob)
+        self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)
         self.output = None
 
         self.output = torch.nn.Linear(fc_l2, 1)
@@ -154,10 +154,10 @@ class CompFCNNTarCNN2(nn.Module):
         return y_pred
 
 
-class InceptionA(nn.Module):
+class VariableLengthFeatureDetector(nn.Module):
     # 32 x 42x 42
     def __init__(self, in_channels):
-        super(InceptionA, self).__init__()
+        super(VariableLengthFeatureDetector, self).__init__()
         self.branch1x1 = BasicConv2d(in_channels, 64, kernel_size=1)
 
         self.branch7x7dbl_1 = BasicConv2d(in_channels, 32, kernel_size=1)
