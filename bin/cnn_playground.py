@@ -195,8 +195,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
             str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
             str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
-            epoch_combined_rslt_lst.extend(str_test_fold_combined_list)
-            epoch_combined_rslt_lst.extend(str_val_fold_combined_list)
+            epoch_combined_rslt_lst.append(str_test_fold_combined_list)
+            epoch_combined_rslt_lst.append(str_val_fold_combined_list)
 
         result_line = "\t".join(epoch_combined_rslt_lst)
         result_fl.write(result_line + "\n")
