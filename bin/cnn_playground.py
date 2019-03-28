@@ -45,17 +45,18 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     fold_epoch_results[-1].append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
     print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test, total_validation_test_loss))
     # print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
+    print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
+    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
+    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))
     print("{} Ci:\t{}".format(validation_test, ci_score))
     print("{} F1-Score:\t{}".format(validation_test, f1_score))
     print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
-    print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
+    # print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
     # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
     # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
-    print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
-    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
-    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
+
 
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
@@ -177,7 +178,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
-
+    # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
     result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
     print(header)
@@ -188,15 +189,16 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         epoch_combined_rslt_lst = []
         for rslt_ind in range(len(test_fold_epoch_results[0][epoch_ind])):
             fold_combined_test_result_list = []
-            fold_combined_val_result_list = []
+            #fold_combined_val_result_list = []
             for fold_num in range(num_of_folds):
                 fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
-                fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
+                #fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
 
             str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
-            str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
+            #str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
+            print(str_test_fold_combined_list)
             epoch_combined_rslt_lst.append(str_test_fold_combined_list)
-            epoch_combined_rslt_lst.append(str_val_fold_combined_list)
+            #epoch_combined_rslt_lst.append(str_val_fold_combined_list)
 
         result_line = "\t".join(epoch_combined_rslt_lst)
         result_fl.write(result_line + "\n")
