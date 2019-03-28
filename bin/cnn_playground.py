@@ -186,21 +186,23 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
     result_fl.write(header+"\n")
     for epoch_ind in range(n_epoch):
 
-        epoch_combined_rslt_lst = []
+        epoch_test_combined_rslt_lst = []
+        epoch_val_combined_rslt_lst = []
         for rslt_ind in range(len(test_fold_epoch_results[0][epoch_ind])):
             fold_combined_test_result_list = []
-            #fold_combined_val_result_list = []
+            fold_combined_val_result_list = []
             for fold_num in range(num_of_folds):
                 fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
-                #fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
+                fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
 
             str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
-            #str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
-            print(str_test_fold_combined_list)
-            epoch_combined_rslt_lst.append(str_test_fold_combined_list)
+            str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
+            # print(str_test_fold_combined_list)
+            epoch_test_combined_rslt_lst.append(str_test_fold_combined_list)
+            epoch_val_combined_rslt_lst.append(str_val_fold_combined_list)
             #epoch_combined_rslt_lst.append(str_val_fold_combined_list)
 
-        result_line = "\t".join(epoch_combined_rslt_lst)
+        result_line = "\t".join(["\t".join(epoch_test_combined_rslt_lst), "\t".join(epoch_val_combined_rslt_lst)])
         result_fl.write(result_line + "\n")
         print(result_line)
 
