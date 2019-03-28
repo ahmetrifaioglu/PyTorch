@@ -103,3 +103,15 @@ print(features[:100, :10])
 # davis_prot_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
 
 # get_training_validation_data_loaders_for_cnn(1, 32, ["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv", davis_prot_fl_path, "r")
+
+
+
+
+# python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix500_normalized.tsv
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 500)
+
+# python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1000_normalized.tsv
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 1000)
+
+# python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1500_normalized.tsv
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 1500)

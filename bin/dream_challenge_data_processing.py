@@ -918,6 +918,28 @@ def convert_deepdta_davis_dataset_into_our_format():
     # print(ind_comp_id_dict)
 # convert_deepdta_davis_dataset_into_our_format()
 
+def convert_deepdta_target_sequences_into_fasta_format():
+    import json
+    import math
+    import os
+    dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files"
+    helper_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files"
+
+    prot_id_seq_dict = json.load(open("{}/targets.txt".format(dataset_path)))
+
+    prot_fasta_file = open(os.path.join(helper_fl_path, "targets.fasta"), "w")
+    ind_prot_id_dict = dict()
+    ind = 0
+    for prot_id, seq in prot_id_seq_dict.items():
+        prot_fasta_file.write(">xxx|{}|xxxx\n".format(prot_id))
+        prot_fasta_file.write("{}\n".format(seq))
+        ind_prot_id_dict[ind] = prot_id
+        ind += 1
+    prot_fasta_file.close()
+
+
+convert_deepdta_target_sequences_into_fasta_format()
+
 def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     import pickle
     import numpy as np
@@ -953,7 +975,7 @@ def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     # column = (441+442*2)% 442
     # print(row ,column)
 # convert_deepdta_dataset_into_our_format_using_deepdta_pickle("davis")
-convert_deepdta_dataset_into_our_format_using_deepdta_pickle("kiba")
+# convert_deepdta_dataset_into_our_format_using_deepdta_pickle("kiba")
 
 
 
