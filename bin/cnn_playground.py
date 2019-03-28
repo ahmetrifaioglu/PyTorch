@@ -181,7 +181,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
     result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
     print(header)
-
+    print(test_fold_epoch_results)
     result_fl.write(header+"\n")
     for epoch_ind in range(n_epoch):
 
