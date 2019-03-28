@@ -22,7 +22,7 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 import sys
-n_epoch = 2
+n_epoch = 1
 num_of_folds = 5
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
@@ -193,8 +193,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
                 fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
 
-            str_test_fold_combined_list = ",".join(fold_combined_test_result_list)
-            str_val_fold_combined_list = ",".join(fold_combined_val_result_list)
+            str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
+            str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
             epoch_combined_rslt_lst.extend(str_test_fold_combined_list)
             epoch_combined_rslt_lst.extend(str_val_fold_combined_list)
 
