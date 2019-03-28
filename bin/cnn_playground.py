@@ -22,8 +22,8 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 import sys
-n_epoch = 1
-num_of_folds = 2
+n_epoch = 3
+num_of_folds = 5
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
     deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
@@ -181,8 +181,8 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
     result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
-    print(header)
-    print(test_fold_epoch_results)
+    #print(header)
+    #print(test_fold_epoch_results)
     result_fl.write(header+"\n")
     for epoch_ind in range(n_epoch):
 
@@ -204,7 +204,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
         result_line = "\t".join(["\t".join(epoch_test_combined_rslt_lst), "\t".join(epoch_val_combined_rslt_lst)])
         result_fl.write(result_line + "\n")
-        print(result_line)
+        #print(result_line)
 
     result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
