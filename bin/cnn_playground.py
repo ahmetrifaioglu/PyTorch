@@ -23,7 +23,7 @@ from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_ci
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 import sys
 n_epoch = 1
-num_of_folds = 5
+num_of_folds = 2
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
     deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
