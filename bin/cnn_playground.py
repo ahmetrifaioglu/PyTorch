@@ -181,16 +181,27 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
     result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
     print(header)
+
     result_fl.write(header+"\n")
     for epoch_ind in range(n_epoch):
-        test_results_str = ""
-        val_results_str = ""
-        for fold_num in range(num_of_folds):
-            test_results_str = "\t".join([str(rslt) for rslt in test_fold_epoch_results[fold_num][epoch_ind]])
-            val_results_str = "\t".join([str(rslt) for rslt in validation_fold_epoch_results[fold_num][epoch_ind]])
-        result_line = "{}\t{}".format(test_results_str, val_results_str)
+
+        epoch_combined_rslt_lst = []
+        for rslt_ind in range(len(test_fold_epoch_results[0][epoch_ind])):
+            fold_combined_test_result_list = []
+            fold_combined_val_result_list = []
+            for fold_num in range(num_of_folds):
+                fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
+                fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
+
+            str_test_fold_combined_list = ",".join(fold_combined_test_result_list)
+            str_val_fold_combined_list = ",".join(fold_combined_val_result_list)
+            epoch_combined_rslt_lst.extend(str_test_fold_combined_list)
+            epoch_combined_rslt_lst.extend(str_val_fold_combined_list)
+
+        result_line = "\t".join(epoch_combined_rslt_lst)
+        result_fl.write(result_line + "\n")
         print(result_line)
-        result_fl.write(result_line+"\n")
+
     result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 

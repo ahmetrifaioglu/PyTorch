@@ -924,7 +924,7 @@ def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     import math
     import json
 
-    dataset_path = "../trainingFiles/DeepDTA/data/{}".format(davis_kiba)
+    dataset_path = "../trainingFiles/DeepDTA_original/data/{}".format(davis_kiba)
 
     prot_id_seq_dict = json.load(open("{}/proteins.txt".format(dataset_path)))
     comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(dataset_path)))
@@ -945,11 +945,15 @@ def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     for id in range(len(label_row_inds)):
         row, col = label_row_inds[id], label_col_inds[id]
         # print(row, col)
-        print("{},{},{}".format(ind_comp_id_dict[row], ind_prot_id_dict[col], -1*math.log10(affinity_matrix[row, col]*1e-9)))
+        if davis_kiba=="davis":
+            print("{},{},{}".format(ind_comp_id_dict[row], ind_prot_id_dict[col], -1*math.log10(affinity_matrix[row, col]*1e-9)))
+        else:
+            print("{},{},{}".format(ind_comp_id_dict[row], ind_prot_id_dict[col], affinity_matrix[row, col]))
     # row = floor((441+442*2)/ 442)
     # column = (441+442*2)% 442
     # print(row ,column)
 # convert_deepdta_dataset_into_our_format_using_deepdta_pickle("davis")
+convert_deepdta_dataset_into_our_format_using_deepdta_pickle("kiba")
 
 
 
@@ -1029,7 +1033,6 @@ def create_ecfp4_fingerprint_file():
             print("Failed")
 
 # create_ecfp4_fingerprint_file()
-
 
 def get_prot_seq_lengths_given_fasta(fasta_fl_path):
     from operator import itemgetter
