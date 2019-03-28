@@ -96,9 +96,9 @@ class CNNModule2(torch.nn.Module):
         self.fc1 = torch.nn.Linear(320 * 21 * 21, num_of_neurons)
 
     def forward(self, x):
-
-        x = F.relu(self.conv1(x))
         # print(x.shape)
+        x = F.relu(self.conv1(x))
+
         # print(x.shape)
         # (500 - 7 + 2*4 )/3 +1 = 16*168*168
         x = self.pool(x)
@@ -112,10 +112,10 @@ class CNNModule2(torch.nn.Module):
 
         x = self.feat_detector1(x)
         # 256 * 40 * 40
-        # print("after inception", x.shape)
+        #print("after inception", x.shape)
         x = self.pool(x)
         # 256 * 20 * 20
-        # print("pooling after inception", x.shape)
+        #print("pooling after inception", x.shape)
 
         x = x.view(-1, 320 * 21 * 21)
         x = F.relu(self.fc1(x))
