@@ -432,15 +432,16 @@ def generate_protein_cnn_commands():
     lst_learning_rate = [0.0001, 0.005, 0.001]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512]
     last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
-
+    training_dataset_list = ["DeepDTA_kiba"]
     for conv_flat in after_flattened_conv_layer_neurons:
         for last_fcc in last_2_hidden_layer_list:
             for l_r in lst_learning_rate:
                 for b_s in batch_size:
-                    # lst_params = []
-                    print("bsub -q research-rh74 -P gpu -gpu - -M 5120 -R 'rusage[mem=5120]' -o {}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, conv_flat, last_fcc, l_r, b_s
-))
-                    print("sleep 1")
+                    for tr_data in training_dataset_list:
+                        # lst_params = []
+                        print("bsub -q research-rh74 -P gpu -gpu - -M 5120 -R 'rusage[mem=5120]' -o {}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, tr_data, conv_flat, last_fcc, l_r, b_s, tr_data
+    ))
+                        print("sleep 1")
 
 
-# generate_protein_cnn_commands()
+generate_protein_cnn_commands()
