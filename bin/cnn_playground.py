@@ -22,6 +22,8 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader
 import sys
+# import statistics
+
 n_epoch = 100
 num_of_folds = 5
 
@@ -70,15 +72,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         device = "cuda"
     else:
         print("CPU is available on this device!")
-    davis_prot_fl_path = "../trainingFiles/DeepDTA/helper_files/davis_prots.fasta"
-    #print("1")
-    #loader_fold_dict, number_of_comp_features, number_of_target_features = get_cnn_test_val_folds_train_data_loader(1, 32, ["ecfp4"], ["sequencematrix500"], "davis_comp_targ_affinity.csv", davis_prot_fl_path, "r")
-    loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(batch_size)
-    #print("2")
-    #original_number_of_comp_features = int(number_of_comp_features)
-    #original_number_of_target_features = int(number_of_target_features)
 
-    # print(original_number_of_comp_features, original_number_of_target_features)
+    loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(batch_size)
+
     test_fold_epoch_results = []
     validation_fold_epoch_results = []
     for fold in range(num_of_folds):
@@ -86,9 +82,6 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         validation_fold_epoch_results.append([])
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
-        #number_of_comp_features = original_number_of_comp_features
-        #model = CompFCNNTarCNN(1024, 1024, 512, 256, 256, drop_prob=0.5).to(device)
-        #number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5
 
         model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
@@ -179,7 +172,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
-    result_fl = open("../result_files/{}".format("_".join(sys.argv[1:])), "w")
+    result_fl = open("../result_files/{}.tsv".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
     #print(header)
     #print(test_fold_epoch_results)
@@ -197,9 +190,12 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
             str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
             str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
-            # print(str_test_fold_combined_list)
             epoch_test_combined_rslt_lst.append(str_test_fold_combined_list)
+            #epoch_test_combined_rslt_lst.append(str(statistics.mean(fold_combined_test_result_list)))
+            #epoch_test_combined_rslt_lst.append(str(statistics.pstdev(fold_combined_test_result_list)))
             epoch_val_combined_rslt_lst.append(str_val_fold_combined_list)
+            #epoch_val_combined_rslt_lst.append(str(statistics.mean(fold_combined_val_result_list)))
+            #epoch_val_combined_rslt_lst.append(str(statistics.pstdev(fold_combined_val_result_list)))
             #epoch_combined_rslt_lst.append(str_val_fold_combined_list)
 
         result_line = "\t".join(["\t".join(epoch_test_combined_rslt_lst), "\t".join(epoch_val_combined_rslt_lst)])
@@ -213,6 +209,7 @@ after_flattened_conv_layer_neurons = sys.argv[1]
 last_2_hidden_layer_list = sys.argv[2].split("_")
 learn_rate = sys.argv[3]
 batch_size = sys.argv[4]
+training_dataset = sys.argv[5]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "davis_comp_targ_affinity.csv", "r", 32)
 train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))

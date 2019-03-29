@@ -9,11 +9,13 @@ import math
 import os
 import itertools
 import torch.nn as nn
-
+import sys
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
 
-training_data_name = "DeepDTA_davis"
+# training_data_name = "DeepDTA_davis"
+
+training_data_name = sys.argv[5]
 compound_feature_list = "ecfp4".split("_")
 target_feature_list = "sequencematrix500".split("_")
 compound_target_pair_dataset = "comp_targ_affinity.csv"
@@ -64,6 +66,7 @@ def get_list_target_dict_combined_feature_vectors(target_or_compound, feature_ls
 dict_compound_features = get_list_target_dict_combined_feature_vectors("compound", compound_feature_list)
 dict_target_features = get_numpy_target_dict_combined_feature_vectors("target", target_feature_list)
 training_dataset = pd.read_csv('{}/{}'.format(comp_tar_training_dataset_path, compound_target_pair_dataset), header=None)
+
 
 
 class CNNBioactivityDataset(Dataset):
@@ -120,6 +123,16 @@ def get_cnn_test_val_folds_train_data_loader(batch_size=32):
 
 
 
+"""
+import matplotlib.pyplot as plt
+for key in dict_target_features.keys():
+    #fig = plt.figure()
+    print(dict_target_features[key].reshape(500,500).shape)
+    plt.imshow(dict_target_features[key].reshape(500,500))
+    plt.colorbar()
+    # fig.show()
+    plt.show()
+"""
 
 
 """

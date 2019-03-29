@@ -5,8 +5,8 @@ def create_ecfp4_fingerprint_file():
     import numpy as np
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA/helper_files/"
-    fl_name = "davis_comp_smiles.txt"
+    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files"
+    fl_name = "comp_smiles.txt"
 
     rep_fl = open("%s/%s" % (path, fl_name), "r")
     lst_rep_fl = rep_fl.read().split("\n")
@@ -55,4 +55,4 @@ def create_ecfp4_fingerprint_file():
         else:
             print("Failed")
 
-create_ecfp4_fingerprint_file()
+# create_ecfp4_fingerprint_file()

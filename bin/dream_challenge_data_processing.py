@@ -938,8 +938,27 @@ def convert_deepdta_target_sequences_into_fasta_format():
     prot_fasta_file.close()
 
 
-convert_deepdta_target_sequences_into_fasta_format()
+# convert_deepdta_target_sequences_into_fasta_format()
 
+def convert_deepdta_compound_smiles_into_our_format():
+    import json
+    import math
+    import os
+
+    helper_fl_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files"
+
+    comp_id_smiles_dict = json.load(open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_original/data/kiba/ligands_can.txt"))
+
+
+    comp_smiles_file = open("{}/comp_smiles.txt".format(helper_fl_path), "w")
+    ind_comp_id_dict = dict()
+    ind = 0
+    for comp_id, smiles in comp_id_smiles_dict.items():
+        comp_smiles_file.write("{}\t{}\n".format(comp_id,smiles))
+        ind_comp_id_dict[ind] = comp_id
+        ind += 1
+    comp_smiles_file.close()
+# convert_deepdta_compound_smiles_into_our_format()
 def convert_deepdta_dataset_into_our_format_using_deepdta_pickle(davis_kiba):
     import pickle
     import numpy as np

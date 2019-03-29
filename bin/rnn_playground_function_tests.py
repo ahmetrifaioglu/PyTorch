@@ -108,10 +108,10 @@ print(features[:100, :10])
 
 
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix500_normalized.tsv
-# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 500)
+#save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 500)
 
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1000_normalized.tsv
-# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 1000)
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1000)
 
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1500_normalized.tsv
-# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.txt", 1500)
+save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1500)
