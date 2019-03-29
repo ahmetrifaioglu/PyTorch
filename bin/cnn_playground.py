@@ -132,17 +132,17 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
                     total_validation_count += val_comp_feature_vectors.shape[0]
 
-                    if val_comp_feature_vectors.shape[0] == batch_size:
-                        val_inputs = None
-                        val_y_pred = None
-                        val_y_pred  = model(val_comp_feature_vectors, val_target_feature_vectors)
-                        loss_val = criterion(val_y_pred.squeeze(), val_labels)
-                        total_validation_loss += float(loss_val.item())
-                        for item in val_labels:
-                            validation_labels.append(float(item.item()))
+                    # if val_comp_feature_vectors.shape[0] == batch_size:
+                    val_inputs = None
+                    val_y_pred = None
+                    val_y_pred  = model(val_comp_feature_vectors, val_target_feature_vectors)
+                    loss_val = criterion(val_y_pred.squeeze(), val_labels)
+                    total_validation_loss += float(loss_val.item())
+                    for item in val_labels:
+                        validation_labels.append(float(item.item()))
 
-                        for item in val_y_pred:
-                            validation_predictions.append(float(item.item()))
+                    for item in val_y_pred:
+                        validation_predictions.append(float(item.item()))
 
                 for i, data in enumerate(test_loader):
                     test_comp_feature_vectors, test_target_feature_vectors, tst_labels, test_compound_ids, test_target_ids = data
@@ -152,17 +152,17 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
                     total_test_count += test_comp_feature_vectors.shape[0]
 
-                    if test_comp_feature_vectors.shape[0] == batch_size:
-                        test_inputs = None
-                        test_y_pred = None
-                        test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
-                        loss_test = criterion(test_y_pred.squeeze(), tst_labels)
-                        total_test_loss += float(loss_test.item())
-                        for item in tst_labels:
-                            test_labels.append(float(item.item()))
+                    # if test_comp_feature_vectors.shape[0] == batch_size:
+                    test_inputs = None
+                    test_y_pred = None
+                    test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
+                    loss_test = criterion(test_y_pred.squeeze(), tst_labels)
+                    total_test_loss += float(loss_test.item())
+                    for item in tst_labels:
+                        test_labels.append(float(item.item()))
 
-                        for item in test_y_pred:
-                            test_predictions.append(float(item.item()))
+                    for item in test_y_pred:
+                        test_predictions.append(float(item.item()))
 
 
             if regression_classifier == "r":
