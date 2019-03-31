@@ -126,9 +126,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
             with torch.no_grad():  # torch.set_grad_enabled(False):
                 for i, data in enumerate(valid_loader):
                     val_comp_feature_vectors, val_target_feature_vectors, val_labels, val_compound_ids, val_target_ids = data
-                    val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(val_comp_feature_vectors, volatile=True).to(
+                    val_comp_feature_vectors, val_target_feature_vectors, val_labels = Variable(val_comp_feature_vectors).to(
                         device), Variable(
-                        val_target_feature_vectors, volatile=True).to(device), Variable(val_labels, volatile=True).to(device)
+                        val_target_feature_vectors).to(device), Variable(val_labels).to(device)
 
                     total_validation_count += val_comp_feature_vectors.shape[0]
 
@@ -146,9 +146,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
 
                 for i, data in enumerate(test_loader):
                     test_comp_feature_vectors, test_target_feature_vectors, tst_labels, test_compound_ids, test_target_ids = data
-                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels = Variable(test_comp_feature_vectors, volatile=True).to(
+                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels = Variable(test_comp_feature_vectors).to(
                         device), Variable(
-                        test_target_feature_vectors, volatile=True).to(device), Variable(tst_labels, volatile=True).to(device)
+                        test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
 
                     total_test_count += test_comp_feature_vectors.shape[0]
 
