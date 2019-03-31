@@ -433,6 +433,7 @@ def generate_protein_cnn_commands():
     after_flattened_conv_layer_neurons = [64, 128, 256, 512]
     last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
     training_dataset_list = ["DeepDTA_davis", "DeepDTA_kiba"]
+    training_dataset_list = ["DeepDTA_kiba"]
     for tr_data in training_dataset_list:
         for conv_flat in after_flattened_conv_layer_neurons:
             for last_fcc in last_2_hidden_layer_list:
