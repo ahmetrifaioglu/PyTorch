@@ -428,7 +428,7 @@ def generate_protein_rnn_commands():
 # generate_protein_rnn_commands()
 
 def generate_protein_cnn_commands():
-    batch_size = [32, 64, 128]
+    batch_size = [16, 32]
     lst_learning_rate = [0.0001, 0.005, 0.001]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512]
     last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
