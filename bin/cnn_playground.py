@@ -212,4 +212,4 @@ batch_size = sys.argv[4]
 training_dataset = sys.argv[5]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "davis_comp_targ_affinity.csv", "r", 32)
-train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
+train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
