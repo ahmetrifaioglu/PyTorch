@@ -96,7 +96,7 @@ class CNNModule2(torch.nn.Module):
         # self.fc1 = torch.nn.Linear(320 * 21 * 21, num_of_neurons)
         self.fc1 = torch.nn.Linear(320 * 41 * 41, num_of_neurons)
     def forward(self, x):
-        print(x.shape)
+        # print(x.shape)
         x = F.relu(self.conv1(x))
 
         # print(x.shape)
