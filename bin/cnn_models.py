@@ -99,7 +99,7 @@ class CNNModule2(torch.nn.Module):
         print(x.shape)
         x = F.relu(self.conv1(x))
 
-        print(x.shape)
+        # print(x.shape)
         # (500 - 7 + 2*4 )/3 +1 = 16*168*168
         # (1000 - 7 + 2*4)/3 +1 = 16*334*334
         x = self.pool(x)
