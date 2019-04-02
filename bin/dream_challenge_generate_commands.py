@@ -442,7 +442,7 @@ def generate_protein_cnn_commands():
                     for b_s in batch_size:
 
                         # lst_params = []
-                        print("bsub -q research-rh74 -P gpu -gpu - -M 20480 -R 'rusage[mem=20480]' -o 1000_{}_{}_{}_{}_{}.out \"python cnn_playground.py 1000_{} {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, tr_data, conv_flat, last_fcc, l_r, b_s, tr_data
+                        print("bsub -q research-rh74 -P gpu -gpu - -M 20480 -R 'rusage[mem=20480]' -o 1000_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, tr_data, conv_flat, last_fcc, l_r, b_s, tr_data
     ))
                         print("sleep 1")
 
