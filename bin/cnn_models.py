@@ -101,22 +101,22 @@ class CNNModule2(torch.nn.Module):
 
         print(x.shape)
         # (500 - 7 + 2*4 )/3 +1 = 16*168*168
-        # (1000 - 7 + 2*4)/3 +1
+        # (1000 - 7 + 2*4)/3 +1 = 16*334*334
         x = self.pool(x)
         # 16*167*167 -> 16*84*84
-        # print(x.shape)
+        print(x.shape)
         x = F.relu(self.conv2(x))
-        # 16*84*84 -> 32*84*84
+        16*84*84 -> 32*84*84
         x = self.pool(x)
         # 32*80*80 -> 32*42*42
-        # print(x.shape)
+        print(x.shape)
 
         x = self.feat_detector1(x)
         # 256 * 40 * 40
-        #print("after inception", x.shape)
+        print("after inception", x.shape)
         x = self.pool(x)
         # 256 * 20 * 20
-        #print("pooling after inception", x.shape)
+        print("pooling after inception", x.shape)
 
         x = x.view(-1, 320 * 21 * 21)
         x = F.relu(self.fc1(x))
