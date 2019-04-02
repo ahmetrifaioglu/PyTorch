@@ -106,7 +106,7 @@ class CNNModule2(torch.nn.Module):
         # 16*167*167 -> 16*84*84
         print(x.shape)
         x = F.relu(self.conv2(x))
-        16*84*84 -> 32*84*84
+        # 16*84*84 -> 32*84*84
         x = self.pool(x)
         # 32*80*80 -> 32*42*42
         print(x.shape)
