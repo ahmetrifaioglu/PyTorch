@@ -59,6 +59,38 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
     # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
 
+def get_scores_full(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, comp_tar_pair_dataset, fold_epoch_results):
+    deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
+        predictions))
+    # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
+    #    predictions))
+    deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
+        predictions))
+    deep_dta_mse = mse(np.asarray(labels), np.asarray(
+        predictions))
+
+    #rmse_score = rmse(np.asarray(labels), np.asarray(
+    #    predictions))
+    pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
+    spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
+    ci_score = ci(np.asarray(labels), np.asarray(predictions))
+    f1_score = f1(np.asarray(labels), np.asarray(predictions))
+    ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
+    fold_epoch_results[-1].append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
+    print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test, total_validation_test_loss))
+    # print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
+    print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
+    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
+    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
+    print("{} Pearson:\t{}".format(validation_test, pearson_score))
+    print("{} Spearman:\t{}".format(validation_test, spearman_score))
+    print("{} Ci:\t{}".format(validation_test, ci_score))
+    print("{} F1-Score:\t{}".format(validation_test, f1_score))
+    print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
+    # print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
+    # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
+    # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
+
 
 
 def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
@@ -232,7 +264,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
         #print("Epoch :{}".format(epoch))
         total_training_loss, total_test_loss = 0.0, 0.0
         total_training_count, total_test_count = 0, 0
-        test_predictions, test_labels = [], []
+        test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [],[] ,[]
         batch_number = 0
         model.train()
         for i, data in enumerate(train_loader):
@@ -285,11 +317,19 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
                 for item in test_y_pred:
                     test_predictions.append(float(item.item()))
 
+                for item in test_compound_ids:
+                    test_all_comp_ids.append(item)
+
+                for item in test_target_ids:
+                    test_all_tar_ids.append(item)
 
         if regression_classifier == "r":
             print("==============================================================================")
             get_scores(test_labels, test_predictions, "Test", total_training_loss,
-                       total_test_loss, fold, epoch, comp_tar_pair_dataset, test_epoch_results)
+                       total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
+        #if epoch==n_epoch-1:
+        for ind in len(range(test_all_tar_ids)):
+            print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
     result_fl = open("../result_files/{}.tsv".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score"
