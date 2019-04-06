@@ -1,7 +1,7 @@
 from dream_challenge_data_processing import remove_nonstandard_aas, get_all_aa_word_list, get_int2aaword_aaword2int_dicts, get_overlapping_n_grams_list
 from dream_challenge_data_processing import get_prot_id_seq_dict_from_fasta_fl, get_int_encodings_of_proteins_sequences, pad_encoded_features
 from dream_challenge_data_processing import save_encoded_features, get_aa_match_encodings, get_sequence_matrix, get_prot_seq_lengths_given_fasta
-from dream_challenge_data_processing import get_training_validation_data_loaders_for_cnn, save_all_flattened_sequence_matrices
+from dream_challenge_data_processing import get_training_validation_data_loaders_for_cnn, save_all_flattened_sequence_matrices, plot_seq_length
 #print(get_aa_list())
 
 # print(get_int2aa_aa2int_dicts())
@@ -114,4 +114,7 @@ print(features[:100, :10])
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1000)
 
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1500_normalized.tsv
-save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1500)
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1500)
+
+plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 50, "Davis")
+plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 50, "Kiba")

@@ -123,6 +123,28 @@ def get_cnn_test_val_folds_train_data_loader(batch_size=32):
 
 
 
+def get_cnn_train_test_full_training_data_loader(batch_size=32):
+    import numpy as np
+    import json
+
+    folds = json.load(open("{}/train_fold_setting1.txt".format(folds_path)))
+    test = json.load(open("{}/test_fold_setting1.txt".format(folds_path)))
+
+    bioactivity_dataset = CNNBioactivityDataset(comp_target_pair_dataset=compound_target_pair_dataset)
+    train_indices = []
+    for fold_id in range(len(folds)):
+        train_indices.extend(folds[fold_id])
+
+    train_sampler = SubsetRandomSampler(train_indices)
+
+    train_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
+                                               sampler=train_sampler)
+    test_sampler = SequentialSampler(test)
+    test_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
+                                                   sampler=test_sampler)
+    return train_loader, test_loader
+
+
 """
 import matplotlib.pyplot as plt
 for key in dict_target_features.keys():

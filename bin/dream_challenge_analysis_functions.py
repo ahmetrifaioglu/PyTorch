@@ -162,6 +162,6 @@ def getFamilySpecificScores():
     # print(dict_fam_spec_predictions)
 
 
-getFamilySpecificScores()
+# getFamilySpecificScores()
 
 # getMissingCompoundTargetIDs()

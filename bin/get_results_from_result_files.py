@@ -1,7 +1,7 @@
 import statistics
 import os
 import pandas as pd
-result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/second_cnn_davis_dataset_results"
+result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/1000_cnn_davis_results"
 
 metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
                "test_spearman_score", "test_ci_score", "val_f1_score", "val_ave_auc_score"]

@@ -447,4 +447,4 @@ def generate_protein_cnn_commands():
                         print("sleep 1")
 
 
-generate_protein_cnn_commands()
+# generate_protein_cnn_commands()
