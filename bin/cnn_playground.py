@@ -325,7 +325,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
 
         if regression_classifier == "r":
             print("==============================================================================")
-            get_scores(test_labels, test_predictions, "Test", total_training_loss,
+            get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
                        total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
         #if epoch==n_epoch-1:
         for ind in len(range(test_all_tar_ids)):
