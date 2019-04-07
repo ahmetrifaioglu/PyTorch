@@ -328,14 +328,14 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
             get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
                        total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
         if epoch==n_epoch-1:
-            pred_fl = open("../result_files/{}_full_prediction.tsv".format("_".join(sys.argv[1:])), "w")
+            pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
             header = "Comp_ID\tTar_ID\tLabel\tPrediction"
             pred_fl.write(header + "\n")
             for ind in range(len(test_all_tar_ids)):
                 pred_fl.write("{}\t{}\t{}\t{}\n".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             pred_fl.close()
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
-    result_fl = open("../result_files/{}_full.tsv".format("_".join(sys.argv[1:])), "w")
+    result_fl = open("../result_files/{}_full_500.tsv".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score"
     #print(header)
     #print(test_fold_epoch_results)

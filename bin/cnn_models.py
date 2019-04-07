@@ -118,8 +118,8 @@ class CNNModule2(torch.nn.Module):
         # 256 * 20 * 20
         # print("pooling after inception", x.shape)
 
-        # x = x.view(-1, 320 * 21 * 21)
-        x = x.view(-1, 320 * 41 * 41)
+        x = x.view(-1, 320 * 21 * 21)
+        # x = x.view(-1, 320 * 41 * 41)
         x = F.relu(self.fc1(x))
         return x
 
