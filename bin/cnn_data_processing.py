@@ -42,7 +42,8 @@ def get_numpy_target_dict_combined_feature_vectors(target_or_compound, feature_l
             line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
-            feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
+            # feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
+            feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(torch.FloatTensor)
             df_combined_features[target_id] = feat_vec
             count+=1
     return df_combined_features
