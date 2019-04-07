@@ -17,7 +17,8 @@ training_files_path = "{}/../trainingFiles".format(cwd)
 
 training_data_name = sys.argv[5]
 compound_feature_list = "ecfp4".split("_")
-target_feature_list = "sequencematrix1000".split("_")
+# target_feature_list = "sequencematrix1000".split("_")
+target_feature_list = "sequencematrix500".split("_")
 compound_target_pair_dataset = "comp_targ_affinity.csv"
 
 training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
