@@ -76,9 +76,8 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
     ci_score = ci(np.asarray(labels), np.asarray(predictions))
     f1_score = f1(np.asarray(labels), np.asarray(predictions))
     ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
-    fold_epoch_results[-1].append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
+    fold_epoch_results.append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
     print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test, total_validation_test_loss))
-    # print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
     print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
     print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
     print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
@@ -87,9 +86,6 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
     print("{} Ci:\t{}".format(validation_test, ci_score))
     print("{} F1-Score:\t{}".format(validation_test, f1_score))
     print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
-    # print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
-    # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
-    # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
 
 
 
@@ -357,4 +353,4 @@ training_dataset = sys.argv[5]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "davis_comp_targ_affinity.csv", "r", 32)
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
-full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
+# full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))

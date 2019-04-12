@@ -5,7 +5,7 @@ def create_ecfp4_fingerprint_file():
     import numpy as np
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files"
+    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/"
     fl_name = "comp_smiles.txt"
 
     rep_fl = open("%s/%s" % (path, fl_name), "r")

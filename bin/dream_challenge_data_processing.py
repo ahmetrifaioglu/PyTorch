@@ -57,7 +57,7 @@ def getChEMBLTargetIDUniProtMapping():
 
     return chembl_uniprot_dict
 
-def getSMILEsForChEMBLIDList(rep_fl, lst_chembl_ids):
+def getSMILEsForChEMBLIDList(rep_fl_path, lst_chembl_ids):
     isFirst = True
     prob_count = 0
     dict_ids = dict()
@@ -66,7 +66,7 @@ def getSMILEsForChEMBLIDList(rep_fl, lst_chembl_ids):
     # there should be a header in the smiles file
     compound_smiles_dict = dict()
     # print("DENEME../trainingFiles/{}".format(rep_fl))
-    with open("../all_trainingFiles/{}".format(rep_fl)) as f:
+    with open(rep_fl_path) as f:
         for line in f:
             if isFirst:
                 isFirst = False
@@ -81,8 +81,17 @@ def getSMILEsForChEMBLIDList(rep_fl, lst_chembl_ids):
                     compound_smiles_dict[chembl_id] = smiles
                 except:
                     pass
-
     return compound_smiles_dict
+
+def get_smiles_from_dti_file(dti_fl_path):
+    import pandas as pd
+    dti_df = pd.read_csv(dti_fl_path, header=None, sep=",")
+    chembl_id_list = (list(set(dti_df[0])))
+    compound_smiles_dict = getSMILEsForChEMBLIDList("/Users/trman/Downloads/Dream Challenge/chembl_24_chemreps.txt", chembl_id_list)
+    for key in compound_smiles_dict.keys():
+        print("{}\t{}".format(key, compound_smiles_dict[key]))
+#python dream_challenge_data_processing.py > ../trainingFiles/IDGDreamChallenge/helper_files/comp_smiles.txt
+# get_smiles_from_dti_file("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/comp_targ_affinity.csv")
 
 def getChEMBL24KDBioactivities():
 
@@ -1023,8 +1032,8 @@ def create_ecfp4_fingerprint_file():
     import numpy as np
     from rdkit import Chem
     from rdkit.Chem import AllChem
-    path = "../trainingFiles/DeepDTA/helper_files/"
-    fl_name = "davis_comp_smiles.txt"
+    path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/"
+    fl_name = "comp_smiles.txt"
 
     rep_fl = open("%s/%s" % (path, fl_name), "r")
     lst_rep_fl = rep_fl.read().split("\n")
@@ -1072,7 +1081,6 @@ def create_ecfp4_fingerprint_file():
             #print("")
         else:
             print("Failed")
-
 # create_ecfp4_fingerprint_file()
 
 def get_prot_seq_lengths_given_fasta(fasta_fl_path):
@@ -1156,9 +1164,8 @@ def plot_seq_length(fasta_fl_path, interval, dataset_name):
     # p.minor_ticks = interval_dist_list
     show(p)
     p.output_backend = "svg"
-    export_svgs(p, filename="../figures/{}_seq_length_dist.svg".format(dataset_name))
-    export_png(p, filename="../figures/{}_seq_length_dist.png".format(dataset_name))
-
+    export_svgs(p, filename="../figures/{}_{}_seq_length_dist.svg".format(dataset_name, interval))
+    export_png(p, filename="../figures/{}_{}_seq_length_dist.png".format(dataset_name, interval))
 
 
 def create_interaction_data_file(comp_feature_list, target_feature_lst, comp_target_pair_dataset):

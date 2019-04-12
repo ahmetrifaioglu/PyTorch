@@ -116,5 +116,12 @@ print(features[:100, :10])
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/target_feature_vectors/sequencematrix1500_normalized.tsv
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 1500)
 
-plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 50, "Davis")
-plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 50, "Kiba")
+# plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 50, "Davis")
+# plot_seq_length("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_kiba/helper_files/targets.fasta", 50, "Kiba")
+
+
+# python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/target_feature_vectors/sequencematrix500_normalized.tsv
+#save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta", 500)
+
+
+# "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta"
