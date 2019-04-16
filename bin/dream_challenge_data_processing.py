@@ -880,6 +880,7 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size):
         # print(flattened_seq_matrix_arr)
         print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
 
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta", 500)
 
 def convert_deepdta_davis_dataset_into_our_format():
     import json

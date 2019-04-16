@@ -349,5 +349,32 @@ def create_5_fold_train_test_folds():
     # uncomment below line to create train_fold_setting1.txt
     # print(folds)
     # uncomment below line to create test
-    # print(folds[-1][:100])
+    print(folds[-1][:100])
+
+#
 # create_5_fold_train_test_folds()
+
+
+def remove_bioactivities_with_no_ecfp4():
+    import pandas as pd
+
+    df_ecfp4 = pd.read_csv("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/compound_feature_vectors/ecfp4_normalized.tsv", sep= "\t")
+    df_ecfp4 = df_ecfp4["compound id"]
+    lst_ecfp4 = list(df_ecfp4)
+    dict_ecfp4 = dict()
+    for item in lst_ecfp4:
+        dict_ecfp4[item] = ""
+
+    # print(len(dict_ecfp4.keys()))
+    df_bioactivity = pd.read_csv(
+        "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/dti_datasets/comp_targ_affinity_all_with_invalid_chembl_ids.csv",
+        header=None)
+    for ind, row in df_bioactivity.iterrows():
+        # print(row)
+        try:
+            dict_ecfp4[row[0]]
+            lst_row = [str(col) for col in list(row)]
+            print(",".join(lst_row))
+        except:
+            pass
+# remove_bioactivities_with_no_ecfp4()

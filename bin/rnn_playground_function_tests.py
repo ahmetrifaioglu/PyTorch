@@ -121,7 +121,7 @@ print(features[:100, :10])
 
 
 # python rnn_playground_function_tests.py > /Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/target_feature_vectors/sequencematrix500_normalized.tsv
-#save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta", 500)
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta", 500)
 
 
 # "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta"

@@ -319,6 +319,10 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
                 for item in test_target_ids:
                     test_all_tar_ids.append(item)
 
+            print("=====PREDICTIONS=====")
+            for ind in range(len(test_all_tar_ids)):
+                print("{}\t{}\t{}\t{}\n".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
+            print("=====PREDICTIONS=====")
         if regression_classifier == "r":
             print("==============================================================================")
             get_scores_full(test_labels, test_predictions, "Test", total_training_loss,

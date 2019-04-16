@@ -56,3 +56,21 @@ def create_ecfp4_fingerprint_file():
             print("Failed")
 
 # create_ecfp4_fingerprint_file()
+
+
+
+def analyse():
+    import pandas as pd
+    df = pd.read_csv("/Users/trman/Desktop/predictionsAllDrugs.csv", sep=",")
+    # print(df)
+    dict_prot_id = dict()
+    for ind, row in df.iterrows():
+        try:
+            dict_prot_id[row["DrugName"]] += 1
+        except:
+            dict_prot_id[row["DrugName"]] = 1
+
+    for prot in dict_prot_id.keys():
+        print("{}\t{}".format(prot, dict_prot_id[prot]))
+
+# analyse()
