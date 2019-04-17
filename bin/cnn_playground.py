@@ -325,10 +325,10 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
             for ind in range(len(test_all_tar_ids)):
                 print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             print("=====PREDICTIONS=====")
-        if regression_classifier == "r":
-            print("==============================================================================")
-            get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
-                       total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
+        #if regression_classifier == "r":
+        #    print("==============================================================================")
+        #    get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
+        #               total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
         if epoch==n_epoch-1:
             pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
             header = "Comp_ID\tTar_ID\tLabel\tPrediction"
