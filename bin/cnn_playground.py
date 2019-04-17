@@ -247,7 +247,9 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
         print("CPU is available on this device!")
 
     train_loader, test_loader = get_cnn_train_test_full_training_data_loader(batch_size)
-
+    #print(len(train_loader))
+    #print(len(test_loader))
+    #print(next(iter(test_loader)))
     test_epoch_results = []
     test_epoch_results.append([])
 
@@ -321,7 +323,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
 
             print("=====PREDICTIONS=====")
             for ind in range(len(test_all_tar_ids)):
-                print("{}\t{}\t{}\t{}\n".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
+                print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             print("=====PREDICTIONS=====")
         if regression_classifier == "r":
             print("==============================================================================")
