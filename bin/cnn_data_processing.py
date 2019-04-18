@@ -75,7 +75,7 @@ class CNNBioactivityDataset(Dataset):
     def __init__(self, comp_target_pair_dataset):
         comp_target_pair_dataset_path = "{}/{}".format(comp_tar_training_dataset_path, comp_target_pair_dataset)
         self.training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
-        print(self.training_dataset)
+        #print(self.training_dataset)
     def __len__(self):
         return len(self.training_dataset)
 
