@@ -259,7 +259,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
     optimizer.zero_grad()
 
     for epoch in range(n_epoch):
-        #print("Epoch :{}".format(epoch))
+        print("Epoch :{}".format(epoch))
         total_training_loss, total_test_loss = 0.0, 0.0
         total_training_count, total_test_count = 0, 0
         test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [],[] ,[]
@@ -290,7 +290,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
             loss.backward()
             optimizer.step()
 
-        #print("Epoch {} training loss:".format(epoch), total_training_loss)
+        print("Epoch {} training loss:".format(epoch), total_training_loss)
 
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
@@ -358,6 +358,7 @@ batch_size = sys.argv[4]
 training_dataset = sys.argv[5]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
-train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+# train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
