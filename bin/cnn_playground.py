@@ -356,7 +356,7 @@ after_flattened_conv_layer_neurons = sys.argv[2]
 last_2_hidden_layer_list = sys.argv[3].split("_")
 learn_rate = sys.argv[4]
 batch_size = sys.argv[5]
-training_dataset = sys.argv[5]
+training_dataset = sys.argv[6]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
 # train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))

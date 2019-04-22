@@ -15,7 +15,7 @@ training_files_path = "{}/../trainingFiles".format(cwd)
 
 # training_data_name = "DeepDTA_davis"
 
-training_data_name = sys.argv[5]
+training_data_name = sys.argv[6]
 compound_feature_list = "ecfp4".split("_")
 # target_feature_list = "sequencematrix1000".split("_")
 target_feature_list = "sequencematrix500".split("_")
