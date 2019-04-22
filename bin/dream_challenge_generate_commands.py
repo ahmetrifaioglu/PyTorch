@@ -428,23 +428,25 @@ def generate_protein_rnn_commands():
 # generate_protein_rnn_commands()
 
 def generate_protein_cnn_commands():
-    batch_size = [16, 32]
-    lst_learning_rate = [0.0001, 0.005, 0.001]
-    after_flattened_conv_layer_neurons = [64, 128, 256, 512]
-    last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512"]
+    batch_size = [16, 32, 64]
+    lst_learning_rate = [0.0001, 0.005, 0.001, 0.01]
+    after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
+    comp_2_hidden_layer_list = ["256_256", "512_256", "512_512", "1024_512", "1024_256", "1024_1024"]
+    last_2_hidden_layer_list = ["256_256", "1024_1024", "512_512", "128_128"]
     training_dataset_list = ["DeepDTA_davis", "DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_davis"]
-    for tr_data in training_dataset_list:
-        for conv_flat in after_flattened_conv_layer_neurons:
-            for last_fcc in last_2_hidden_layer_list:
-                for l_r in lst_learning_rate:
-                    for b_s in batch_size:
+    for comp_hid in comp_2_hidden_layer_list:
+        for tr_data in training_dataset_list:
+            for conv_flat in after_flattened_conv_layer_neurons:
+                for last_fcc in last_2_hidden_layer_list:
+                    for l_r in lst_learning_rate:
+                        for b_s in batch_size:
 
-                        # lst_params = []
-                        print("bsub -q research-rh74 -P gpu -gpu - -M 10240 -R 'rusage[mem=10240]' -o 1000_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {}\"".format(conv_flat, last_fcc, l_r, b_s, tr_data, conv_flat, last_fcc, l_r, b_s, tr_data
-    ))
-                        print("sleep 1")
+                            # lst_params = []
+                            print("bsub -q research-rh74 -P gpu -gpu - -M 10240 -R 'rusage[mem=10240]' -o ../LOGS/Davis500LargeScale5Fold/500_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
+        ))
+                            print("sleep 1")
 
 
-# generate_protein_cnn_commands()
+generate_protein_cnn_commands()

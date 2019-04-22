@@ -351,14 +351,15 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
     result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
-after_flattened_conv_layer_neurons = sys.argv[1]
-last_2_hidden_layer_list = sys.argv[2].split("_")
-learn_rate = sys.argv[3]
-batch_size = sys.argv[4]
+comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
+after_flattened_conv_layer_neurons = sys.argv[2]
+last_2_hidden_layer_list = sys.argv[3].split("_")
+learn_rate = sys.argv[4]
+batch_size = sys.argv[5]
 training_dataset = sys.argv[5]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
 # train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
-train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+train_networks(["ecfp4"], ["sequencematrix500"], comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
