@@ -20,6 +20,7 @@ class FC_2_Layer(torch.nn.Module):
         self.relu = torch.nn.ReLU()
         self.drop_rate = drop_rate
 
+
     def forward(self, x):
         out1 = F.dropout(self.relu(self.bn1(self.l1(x))), self.drop_rate)
         out2 = F.dropout(self.relu(self.bn2(self.l2(out1))), self.drop_rate)

@@ -39,7 +39,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 500
+    n_epoch = 100
     num_of_folds = 5
     batch_size = 64
 
@@ -112,9 +112,6 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
             model = FC_PINNModel_2_2_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], fc1, fc2, regression_classifier).to(device)
         elif modeltype=="PINN_2_3":
             model = FC_PINNModel_2_3_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], tar_hidden_lst[2], fc1, fc2).to(device)
-        elif modeltype=="PINN_3_5":
-            model = FC_PINNModel_3_5_2_Modules(number_of_comp_features, comp_hidden_lst[0], comp_hidden_lst[1], comp_hidden_lst[2], number_of_target_features, tar_hidden_lst[0], tar_hidden_lst[1], tar_hidden_lst[2], tar_hidden_lst[3], tar_hidden_lst[4], fc1, fc2).to(device)
-
         # print(model.parameters)
         # optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         optimizer = torch.optim.SGD(

@@ -13,26 +13,21 @@ import torch.nn as nn
 cwd = os.getcwd()
 
 training_files_path = "{}/../trainingFiles".format(cwd)
-davis_dataset_path = "{}/DeepDTA".format(training_files_path)
-davis_comp_tar_training_dataset = "{}/dti_datasets".format(davis_dataset_path)
-
-# print(training_files_path)
-# training_files_path = "/hps/nobackup/production/uniprot/rahmet/PyTorch/trainingFiles"
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
-prot_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
+prot_feature_vector_path = "{}/IDGDreamChallenge/target_feature_vectors".format(training_files_path)
 heval_prot_feature_vector_path = "{}/IDGDreamChallenge/DreamChallengeHeval/feature_vectors".format(training_files_path)
 comp_feature_vector_path = "{}/IDGDreamChallenge/compound_feature_vectors".format(training_files_path)
 comp_feature_vector_path = "{}/IDGDreamChallenge/compound_feature_vectors".format(training_files_path)
-tar_feature_vector_path = "{}/IDGDreamChallenge/protein_feature_vectors".format(training_files_path)
+tar_feature_vector_path = "{}/IDGDreamChallenge/target_feature_vectors".format(training_files_path)
 helper_fl_path = "../trainingFiles/IDGDreamChallenge/helper_files"
 
 
-idg_training_dataset_path = "{}/DeepDTA/dti_datasets".format(training_files_path)
-prot_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
+#idg_training_dataset_path = "{}/DeepDTA/dti_datasets".format(training_files_path)
+#prot_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
 # heval_prot_feature_vector_path = "{}/DeepDTA/DreamChallengeHeval/feature_vectors".format(training_files_path)
-comp_feature_vector_path = "{}/DeepDTA/compound_feature_vectors".format(training_files_path)
-tar_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
-helper_fl_path = "../trainingFiles/DeepDTA/helper_files"
+#comp_feature_vector_path = "{}/DeepDTA/compound_feature_vectors".format(training_files_path)
+#tar_feature_vector_path = "{}/DeepDTA/protein_feature_vectors".format(training_files_path)
+#helper_fl_path = "../trainingFiles/DeepDTA/helper_files"
 
 def getChEMBLTargetIDUniProtMapping():
     chembl_uniprot_dict = dict()
