@@ -199,6 +199,13 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
+
+                if epoch==n_epoch-1:
+                    rmse_results = [float(rslt[2]) for rslt in test_fold_epoch_results]
+                    if min(rmse_results) >= 0.5:
+                            sys.exit("Terminating training since minimum MSE is less than the threshold!")
+
+
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
     result_fl = open("../result_files/{}.tsv".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
