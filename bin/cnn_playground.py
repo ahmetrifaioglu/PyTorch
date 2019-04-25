@@ -201,7 +201,9 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
 
                 if epoch==n_epoch-1:
+                    print(test_fold_epoch_results)
                     rmse_results = [float(rslt[2]) for rslt in test_fold_epoch_results]
+                    print(rmse_results)
                     if min(rmse_results) >= 0.35:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
