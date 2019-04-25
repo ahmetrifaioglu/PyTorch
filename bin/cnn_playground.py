@@ -24,7 +24,7 @@ from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cn
 import sys
 # import statistics
 
-n_epoch = 3
+n_epoch = 100
 num_of_folds = 5
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
@@ -201,9 +201,10 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                            total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
 
                 if epoch==n_epoch-1:
-                    print(test_fold_epoch_results)
+                    #print(test_fold_epoch_results)
                     rmse_results = [float(rslt[2]) for rslt in test_fold_epoch_results[fold]]
                     print(rmse_results)
+                    print(min(rmse_results))
                     if min(rmse_results) >= 0.35:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
