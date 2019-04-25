@@ -203,7 +203,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
                 if epoch==n_epoch-1:
                     rmse_results = [float(rslt[2]) for rslt in test_fold_epoch_results]
                     if min(rmse_results) >= 0.5:
-                            sys.exit("Terminating training since minimum MSE is less than the threshold!")
+                            sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
 
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
