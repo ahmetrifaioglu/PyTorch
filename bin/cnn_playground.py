@@ -22,7 +22,6 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
-
 # import statistics
 
 n_epoch = 100
@@ -112,15 +111,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
 
-        model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2,
-                                drop_prob=0.5)
-        if torch.cuda.device_count() > 1:
-            print("Let's use", torch.cuda.device_count(), "GPUs!")
-            # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-            model = torch.nn.DataParallel(model)
-
-        model.to(device)
-
+        model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
         optimizer.zero_grad()
@@ -262,15 +253,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
     test_epoch_results = []
     test_epoch_results.append([])
 
-    model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5)
-    if torch.cuda.device_count() > 1:
-        print("Let's use", torch.cuda.device_count(), "GPUs!")
-        # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-        model = torch.nn.DataParallel(model)
-
-    model.to(device)
-
-
+    model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
     criterion = torch.nn.MSELoss()
     optimizer.zero_grad()
