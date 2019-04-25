@@ -111,7 +111,15 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         train_loader, valid_loader = loader_fold_dict[fold]
         print("FOLD : {}".format(fold + 1))
 
-        model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
+        model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2,
+                                drop_prob=0.5)
+        if torch.cuda.device_count() > 1:
+            print("Let's use", torch.cuda.device_count(), "GPUs!")
+            # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
+            model = nn.DataParallel(model)
+
+        model.to(device)
+
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
         optimizer.zero_grad()
