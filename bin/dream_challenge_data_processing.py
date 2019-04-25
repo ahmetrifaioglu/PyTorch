@@ -569,6 +569,87 @@ def get_test_loader(comp_feature_list, target_feature_lst, comp_target_pair_data
     # print(loader_fold_dict, number_of_comp_features, number_of_target_features)
     return test_loader
 
+
+class ChallengeTestDataLoader(Dataset):
+
+    def __init__(self, comp_feature_list, target_feature_lst):
+
+        comp_target_pair_dataset_path = "../input/round_2_template.csv"
+
+        dict_compound_features = get_dict_combined_feature_vectors("compound", comp_feature_list)
+        dict_target_features = get_dict_combined_feature_vectors("target", target_feature_lst)
+
+        training_dataset = pd.read_csv(comp_target_pair_dataset_path)[:100]
+        # https://stackoverflow.com/questions/29576430/shuffle-dataframe-rows
+        # The frac keyword argument specifies the fraction of rows to return in the random sample,
+        # so frac=1 means return all rows (in random order).
+        # training_dataset = training_dataset.sample(frac=1).reset_index(drop=True)
+        self.compound_ids = training_dataset.iloc[:, 2]
+        self.target_ids = training_dataset.iloc[:, 3]
+        # self.labels = training_dataset.iloc[:, 2]
+
+
+        valid_compound_ids = []
+        valid_target_ids = []
+        self.comp_feature_vectors = []
+        self.target_feature_vectors = []
+        valid_labels = []
+
+        invalid_data_points = 0
+        total_number_of_data_points = 0
+        for ind  in range(len(self.compound_ids)):
+            total_number_of_data_points += 1
+            #print(dict_compound_features[comp_id])
+            #try:
+            comp_id = self.compound_ids[ind]
+            tar_id = self.target_ids[ind]
+            #lbl = self.labels[ind]
+            comp_features = dict_compound_features[comp_id]
+            tar_features = dict_target_features[tar_id]
+            self.comp_feature_vectors.append(comp_features)
+            self.target_feature_vectors.append(tar_features)
+            #valid_labels.append(-math.log10(10e-10*float(lbl)))
+            #valid_labels.append(float(lbl))
+            valid_compound_ids.append(comp_id)
+            valid_target_ids.append(tar_id)
+            #except:
+            #    invalid_data_points+=1
+            #    print()
+            #    pass
+
+        print("{} test data points are invalid out of {}!".format(invalid_data_points, total_number_of_data_points))
+
+        self.comp_feature_vectors = np.asarray(self.comp_feature_vectors)
+        self.comp_feature_vectors = torch.tensor(self.comp_feature_vectors).type(torch.FloatTensor)
+
+        self.target_feature_vectors = np.asarray(self.target_feature_vectors)
+        self.target_feature_vectors = torch.tensor(self.target_feature_vectors).type(torch.FloatTensor)
+
+        #self.labels = torch.tensor(valid_labels).type(torch.FloatTensor)
+        self.compound_ids = valid_compound_ids
+        self.target_ids = valid_target_ids
+
+        self.number_of_comp_features = int(self.comp_feature_vectors.shape[1])
+        self.number_of_target_features = int(self.target_feature_vectors.shape[1])
+
+    def __getitem__(self, index):
+        return self.comp_feature_vectors[index], self.target_feature_vectors[index], self.compound_ids[index], self.target_ids[index], self.number_of_comp_features, self.number_of_target_features
+
+    def __len__(self):
+        return len(self.compound_ids)
+
+def get_test_loader_challenge(comp_feature_list, tar_feature_list):
+    test_data = ChallengeTestDataLoader(comp_feature_list, tar_feature_list)
+    total_number_of_samples = len(test_data)
+
+    print("Number of test samples:\t{}".format(total_number_of_samples))
+
+    test_loader = torch.utils.data.DataLoader(test_data)  # , batch_size=batch_size)
+
+    # print(loader_fold_dict, number_of_comp_features, number_of_target_features)
+    return test_loader
+
+
 # get_nfold_data_loader_dict(5, 32, ["comp_dummy_feat_1", "comp_dummy_feat_2"], ["prot_dummy_feat_1", "prot_dummy_feat_2"], "dummy_Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt")
 
 

@@ -4,18 +4,18 @@ import torch
 import pandas as pd
 import numpy as np
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms, utils
+# from torchvision import transforms, utils
 from torch.autograd import Variable
 import torch.nn.functional as F
 import sys
 from dream_challenge_metrics import rmse, pearson, spearman, ci, f1, average_AUC
-from torchvision import datasets
-import torchvision.transforms as transforms
+# from torchvision import datasets
+# import torchvision.transforms as transforms
 import itertools
 import warnings
 # from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
 #from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
-from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict, get_test_loader, get_full_training_data_loader
+from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict, get_test_loader_challenge, get_full_training_data_loader
 from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 
 warnings.filterwarnings("ignore")
@@ -33,12 +33,12 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
     learn_rate = float(lr)
     print(modeltype, comp_feature_list, tar_feature_list, fc1, fc2, learn_rate)
     #learn_rate = sys.argv[2]
-    n_epoch = 150
+    n_epoch = 10
     num_of_folds = 1
     batch_size = 64
 
     # comp_tar_pair_dataset = "idg_comp_targ_uniq_inter_filtered.csv"
-    comp_tar_pair_test_dataset = "idg_comp_targ_test.csv"
+    comp_tar_pair_test_dataset = "comp_targ_affinity.csv"
 
     use_gpu = torch.cuda.is_available()
 
@@ -49,7 +49,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
         device = "cuda"
     else:
         print("CPU is available on this device!")
-
+    device = "cpu"
     # comp_tar_pair_dataset = "dummy_Dtc_comp_targ_uniq_inter_filtered_onlykinase.txt"
 
     # comp_feature_list = ["comp_dummy_feat_1", "comp_dummy_feat_2"]
@@ -69,7 +69,7 @@ def train_networks(mod, comp_feat, tar_feat, comp_hidden_lst, tar_hidden_lst, fc
                                                                                                          comp_tar_pair_dataset,
                                                                                                          regression_classifier)
 
-        test_loader = get_test_loader(comp_feature_list, tar_feature_list, comp_tar_pair_test_dataset)
+        test_loader = get_test_loader_challenge(comp_feature_list, tar_feature_list)
         test_predictions = []
         original_number_of_comp_features = int(number_of_comp_features)
         original_number_of_target_features = int(number_of_target_features)
