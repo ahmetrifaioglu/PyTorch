@@ -22,6 +22,7 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
+
 # import statistics
 
 n_epoch = 100
@@ -116,7 +117,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
         if torch.cuda.device_count() > 1:
             print("Let's use", torch.cuda.device_count(), "GPUs!")
             # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-            model = nn.DataParallel(model)
+            model = torch.nn.DataParallel(model)
 
         model.to(device)
 
@@ -265,7 +266,7 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
     if torch.cuda.device_count() > 1:
         print("Let's use", torch.cuda.device_count(), "GPUs!")
         # dim = 0 [30, xxx] -> [10, ...], [10, ...], [10, ...] on 3 GPUs
-        model = nn.DataParallel(model)
+        model = torch.nn.DataParallel(model)
 
     model.to(device)
 
