@@ -445,7 +445,7 @@ def generate_protein_cnn_commands():
                         for comp_hid in comp_2_hidden_layer_list:
 
                             # lst_params = []
-                            print("bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../log_files/davis_filtered_exclusive_500_large_scale_5_fold/500_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
+                            print("bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../log_files/davis_filtered_exclusive_500_large_scale_5_fold/500_{}_{}_{}_{}_{}_{}.out \"python cnn_playground_2.py {} {} {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
         ))
                             print("sleep 1")
 
