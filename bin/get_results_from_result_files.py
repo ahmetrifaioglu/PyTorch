@@ -3,7 +3,56 @@ import os
 import pandas as pd
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/1000_cnn_davis_results"
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/corrected_davis_500_cnn_exp_results"
-result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/corrected_davis_1000_cnn_exp_results"
+result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/davis_500_cnn_5_fold_extended_hyperparam_training_results"
+
+
+def get_5_fold_results_fold_thresholds():
+    metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
+                   "test_spearman_score", "test_ci_score", "val_f1_score", "val_ave_auc_score"]
+
+    str_header = "fl_name\tepoch_num"
+    for metric in metric_list:
+        str_header += "\t{}_mean\t{}_std".format(metric, metric)
+    print(str_header)
+    for fl in os.listdir(result_file_path):
+        results_df  = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
+
+        best_metric_result_dict=dict()
+        for metric in metric_list:
+            if metric != "test_deep_dta_mse":
+                best_metric_result_dict[metric] = [-1,-1,-1,-1,-1]
+            else:
+                best_metric_result_dict[metric] = [1000000, 1000000, 1000000, 1000000, 1000000]
+        # print(best_metric_result_dict)
+        for ind, row in results_df.iterrows():
+
+            for metric in metric_list:
+                fold_results = [float(rslt) for rslt in row[metric].split(",")]
+                #print(fold_results)
+                for i in range(len(fold_results)):
+                    if metric == "test_deep_dta_mse":
+                        if fold_results[i]< best_metric_result_dict[metric][i]:
+                            best_metric_result_dict[metric][i] = fold_results[i]
+                    else:
+                        if fold_results[i]> best_metric_result_dict[metric][i]:
+                            best_metric_result_dict[metric][i] = fold_results[i]
+
+        #print(best_metric_result_dict)
+        mean_std_results_dict = dict()
+        for metric in metric_list:
+            mean_rslt = statistics.mean(best_metric_result_dict[metric])
+            stddev_rslt = statistics.pstdev(best_metric_result_dict[metric])
+            mean_std_results_dict[metric] = (mean_rslt, stddev_rslt)
+
+
+
+        str_result = "{}\t{}".format(fl,str(100))
+        for metric in metric_list:
+            str_result += "\t{}\t{}".format(mean_std_results_dict[metric][0], mean_std_results_dict[metric][1])
+        print(str_result)
+#test_deep_dta_rm2	test_deep_dta_cindex	test_deep_dta_mse	test_pearson_score	test_spearman_score	test_ci_score	test_f1_score	test_ave_auc_score
+
+get_5_fold_results_fold_thresholds()
 def get_5_fold_results():
     metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
                    "test_spearman_score", "test_ci_score", "val_f1_score", "val_ave_auc_score"]
@@ -36,6 +85,8 @@ def get_5_fold_results():
             str_result += "\t{}\t{}".format(best_epoch_result_dict[metric][0], best_epoch_result_dict[metric][1])
         print(str_result)
 #test_deep_dta_rm2	test_deep_dta_cindex	test_deep_dta_mse	test_pearson_score	test_spearman_score	test_ci_score	test_f1_score	test_ave_auc_score
+
+# get_5_fold_results()
 def get_full_training_results():
     metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
                    "test_spearman_score", "test_ci_score", 	"test_f1_score","test_ave_auc_score"]
@@ -66,4 +117,4 @@ def get_full_training_results():
             str_result += "\t{}".format(best_epoch_result_dict[metric])
         print(str_result)
 
-get_full_training_results()
+# get_full_training_results()

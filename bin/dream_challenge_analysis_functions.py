@@ -161,7 +161,34 @@ def getFamilySpecificScores():
 
     # print(dict_fam_spec_predictions)
 
+def get_create_folds_for_train_test_davis_filtered():
+    import random
+    import math
+    """
+    lst_folds = []
+    lst_indices = []
+    for i in range(6706):
+        lst_indices.append(i)
+    random.shuffle(lst_indices)
+    fold_size = math.ceil(len(lst_indices)/5)
 
+    ind = 0
+    while ind<6706:
+        lst_fold = lst_indices[ind:ind+fold_size]
+        ind = ind+fold_size
+        lst_folds.append(lst_fold)
+    print(lst_folds)
+    """
+
+
+
+    lst_folds = []
+    for i in range(6706,8248):
+        lst_folds.append(i)
+    print(lst_folds)
+
+# get_create_folds_for_train_test_davis_filtered()
 # getFamilySpecificScores()
 
 # getMissingCompoundTargetIDs()
+
