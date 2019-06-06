@@ -22,6 +22,7 @@ from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
+
 # import statistics
 
 n_epoch = 100
@@ -89,7 +90,7 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
 
 
 
-def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
+def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
@@ -101,7 +102,7 @@ def train_networks(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num
     else:
         print("CPU is available on this device!")
 
-    loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(batch_size)
+    loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size)
 
     test_fold_epoch_results = []
     validation_fold_epoch_results = []
@@ -367,9 +368,11 @@ last_2_hidden_layer_list = sys.argv[3].split("_")
 learn_rate = sys.argv[4]
 batch_size = sys.argv[5]
 training_dataset = sys.argv[6]
+comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
+tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
 # train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
-train_networks(["ecfp4"], ["sequencematrix500"], comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))

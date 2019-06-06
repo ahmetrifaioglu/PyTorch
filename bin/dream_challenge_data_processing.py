@@ -1,3 +1,4 @@
+from __future__ import print_function
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch
@@ -11,7 +12,6 @@ import itertools
 import torch.nn as nn
 
 cwd = os.getcwd()
-
 training_files_path = "{}/../trainingFiles".format(cwd)
 idg_training_dataset_path = "{}/IDGDreamChallenge/dti_datasets".format(training_files_path)
 prot_feature_vector_path = "{}/IDGDreamChallenge/target_feature_vectors".format(training_files_path)
@@ -761,33 +761,9 @@ def create_comp_tar_inter_dataset_label():
 
 # create_comp_tar_inter_dataset_nM()
 
-def get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path):
-    prot_id_seq_dict = dict()
-
-    prot_id = ""
-    with open("{}".format(fasta_fl_path)) as f:
-        for line in f:
-            line = line.split("\n")[0]
-            if line.startswith(">"):
-                prot_id = line.split("|")[1]
-                prot_id_seq_dict[prot_id] = ""
-            else:
-                prot_id_seq_dict[prot_id] = prot_id_seq_dict[prot_id] + line
-
-    return prot_id_seq_dict
 
 
-def get_aa_list():
-    aa_list = ["A", "R", "N", "D", "C", "Q", "E", "G", "H", "I", "L", "K", "M", "F", "P", "S", "T", "W", "Y", "V"]
-    return aa_list
 
-
-def get_all_aa_word_list(word_size):
-    aa_list = get_aa_list()
-    # all_n_gram_list = list(itertools.permutations(aa_list, word_size))
-    all_n_gram_list = list(itertools.product(aa_list, repeat=word_size))
-    all_n_gram_list = [''.join(n_gram_tuple) for n_gram_tuple in all_n_gram_list]
-    return all_n_gram_list
 
 
 def get_int2aaword_aaword2int_dicts(word_size):
@@ -808,11 +784,7 @@ def get_overlapping_n_grams_list(prot_seq, word_size, skip_size):
     return prot_seq_overlapping_ngram_list
 
 
-def remove_nonstandard_aas(prot_seq):
-    aa_list = get_aa_list()
-    prot_seq_list = [aa for aa in prot_seq if aa in aa_list]
-    prot_seq = ''.join(prot_seq_list)
-    return prot_seq
+
 
 
 '''
@@ -824,21 +796,6 @@ def encode_protein_sequence(prot_seq, word_size, skip_size, aaword2int_dict):
     prot_seq_overlapping_ngram_list = get_overlapping_n_grams_list(prot_seq, word_size, skip_size)
     prot_seq_encoded = [aaword2int_dict[aa_word] for aa_word in prot_seq_overlapping_ngram_list]
     return prot_seq_encoded
-
-
-def get_int_encodings_of_proteins_sequences(fasta_fl_path, word_size, skip_size):
-    int2aaword_dict, aaword2int_dict = get_int2aaword_aaword2int_dicts(word_size)
-    # print(aaword2int_dict)
-    prot_id_list, seq_encoding_list = [], []
-    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
-    for prot_id, seq in prot_id_seq_dict.items():
-        # first remove nonstandard aminoacids
-        # print(seq)
-        seq = remove_nonstandard_aas(seq)
-        prot_id_list.append(prot_id)
-        seq_encoding_list.append(encode_protein_sequence(seq, word_size, skip_size, aaword2int_dict))
-    return prot_id_list, seq_encoding_list
-
 
 def pad_encoded_features(seq_encoding_list, seq_length=1000):
     '''
@@ -857,6 +814,18 @@ def pad_encoded_features(seq_encoding_list, seq_length=1000):
 
     return padded_features
 
+def get_int_encodings_of_proteins_sequences(fasta_fl_path, word_size, skip_size):
+    int2aaword_dict, aaword2int_dict = get_int2aaword_aaword2int_dicts(word_size)
+    # print(aaword2int_dict)
+    prot_id_list, seq_encoding_list = [], []
+    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+    for prot_id, seq in prot_id_seq_dict.items():
+        # first remove nonstandard aminoacids
+        # print(seq)
+        seq = remove_nonstandard_aas(seq)
+        prot_id_list.append(prot_id)
+        seq_encoding_list.append(encode_protein_sequence(seq, word_size, skip_size, aaword2int_dict))
+    return prot_id_list, seq_encoding_list
 
 def save_encoded_features(fasta_fl, word_size, skip_size, seq_length):
     prot_id_list, seq_encoding_list = get_int_encodings_of_proteins_sequences(fasta_fl, word_size, skip_size)
@@ -903,60 +872,6 @@ def get_train_test_val_data_loaders(batch_size):
 
     return train_loader, valid_loader, test_loader
 
-
-def get_aa_match_encodings():
-    all_aa_matches = get_all_aa_word_list(2)
-    aa_match_encoding_dict = dict()
-    encod_int = 1
-    for aa_pair in all_aa_matches:
-        if aa_pair not in aa_match_encoding_dict.keys():
-            aa_match_encoding_dict[aa_pair] = encod_int
-            aa_match_encoding_dict[aa_pair[::-1]] = encod_int
-            encod_int += 1
-    return aa_match_encoding_dict
-
-
-def get_sequence_matrix(seq, size):
-    aa_match_encoding_dict = get_aa_match_encodings()
-    # print(aa_match_encoding_dict)
-
-    seq = remove_nonstandard_aas(seq)
-    lst = []
-    for i in range(len(seq)):
-        lst.append([])
-        for j in range(len(seq)):
-            lst[-1].append(aa_match_encoding_dict[seq[i] + seq[j]])
-
-    torch_arr = torch.from_numpy(np.asarray(lst))
-    size_of_tensor = torch_arr.shape[0]
-    # print(torch_list)
-    # print(torch_list.shape[0])
-    if size_of_tensor < size:
-        padding_size = int((size - size_of_tensor) / 2)
-        m = nn.ZeroPad2d(padding_size)
-        if size_of_tensor % 2 != 0:
-            m = nn.ZeroPad2d((padding_size, padding_size + 1, padding_size, padding_size + 1))
-        torch_arr = m(torch_arr)
-    else:
-        torch_arr = torch_arr[:size, :size]
-
-    # print(torch_arr.shape)
-    return torch_arr
-
-
-def save_all_flattened_sequence_matrices(fasta_fl_path, size):
-    prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
-    str_header = "target id\t" + "\t".join([str(num) for num in list(range(size*size))])
-    print(str_header)
-    for prot_id, seq in prot_id_seq_dict.items():
-
-        seq_torch_matrix = get_sequence_matrix(seq, size)
-        # print(seq_torch_matrix)
-        flattened_seq_matrix_arr = np.array(seq_torch_matrix.contiguous().view(-1))
-        # print(flattened_seq_matrix_arr)
-        print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
-
-# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/IDGDreamChallenge/helper_files/targets.fasta", 500)
 
 def convert_deepdta_davis_dataset_into_our_format():
     import json

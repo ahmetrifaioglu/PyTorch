@@ -10,29 +10,17 @@ import os
 import itertools
 import torch.nn as nn
 import sys
+
+
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
-
-# training_data_name = "DeepDTA_davis"
-
-training_data_name = sys.argv[6]
-compound_feature_list = "ecfp4".split("_")
-# target_feature_list = "sequencematrix1000".split("_")
-target_feature_list = "sequencematrix500".split("_")
 compound_target_pair_dataset = "comp_targ_affinity.csv"
 
-training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
-comp_tar_training_dataset_path = "{}/dti_datasets".format(training_dataset_path)
-comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
-tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
-helper_fl_path = "{}/helper_files".format(training_dataset_path)
-data_path = "{}/data".format(training_dataset_path)
-folds_path = "{}/data/folds".format(training_dataset_path)
-
-
-
-def get_numpy_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
+def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     sorted(feature_lst)
+    training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+    comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
+    tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
     df_combined_features = dict()
@@ -48,8 +36,11 @@ def get_numpy_target_dict_combined_feature_vectors(target_or_compound, feature_l
             count+=1
     return df_combined_features
 
-def get_list_target_dict_combined_feature_vectors(target_or_compound, feature_lst):
+def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     sorted(feature_lst)
+    training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+    comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
+    tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
     df_combined_features = dict()
@@ -65,15 +56,18 @@ def get_list_target_dict_combined_feature_vectors(target_or_compound, feature_ls
     return df_combined_features
 
 
-dict_compound_features = get_list_target_dict_combined_feature_vectors("compound", compound_feature_list)
-dict_target_features = get_numpy_target_dict_combined_feature_vectors("target", target_feature_list)
-training_dataset = pd.read_csv('{}/{}'.format(comp_tar_training_dataset_path, compound_target_pair_dataset), header=None)
+
+# training_dataset = pd.read_csv('{}/{}'.format(comp_tar_training_dataset_path, compound_target_pair_dataset), header=None)
 
 
 
 class CNNBioactivityDataset(Dataset):
-    def __init__(self, comp_target_pair_dataset):
+    def __init__(self, training_data_name, comp_target_pair_dataset, compound_feature_list, target_feature_list):
+        training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+        comp_tar_training_dataset_path = "{}/dti_datasets".format(training_dataset_path)
         comp_target_pair_dataset_path = "{}/{}".format(comp_tar_training_dataset_path, comp_target_pair_dataset)
+        self.dict_compound_features = get_list_target_dict_combined_feature_vectors(training_data_name, "compound", compound_feature_list)
+        self.dict_target_features = get_numpy_target_dict_combined_feature_vectors(training_data_name, "target", target_feature_list)
         self.training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
         #print(self.training_dataset)
     def __len__(self):
@@ -83,21 +77,24 @@ class CNNBioactivityDataset(Dataset):
         row = self.training_dataset.iloc[idx]
 
         comp_id, tar_id, biact_val = str(row[0]), str(row[1]), str(row[2])
-        comp_feats = dict_compound_features[comp_id]
-        tar_feats = dict_target_features[tar_id]
+        comp_feats = self.dict_compound_features[comp_id]
+        tar_feats = self.dict_target_features[tar_id]
         label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
         return comp_feats, tar_feats, label, comp_id, tar_id
 
 
 
-def get_cnn_test_val_folds_train_data_loader(batch_size=32):
+def get_cnn_test_val_folds_train_data_loader(training_data_name, comp_feature_list, tar_feature_list, batch_size=32):
     import numpy as np
     import json
+
+    training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+    folds_path = "{}/data/folds".format(training_dataset_path)
 
     folds = json.load(open("{}/train_fold_setting1.txt".format(folds_path)))
     test = json.load(open("{}/test_fold_setting1.txt".format(folds_path)))
 
-    bioactivity_dataset = CNNBioactivityDataset(comp_target_pair_dataset=compound_target_pair_dataset)
+    bioactivity_dataset = CNNBioactivityDataset(training_data_name, compound_target_pair_dataset, comp_feature_list, tar_feature_list)
     loader_fold_dict = dict()
     for fold_id in range(len(folds)):
         folds_id_list = list(range(len(folds)))
@@ -125,9 +122,12 @@ def get_cnn_test_val_folds_train_data_loader(batch_size=32):
 
 
 
-def get_cnn_train_test_full_training_data_loader(batch_size=32):
+def get_cnn_train_test_full_training_data_loader(training_data_name, batch_size=32, train_test_val=False):
     import numpy as np
     import json
+
+    training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+    folds_path = "{}/data/folds".format(training_dataset_path)
 
     folds = json.load(open("{}/train_fold_setting1.txt".format(folds_path)))
     test = json.load(open("{}/test_fold_setting1.txt".format(folds_path)))
@@ -135,50 +135,38 @@ def get_cnn_train_test_full_training_data_loader(batch_size=32):
     #print("{}/train_fold_setting1.txt".format(folds_path))
     #print("{}/test_fold_setting1.txt".format(folds_path))
     #print(compound_target_pair_dataset)
-    bioactivity_dataset = CNNBioactivityDataset(comp_target_pair_dataset=compound_target_pair_dataset)
+    bioactivity_dataset = CNNBioactivityDataset(training_data_name, compound_target_pair_dataset, comp_feature_list, tar_feature_list)
     # print(len(bioactivity_dataset))
     train_indices = []
-    for fold_id in range(len(folds)):
-        train_indices.extend(folds[fold_id])
-    # print(len(train_indices))
-    # print(len(test))
+    validation_indices = []
+
+    if train_test_val:
+        train_indices = folds[0]
+        validation_indices = folds[1]
+    else:
+        for fold_id in range(len(folds)):
+            train_indices.extend(folds[fold_id])
+
     train_sampler = SubsetRandomSampler(train_indices)
 
     train_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
                                                sampler=train_sampler)
+
+    validation_sampler, validation_loader = None, None
+    if train_test_val:
+        validation_sampler = SubsetRandomSampler(validation_indices)
+        validation_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
+                                                   sampler=validation_sampler)
+
+
     test_sampler = SubsetRandomSampler(test)
     test_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
                                                    sampler=test_sampler)
+    if train_test_val:
+        return train_loader, validation_loader, test_loader
+
     return train_loader, test_loader
 
 
-"""
-import matplotlib.pyplot as plt
-for key in dict_target_features.keys():
-    #fig = plt.figure()
-    print(dict_target_features[key].reshape(500,500).shape)
-    plt.imshow(dict_target_features[key].reshape(500,500))
-    plt.colorbar()
-    # fig.show()
-    plt.show()
-"""
 
 
-"""
-for i, data in enumerate(train_loader):
-    # get the inputs
-    print(i)
-    comp_feature_vectors, target_feature_vectors, labels, comp_ids, tar_ids = data
-    print(target_feature_vectors.shape)
-    print(comp_feature_vectors.shape)
-"""
-"""
-loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader()
-train_loader = loader_fold_dict[0][1]
-for i, data in enumerate(train_loader):
-    # get the inputs
-    print(i)
-    comp_feature_vectors, target_feature_vectors, labels, comp_ids, tar_ids = data
-    print(target_feature_vectors.shape)
-    print(comp_feature_vectors.shape)
-"""

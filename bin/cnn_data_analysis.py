@@ -15,8 +15,8 @@ cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
 
 # training_data_name = "DeepDTA_davis"
-
-training_data_name = "DeepDTA_kiba"
+# training_data_name = "DeepDTA_kiba"
+training_data_name = "PDBBind"
 compound_feature_list = "ecfp4".split("_")
 target_feature_list = "sequencematrix1000".split("_")
 compound_target_pair_dataset = "comp_targ_affinity.csv"
@@ -94,7 +94,7 @@ def plot_seq_length(fasta_fl_path, interval, dataset_name):
     # interval_dist_list = [item for item in interval_dist_list]
     adj_interval_dist_list = interval_dist_list#[item - interval / 2 for item in interval_dist_list]
     print(count_list)
-    len_list = ["<=500", "501-1000", "1001-1500", "1501-2000", "2001-2500", "2501-3000"]
+    len_list = ["<=500", "501-1000", "1001-1500", "1501-2000", "2001-2500", "2501-3000", "3001-3500", "3501-4000","4001-4500","4501-5000"]
     p = figure(x_range=len_list, plot_width=1400, plot_height=700,
                title="Distribution of Sequence Lenghts - {} Dataset".format(dataset_name),
                toolbar_location=None, tools="")
