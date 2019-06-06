@@ -36,6 +36,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             count+=1
     return df_combined_features
 
+
 def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     sorted(feature_lst)
     training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
@@ -54,11 +55,6 @@ def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_
             df_combined_features[target_id] = torch.tensor(np.asarray(feat_vec, dtype=float)).type(torch.FloatTensor)
             count+=1
     return df_combined_features
-
-
-
-# training_dataset = pd.read_csv('{}/{}'.format(comp_tar_training_dataset_path, compound_target_pair_dataset), header=None)
-
 
 
 class CNNBioactivityDataset(Dataset):
@@ -122,7 +118,7 @@ def get_cnn_test_val_folds_train_data_loader(training_data_name, comp_feature_li
 
 
 
-def get_cnn_train_test_full_training_data_loader(training_data_name, batch_size=32, train_test_val=False):
+def get_cnn_train_test_full_training_data_loader(training_data_name, comp_feature_list, tar_feature_list, batch_size=32, train_val_test=False):
     import numpy as np
     import json
 
@@ -131,16 +127,13 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, batch_size=
 
     folds = json.load(open("{}/train_fold_setting1.txt".format(folds_path)))
     test = json.load(open("{}/test_fold_setting1.txt".format(folds_path)))
-    #print(test)
-    #print("{}/train_fold_setting1.txt".format(folds_path))
-    #print("{}/test_fold_setting1.txt".format(folds_path))
-    #print(compound_target_pair_dataset)
+
     bioactivity_dataset = CNNBioactivityDataset(training_data_name, compound_target_pair_dataset, comp_feature_list, tar_feature_list)
-    # print(len(bioactivity_dataset))
+
     train_indices = []
     validation_indices = []
 
-    if train_test_val:
+    if train_val_test:
         train_indices = folds[0]
         validation_indices = folds[1]
     else:
@@ -153,7 +146,7 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, batch_size=
                                                sampler=train_sampler)
 
     validation_sampler, validation_loader = None, None
-    if train_test_val:
+    if train_val_test:
         validation_sampler = SubsetRandomSampler(validation_indices)
         validation_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
                                                    sampler=validation_sampler)
@@ -162,7 +155,7 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, batch_size=
     test_sampler = SubsetRandomSampler(test)
     test_loader = torch.utils.data.DataLoader(bioactivity_dataset, batch_size=batch_size,
                                                    sampler=test_sampler)
-    if train_test_val:
+    if train_val_test:
         return train_loader, validation_loader, test_loader
 
     return train_loader, test_loader

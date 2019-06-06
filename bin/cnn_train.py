@@ -33,7 +33,6 @@ parser.add_argument(
     default=32,
     metavar='BS',
     help='batch size (default: 32)')
-
 parser.add_argument(
     '--training-data',
     type=str,
@@ -41,6 +40,25 @@ parser.add_argument(
     metavar='TD',
     help='the name of the training dataset (default: PDBBind)')
 
+parser.add_argument(
+    '--compound-features',
+    type=str,
+    default="ecfp4",
+    metavar='CF',
+    help='compound features separated by underscore character (default: ecfp4)')
+parser.add_argument(
+    '--target-features',
+    type=str,
+    default="sequencematrix500",
+    metavar='TF',
+    help='target features separated by underscore character (default: sequencematrix500)')
+
+parser.add_argument(
+    '--train-test-validation',
+    type=bool,
+    default=False,
+    metavar='TTV',
+    help='Determines if data is divided into train-test-validation (default: False)')
 
 args = parser.parse_args()
 training_data= args.training_data
@@ -52,4 +70,6 @@ last_2_hidden_layer_list = sys.argv[3].split("_")
 learn_rate = sys.argv[4]
 batch_size = sys.argv[5]
 training_dataset = sys.argv[6]
+comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
+tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 """

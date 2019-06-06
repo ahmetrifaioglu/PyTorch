@@ -245,7 +245,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 
-def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
+def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False):
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
@@ -256,13 +256,23 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
         device = "cuda"
     else:
         print("CPU is available on this device!")
-
-    train_loader, test_loader = get_cnn_train_test_full_training_data_loader(batch_size)
+    train_loader, val_loader, test_loader = None, None, None
+    if train_val_test:
+        train_loader, val_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size, train_val_test)
+    else:
+        train_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset,
+                                                                                                 comp_feature_list,
+                                                                                                 tar_feature_list,
+                                                                                                 batch_size,
+                                                                                                 train_val_test)
     #print(len(train_loader))
     #print(len(test_loader))
     #print(next(iter(test_loader)))
     test_epoch_results = []
     test_epoch_results.append([])
+    validation_epoch_results = []
+    validation_epoch_results.append([])
+
 
     model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
@@ -271,9 +281,10 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
 
     for epoch in range(n_epoch):
         print("Epoch :{}".format(epoch))
-        total_training_loss, total_test_loss = 0.0, 0.0
-        total_training_count, total_test_count = 0, 0
+        total_training_loss, total_test_loss, total_validation_loss = 0.0, 0.0
+        total_training_count, total_test_count, total_validation_count = 0, 0
         test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [],[] ,[]
+        validation_predictions, validation_labels, validation_all_comp_ids, validation_all_tar_ids = [], [], [], []
         batch_number = 0
         model.train()
         for i, data in enumerate(train_loader):
@@ -303,6 +314,42 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
 
         print("Epoch {} training loss:".format(epoch), total_training_loss)
 
+        if train_val_test:
+            model.eval()
+            with torch.no_grad():  # torch.set_grad_enabled(False):
+
+                for i, data in enumerate(validation_loader):
+                    validation_comp_feature_vectors, validation_target_feature_vectors, val_labels, validation_compound_ids, validation_target_ids = data
+                    validation_comp_feature_vectors, validation_target_feature_vectors, val_labels = Variable(
+                        validation_comp_feature_vectors).to(
+                        device), Variable(
+                        validation_target_feature_vectors).to(device), Variable(val_labels).to(device)
+
+                    total_validation_count += validation_comp_feature_vectors.shape[0]
+
+                    # if validation_comp_feature_vectors.shape[0] == batch_size:
+                    # validation_inputs = None
+                    # validation_y_pred = None
+                    validation_y_pred = model(validation_comp_feature_vectors, validation_target_feature_vectors)
+                    loss_validation = criterion(validation_y_pred.squeeze(), val_labels)
+                    total_validation_loss += float(loss_validation.item())
+                    for item in val_labels:
+                        validation_labels.append(float(item.item()))
+
+                    for item in validation_y_pred:
+                        validation_predictions.append(float(item.item()))
+
+                    for item in validation_compound_ids:
+                        validation_all_comp_ids.append(item)
+
+                    for item in validation_target_ids:
+                        validation_all_tar_ids.append(item)
+            if regression_classifier == "r":
+                print("==============================================================================")
+                get_scores_full(validation_labels, validation_predictions, "Validation", total_training_loss,
+                                total_validation_loss, epoch, comp_tar_pair_dataset, validation_epoch_results)
+
+        print("Epoch {} validation loss:".format(epoch), total_validation_loss)
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
 
@@ -332,14 +379,17 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
                 for item in test_target_ids:
                     test_all_tar_ids.append(item)
 
-            print("=====PREDICTIONS=====")
-            for ind in range(len(test_all_tar_ids)):
-                print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
-            print("=====PREDICTIONS=====")
-        #if regression_classifier == "r":
-        #    print("==============================================================================")
-        #    get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
-        #               total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
+            print_predictions = False
+            if print_predictions:
+                print("=====PREDICTIONS=====")
+                for ind in range(len(test_all_tar_ids)):
+                    print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
+                print("=====PREDICTIONS=====")
+        if regression_classifier == "r":
+            print("==============================================================================")
+            get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
+                       total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
+
         if epoch==n_epoch-1:
             pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
             header = "Comp_ID\tTar_ID\tLabel\tPrediction"
@@ -362,6 +412,8 @@ def full_training(comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_
     result_fl.close()
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
+
+"""
 comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
 after_flattened_conv_layer_neurons = sys.argv[2]
 last_2_hidden_layer_list = sys.argv[3].split("_")
@@ -370,9 +422,12 @@ batch_size = sys.argv[5]
 training_dataset = sys.argv[6]
 comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
 tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
+"""
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
 # train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
-train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
-# full_training(["ecfp4"], ["sequencematrix500"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size))
+#train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
+#            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), train_val_test=True)
