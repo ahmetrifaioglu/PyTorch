@@ -281,8 +281,8 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
     for epoch in range(n_epoch):
         print("Epoch :{}".format(epoch))
-        total_training_loss, total_test_loss, total_validation_loss = 0.0, 0.0
-        total_training_count, total_test_count, total_validation_count = 0, 0
+        total_training_loss, total_test_loss, total_validation_loss = 0.0, 0.0, 0.0
+        total_training_count, total_test_count, total_validation_count = 0, 0, 0
         test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [],[] ,[]
         validation_predictions, validation_labels, validation_all_comp_ids, validation_all_tar_ids = [], [], [], []
         batch_number = 0
