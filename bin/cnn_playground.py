@@ -413,7 +413,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 
-"""
+
 comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
 after_flattened_conv_layer_neurons = sys.argv[2]
 last_2_hidden_layer_list = sys.argv[3].split("_")
@@ -422,7 +422,7 @@ batch_size = sys.argv[5]
 training_dataset = sys.argv[6]
 comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
 tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
-"""
+
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
 # train_networks(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
