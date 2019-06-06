@@ -349,7 +349,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                 get_scores_full(validation_labels, validation_predictions, "Validation", total_training_loss,
                                 total_validation_loss, epoch, comp_tar_pair_dataset, validation_epoch_results)
 
-        print("Epoch {} validation loss:".format(epoch), total_validation_loss)
+            print("Epoch {} validation loss:".format(epoch), total_validation_loss)
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
 
@@ -430,4 +430,4 @@ tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), train_val_test=False)
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), train_val_test=True)
