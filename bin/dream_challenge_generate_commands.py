@@ -450,7 +450,7 @@ def generate_protein_cnn_commands():
         ))
                             print("sleep 1")
 
-generate_protein_cnn_commands()
+# generate_protein_cnn_commands()
 
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
 
