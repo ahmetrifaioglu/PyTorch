@@ -399,6 +399,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                 pred_fl.write("{}\t{}\t{}\t{}\n".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             pred_fl.close()
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
+    """
     result_fl = open("../result_files/{}_full_500.tsv".format("_".join(sys.argv[1:])), "w")
     header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score"
     #print(header)
@@ -411,6 +412,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
         #print(result_line)
 
     result_fl.close()
+    """
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 

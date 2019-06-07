@@ -37,6 +37,22 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     return df_combined_features
 
 
+def get_numpy_target_dict_combined_feature_vectors_single(training_data_name, target_id, target_or_compound, feature_lst):
+    sorted(feature_lst)
+    training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
+    comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
+    tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
+    feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
+
+    feat_vec_fl = open("{}/{}_normalized/{}.tsv".format(feat_vec_path, feature_lst[0], target_id), "r")
+    line = feat_vec_fl.read().split("\n")[0]
+    line = line.split("\t")
+    target_id = line[0]
+
+    return torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(torch.FloatTensor)
+
+
+
 def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     sorted(feature_lst)
     training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
@@ -59,11 +75,14 @@ def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_
 
 class CNNBioactivityDataset(Dataset):
     def __init__(self, training_data_name, comp_target_pair_dataset, compound_feature_list, target_feature_list):
+        self.training_data_name = training_data_name
+        self.compound_feature_list = compound_feature_list
+        self.target_feature_list = target_feature_list
         training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
         comp_tar_training_dataset_path = "{}/dti_datasets".format(training_dataset_path)
         comp_target_pair_dataset_path = "{}/{}".format(comp_tar_training_dataset_path, comp_target_pair_dataset)
         self.dict_compound_features = get_list_target_dict_combined_feature_vectors(training_data_name, "compound", compound_feature_list)
-        self.dict_target_features = get_numpy_target_dict_combined_feature_vectors(training_data_name, "target", target_feature_list)
+        # self.dict_target_features = get_numpy_target_dict_combined_feature_vectors(training_data_name, "target", target_feature_list)
         self.training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
         #print(self.training_dataset)
     def __len__(self):
@@ -74,7 +93,8 @@ class CNNBioactivityDataset(Dataset):
 
         comp_id, tar_id, biact_val = str(row[0]), str(row[1]), str(row[2])
         comp_feats = self.dict_compound_features[comp_id]
-        tar_feats = self.dict_target_features[tar_id]
+        # tar_feats = self.dict_target_features[tar_id]
+        tar_feats = get_numpy_target_dict_combined_feature_vectors_single(self.training_data_name, tar_id, "target", self.target_feature_list)
         label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
         return comp_feats, tar_feats, label, comp_id, tar_id
 

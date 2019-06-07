@@ -366,4 +366,17 @@ def create_dti_dataset_for_pdbbind():
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/data/folds/test_fold_setting1.txt
 # create_dti_dataset_for_pdbbind()
 
+def create_single_target_feature_vector_files_using_combined():
+    feature_name = "sequencematrix500_normalized"
+    input_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors"
+    output_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/{}".format(feature_name)
+    with open("{}/{}.tsv".format(input_path, feature_name)) as f:
+        for line in f:
+            line = line.split("\n")[0]
+            target_id = line.split("\t")[0]
+            output_fl = open("{}/{}.tsv".format(output_path, target_id), "w")
+            output_fl.write(line)
+            output_fl.close()
+
+# create_single_target_feature_vector_files_using_combined()
 
