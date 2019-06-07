@@ -256,9 +256,9 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
         device = "cuda"
     else:
         print("CPU is available on this device!")
-    train_loader, val_loader, test_loader = None, None, None
+    train_loader, validation_loader, test_loader = None, None, None
     if train_val_test:
-        train_loader, val_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size, train_val_test)
+        train_loader, validation_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size, train_val_test)
     else:
         train_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset,
                                                                                                  comp_feature_list,

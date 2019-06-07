@@ -292,16 +292,19 @@ def create_dti_dataset_for_pdbbind():
 
     dict_ligand_inchi = dict()
 
-    inchi_fl = open(
-        "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/Components-inchi.ich.txt", "r")
-    lst_inchi_fl = inchi_fl.read().split("\n")
-    inchi_fl.close()
-    if "" in lst_inchi_fl:
-        lst_inchi_fl.remove("")
-    for line in lst_inchi_fl:
+    ecfp4_fl = open(
+        "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/compound_feature_vectors/ecfp4_normalized.tsv", "r")
+    lst_ecfp4_fl = ecfp4_fl.read().split("\n")
+    ecfp4_fl.close()
+
+    if "" in lst_ecfp4_fl:
+        lst_ecfp4_fl.remove("")
+
+    for line in lst_ecfp4_fl:
         # print(line.split("\t"))
-        inchi, pdb_id, _ = line.split("\t")
-        dict_ligand_inchi[pdb_id] = inchi
+        pdb_id = line.split("\t")[0]
+        dict_ligand_inchi[pdb_id] = ""
+
     # first list holds train and the other one holds validation
     train_val_indices = [[],[]]
     test_indices = []
@@ -347,7 +350,7 @@ def create_dti_dataset_for_pdbbind():
                     train_val_indices[0].append(index)
                 index += 1
                 # first print this
-                print("{},{},{}".format(ligand_pdb_id, prot_pdb_id, affinity_val))
+                # print("{},{},{}".format(ligand_pdb_id, prot_pdb_id, affinity_val))
                 # print("{},{},{},{}".format(ligand_pdb_id,prot_pdb_id,affinity_val,year))
 
             except Exception as e:
