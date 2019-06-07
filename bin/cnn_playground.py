@@ -70,8 +70,8 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
     deep_dta_mse = mse(np.asarray(labels), np.asarray(
         predictions))
 
-    #rmse_score = rmse(np.asarray(labels), np.asarray(
-    #    predictions))
+    rmse_score = rmse(np.asarray(labels), np.asarray(
+        predictions))
     pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
     spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
     ci_score = ci(np.asarray(labels), np.asarray(predictions))
@@ -81,6 +81,7 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
     print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test, total_validation_test_loss))
     print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
     print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
+    print("{} DeepDTA RMSE\t{}".format(validation_test, rmse_score))
     print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))

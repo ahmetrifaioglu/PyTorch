@@ -77,3 +77,4 @@ def get_rm2(ys_orig, ys_line):
     r02 = squared_error_zero(ys_orig, ys_line)
 
     return r2 * (1 - np.sqrt(np.absolute((r2 * r2) - (r02 * r02))))
+
