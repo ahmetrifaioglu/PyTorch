@@ -25,7 +25,7 @@ import sys
 
 # import statistics
 
-n_epoch = 100
+n_epoch = 5
 num_of_folds = 5
 
 def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
