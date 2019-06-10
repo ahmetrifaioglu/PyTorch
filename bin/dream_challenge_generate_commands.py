@@ -437,7 +437,7 @@ def generate_protein_cnn_commands():
     training_dataset_list = ["DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_davis_filtered"]
     training_dataset_list = ["PDBBind"]
-
+    target_feature = "sequencematrix1000"
     for b_s in batch_size:
         for tr_data in training_dataset_list:
             for conv_flat in after_flattened_conv_layer_neurons:
@@ -446,11 +446,11 @@ def generate_protein_cnn_commands():
                         for comp_hid in comp_2_hidden_layer_list:
 
                             # lst_params = []
-                            print("bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 sequencematrix500\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
+                            print("bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature
         ))
                             print("sleep 1")
 
-# generate_protein_cnn_commands()
+generate_protein_cnn_commands()
 
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
 

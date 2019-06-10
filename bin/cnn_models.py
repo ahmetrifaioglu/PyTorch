@@ -27,75 +27,23 @@ class FC_2_Layer(torch.nn.Module):
         return out2
 
 
-class CNNModule(torch.nn.Module):
-
-    def __init__(self):
-        super(CNNModule, self).__init__()
-        self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=18, kernel_size=5, stride=3, padding=3)
-        self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
-        self.conv2 = torch.nn.Conv2d(18, 32, kernel_size=3, stride=1, padding=0)
-        self.fc1 = torch.nn.Linear(32 * 41 * 41, 64)
-
-    def forward(self, x):
-        x = F.relu(self.conv1(x))
-        #print(x.shape)
-        x = self.pool(x)
-        #print(x.shape)
-        x = F.relu(self.conv2(x))
-        #print(x.shape)
-        x = self.pool(x)
-        #print(x.shape)
-        x = x.view(-1, 32 * 41 * 41)
-        x = F.relu(self.fc1(x))
-        return x
-
-
-class CompFCNNTarCNN(nn.Module):
-    def __init__(self, number_of_comp_features, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
-        super(CompFCNNTarCNN, self).__init__()
-        self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
-        self.cnn_flattened_layer = CNNModule()
-        # dropout layer
-        self.dropout = nn.Dropout(0.3)
-        self.layer_2_combined = FC_2_Layer(comp_l2 + 64, fc_l1, fc_l2, drop_prob)
-        self.output = None
-
-        self.output = torch.nn.Linear(fc_l2, 1)
-        self.relu = torch.nn.ReLU()
-        self.sigmoid = torch.nn.Sigmoid()
-        self.softmax = torch.nn.Softmax()
-        # self.drop_rate = drop_rate
-        self.r_c = "r"
-
-
-    def forward(self, x_comp, x_tar):
-        out2_comp = self.layer_2_comp.forward(x_comp)
-        out_tar = self.cnn_flattened_layer(x_tar)
-        combined_layer = torch.cat((out2_comp, out_tar), 1)
-        out_combined = self.layer_2_combined.forward(combined_layer)
-        y_pred = None
-
-        if self.r_c == "r":
-            y_pred = self.output(out_combined)
-        else:
-            y_pred = self.softmax(self.output(out_combined))
-
-        return y_pred
-
-
 class CNNModule2(torch.nn.Module):
 
-    def __init__(self, num_of_neurons):
+    def __init__(self, tar_feature_list, num_of_neurons):
         super(CNNModule2, self).__init__()
+        self.tar_feature_list = tar_feature_list
         self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=16, kernel_size=7, stride=3, padding=4)
         self.conv2 = torch.nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
         self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
 
         self.feat_detector1 = VariableLengthFeatureDetector(32)
-
-
-        self.fc1 = torch.nn.Linear(320 * 21 * 21, num_of_neurons)
-        # self.fc1 = torch.nn.Linear(320 * 41 * 41, num_of_neurons)
+        self.fc1 = None
+        if "500" in tar_feature_list[0]:
+            self.fc1 = torch.nn.Linear(320 * 21 * 21, num_of_neurons)
+        elif "1000" in tar_feature_list[0]:
+            self.fc1 = torch.nn.Linear(320 * 41 * 41, num_of_neurons)
+        else:
+            pass
     def forward(self, x):
         # print(x.shape)
         x = F.relu(self.conv1(x))
@@ -118,18 +66,25 @@ class CNNModule2(torch.nn.Module):
         x = self.pool(x)
         # 256 * 20 * 20
         # print("pooling after inception", x.shape)
+        if "500" in self.tar_feature_list[0]:
+            x = x.view(-1, 320 * 21 * 21)
+        elif "1000" in self.tar_feature_list[0]:
+            x = x.view(-1, 320 * 41 * 41)
+        else:
+            pass
 
-        x = x.view(-1, 320 * 21 * 21)
         # x = x.view(-1, 320 * 41 * 41)
         x = F.relu(self.fc1(x))
         return x
 
 
 class CompFCNNTarCNN2(nn.Module):
-    def __init__(self, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, tar_feature_list, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
         super(CompFCNNTarCNN2, self).__init__()
+        self.tar_feature_list = tar_feature_list
+        # print(tar_feature_list)
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
-        self.cnn_flattened_layer = CNNModule2(num_of_tar_neurons)
+        self.cnn_flattened_layer = CNNModule2(tar_feature_list, num_of_tar_neurons)
         # dropout layer
         self.dropout = nn.Dropout(0.3)
         self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)
@@ -223,3 +178,64 @@ class BasicConv2d(nn.Module):
         x = self.conv(x)
         x = self.bn(x)
         return F.relu(x, inplace=True)
+
+
+
+
+
+"""
+class CNNModule(torch.nn.Module):
+
+    def __init__(self):
+        super(CNNModule, self).__init__()
+        self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=18, kernel_size=5, stride=3, padding=3)
+        self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.conv2 = torch.nn.Conv2d(18, 32, kernel_size=3, stride=1, padding=0)
+        self.fc1 = torch.nn.Linear(32 * 41 * 41, 64)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        #print(x.shape)
+        x = self.pool(x)
+        #print(x.shape)
+        x = F.relu(self.conv2(x))
+        #print(x.shape)
+        x = self.pool(x)
+        #print(x.shape)
+        x = x.view(-1, 32 * 41 * 41)
+        x = F.relu(self.fc1(x))
+        return x
+
+
+class CompFCNNTarCNN(nn.Module):
+    def __init__(self, number_of_comp_features, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
+        super(CompFCNNTarCNN, self).__init__()
+        self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
+        self.cnn_flattened_layer = CNNModule()
+        # dropout layer
+        self.dropout = nn.Dropout(0.3)
+        self.layer_2_combined = FC_2_Layer(comp_l2 + 64, fc_l1, fc_l2, drop_prob)
+        self.output = None
+
+        self.output = torch.nn.Linear(fc_l2, 1)
+        self.relu = torch.nn.ReLU()
+        self.sigmoid = torch.nn.Sigmoid()
+        self.softmax = torch.nn.Softmax()
+        # self.drop_rate = drop_rate
+        self.r_c = "r"
+
+
+    def forward(self, x_comp, x_tar):
+        out2_comp = self.layer_2_comp.forward(x_comp)
+        out_tar = self.cnn_flattened_layer(x_tar)
+        combined_layer = torch.cat((out2_comp, out_tar), 1)
+        out_combined = self.layer_2_combined.forward(combined_layer)
+        y_pred = None
+
+        if self.r_c == "r":
+            y_pred = self.output(out_combined)
+        else:
+            y_pred = self.softmax(self.output(out_combined))
+
+        return y_pred
+"""

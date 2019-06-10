@@ -17,8 +17,8 @@ import math
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
-from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
-from cnn_models import CompFCNNTarCNN, CompFCNNTarCNN2
+# from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
+from cnn_models import CompFCNNTarCNN2 # , CompFCNNTarCNN
 from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
@@ -275,7 +275,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
     validation_epoch_results.append([])
 
 
-    model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
+    model = CompFCNNTarCNN2(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
     criterion = torch.nn.MSELoss()
     optimizer.zero_grad()

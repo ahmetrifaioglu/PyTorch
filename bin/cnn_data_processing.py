@@ -30,8 +30,16 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
-            # feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
-            feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(torch.FloatTensor)
+            feat_vec = None
+
+            # print(feature_lst[0])
+            if "500" in feature_lst[0]:
+                feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
+                    torch.FloatTensor)
+            elif "1000" in feature_lst[0]:
+                feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
+            else:
+                pass
             df_combined_features[target_id] = feat_vec
             count+=1
     return df_combined_features
@@ -48,7 +56,6 @@ def get_numpy_target_dict_combined_feature_vectors_single(training_data_name, ta
     line = feat_vec_fl.read().split("\n")[0]
     line = line.split("\t")
     target_id = line[0]
-
     return torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(torch.FloatTensor)
 
 
@@ -81,6 +88,7 @@ class CNNBioactivityDataset(Dataset):
         training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
         comp_tar_training_dataset_path = "{}/dti_datasets".format(training_dataset_path)
         comp_target_pair_dataset_path = "{}/{}".format(comp_tar_training_dataset_path, comp_target_pair_dataset)
+
         self.dict_compound_features = get_list_target_dict_combined_feature_vectors(training_data_name, "compound", compound_feature_list)
         self.dict_target_features = get_numpy_target_dict_combined_feature_vectors(training_data_name, "target", target_feature_list)
         self.training_dataset = pd.read_csv(comp_target_pair_dataset_path, header=None)
