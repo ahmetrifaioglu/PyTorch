@@ -35,7 +35,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             # print(feature_lst[0])
             if "500" in feature_lst[0]:
                 feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
-                    torch.FloatTensor)
+                    torch.FloatTensor)/210.0
             elif "1000" in feature_lst[0]:
                 feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
             else:

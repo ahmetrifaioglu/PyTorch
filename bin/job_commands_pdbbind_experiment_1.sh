@@ -1913,8 +1913,8 @@ sleep 1
 bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_512_512_1024_1024_1024_0.01_32_PDBBind.out "python cnn_playground.py 512_512 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix500"
 sleep 1
 bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_1024_512_1024_1024_1024_0.01_32_PDBBind.out "python cnn_playground.py 1024_512 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix500"
-sleep 1
-bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_1024_256_1024_1024_1024_0.01_32_PDBBind.out "python cnn_playground.py 1024_256 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix500"
+sleep 1py 1024_256
+bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_1024_256_1024_1024_1024_0.01_32_PDBBind.out "python cnn_playground. 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix500"
 sleep 1
 bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_07062019/500_1024_1024_1024_1024_1024_0.01_32_PDBBind.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix500"
 sleep 1
