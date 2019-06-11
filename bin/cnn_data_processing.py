@@ -35,7 +35,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             # print(feature_lst[0])
             if "500" in feature_lst[0]:
                 feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
-                    torch.FloatTensor)/210.0
+                    torch.FloatTensor)
             elif "1000" in feature_lst[0]:
                 feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
             else:
@@ -105,7 +105,6 @@ class CNNBioactivityDataset(Dataset):
         # tar_feats = get_numpy_target_dict_combined_feature_vectors_single(self.training_data_name, tar_id, "target", self.target_feature_list)
         label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
         return comp_feats, tar_feats, label, comp_id, tar_id
-
 
 
 def get_cnn_test_val_folds_train_data_loader(training_data_name, comp_feature_list, tar_feature_list, batch_size=32):
