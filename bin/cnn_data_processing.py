@@ -24,9 +24,8 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
     df_dti_data = pd.read_csv("../trainingFiles/PDBBind/dti_datasets/comp_targ_affinity.csv", header=None)
-    set_training_target_ids = set(df_dti_data.ix[:,0])
+    set_training_target_ids = set(df_dti_data.ix[:,1])
     available_targets  =set ()
-
     df_combined_features = dict()
     count = 0
     with open("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
@@ -52,7 +51,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
                 # print(feat_vec.shape)
                 df_combined_features[target_id] = feat_vec
                 count+=1
-    print(available_targets )
+    print(len(available_targets))
     return df_combined_features
 
 
