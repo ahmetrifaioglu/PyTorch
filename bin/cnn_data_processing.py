@@ -99,7 +99,7 @@ class CNNBioactivityDataset(Dataset):
 
     def __getitem__(self, idx):
         row = self.training_dataset.iloc[idx]
-
+        print(idx)
         comp_id, tar_id, biact_val = str(row[0]), str(row[1]), str(row[2])
         comp_feats = self.dict_compound_features[comp_id]
         # tar_feats = self.dict_target_features[tar_id]
