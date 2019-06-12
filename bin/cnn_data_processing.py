@@ -33,7 +33,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
-            if target_id!="target id" and target_id==set_training_target_ids:
+            if target_id!="target id" and target_id in set_training_target_ids:
                 feat_vec = None
                 aadist_fl = open("../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
                 lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
