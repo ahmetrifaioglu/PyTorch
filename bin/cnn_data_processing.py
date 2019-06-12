@@ -32,7 +32,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             target_id = line[0]
             if target_id!="target id":
                 feat_vec = None
-                aadist_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
+                aadist_fl = open("../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
                 lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
                 aadist_fl.close()
                 # print(feature_lst[0])
