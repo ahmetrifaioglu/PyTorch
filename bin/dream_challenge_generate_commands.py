@@ -447,7 +447,7 @@ def generate_protein_cnn_commands():
                         for comp_hid in comp_2_hidden_layer_list:
 
                             # lst_params = []
-                            print("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
+                            print("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
                             #print(
                             #    "bsub -q research-rh74 -P gpu -M 15360 -R 'rusage[mem=15360]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
                             #        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid,
