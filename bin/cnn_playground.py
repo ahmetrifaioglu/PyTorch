@@ -299,6 +299,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             # wrap them in Variable
             comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                 target_feature_vectors).to(device), Variable(labels).to(device)
+            print(len(target_ids))
             # if comp_feature_vectors.shape[0]==batch_size:
             inputs = None
             y_pred = None
