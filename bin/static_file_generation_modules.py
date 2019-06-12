@@ -70,7 +70,7 @@ def normalize_and_print_flattened_aa_distance_matrices(dist_folder_path, dist_fl
                     np_dist_matrix[row_ind,col_ind] = round(dist, 3)
                     np_dist_matrix[col_ind, row_ind] = round(dist, 3)
                 except:
-                    print("HOUSTAN we have a problem", prot_id, row_ind, col_ind)
+                    print("Houston we have a problem", prot_id, row_ind, col_ind)
     # print(max_dist)
     normalized_np_arr = np.around(np_dist_matrix/max_dist, decimals=4)
     # print(len(normalized_np_arr[450]))
@@ -81,10 +81,10 @@ def normalize_and_print_flattened_aa_distance_matrices(dist_folder_path, dist_fl
     flattened_seq_matrix_arr = np.array(seq_torch_matrix.contiguous().view(-1))
     #print(flattened_seq_matrix_arr)
     #print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
-    if not os.path.exists("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(prot_id)):
-        prot_aa_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(prot_id), "w")
-        prot_aa_fl.write(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
-        prot_aa_fl.close()
+    # if not os.path.exists("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(prot_id)):
+    prot_aa_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(prot_id), "w")
+    prot_aa_fl.write(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
+    prot_aa_fl.close()
 
 
 def save_all_aa_distance_matrices(dist_folder_path, size):
@@ -96,7 +96,7 @@ def save_all_aa_distance_matrices(dist_folder_path, size):
     for fl in os.listdir(dist_folder_path):
         # print(fl)
         count += 1
-        # eprint(count)
+        eprint(count)
         normalize_and_print_flattened_aa_distance_matrices(dist_folder_path, fl, size)
 
 # save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_4001_8000", 500)
@@ -106,6 +106,9 @@ def save_all_aa_distance_matrices(dist_folder_path, size):
 # save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_4001_8000", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500_normalized_4001_8000.tsv
 # save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_4001_8000", 1000)
+# python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_4001_8000.tsv
+
+# save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_8001_11918", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_4001_8000.tsv
 
 
