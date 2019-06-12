@@ -449,7 +449,7 @@ def generate_protein_cnn_commands():
                             # lst_params = []
                             # print("bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_11062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
                             print(
-                                "bsub -q research-rh74 -P gpu -M 20480 -R 'rusage[mem=20480]' -o ../log_files/pdbbind_experiment_11062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
+                                "bsub -q research-rh74 -P gpu -M 25600 -R 'rusage[mem=25600]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
                                     comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid,
                                     conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
                             print("sleep 1")

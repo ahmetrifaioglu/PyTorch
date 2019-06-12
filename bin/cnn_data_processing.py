@@ -23,6 +23,9 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
+    df_dti_data = pd.read_csv("../trainingFiles/PDBBind/dti_datasets/comp_targ_affinity.csv", header=None)
+    set_training_target_ids = set(df_dti_data.ix[:,0])
+
     df_combined_features = dict()
     count = 0
     with open("{}/{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
@@ -30,7 +33,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
-            if target_id!="target id":
+            if target_id!="target id" and target_id==set_training_target_ids:
                 feat_vec = None
                 aadist_fl = open("../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
                 lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
