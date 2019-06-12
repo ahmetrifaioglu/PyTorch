@@ -54,6 +54,7 @@ def get_numpy_target_dict_combined_feature_vectors_single(training_data_name, ta
 
     feat_vec_fl = open("{}/{}_normalized/{}.tsv".format(feat_vec_path, feature_lst[0], target_id), "r")
     line = feat_vec_fl.read().split("\n")[0]
+    print("geldi")
     feat_vec_fl.close()
     line = line.split("\t")
     target_id = line[0]
