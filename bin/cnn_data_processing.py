@@ -37,12 +37,16 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
 
             if target_id!="target id" and target_id in set_training_target_ids:
                 feat_vec = None
+                """
                 aadist_fl = open("../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
                 lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
                 aadist_fl.close()
+                """
                 # print(feature_lst[0])
                 if "500" in feature_lst[0]:
-                    feat_vec = torch.tensor(np.asarray([line[1:], lst_aa_dist[1:]], dtype=float).reshape(2, 500, 500)).type(
+                    # feat_vec = torch.tensor(np.asarray([line[1:], lst_aa_dist[1:]], dtype=float).reshape(2, 500, 500)).type(torch.FloatTensor)
+                    feat_vec = torch.tensor(
+                        np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
                         torch.FloatTensor)
                 elif "1000" in feature_lst[0]:
                     feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
@@ -51,7 +55,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
                 # print(feat_vec.shape)
                 df_combined_features[target_id] = feat_vec
                 count+=1
-    print(len(available_targets))
+    # print(len(available_targets))
     return df_combined_features
 
 
