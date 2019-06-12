@@ -30,18 +30,22 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             line = line.split("\n")[0]
             line = line.split("\t")
             target_id = line[0]
-            feat_vec = None
-
-            # print(feature_lst[0])
-            if "500" in feature_lst[0]:
-                feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
-                    torch.FloatTensor)
-            elif "1000" in feature_lst[0]:
-                feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
-            else:
-                pass
-            df_combined_features[target_id] = feat_vec
-            count+=1
+            if target_id!="target id":
+                feat_vec = None
+                aadist_fl = open("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
+                lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
+                aadist_fl.close()
+                # print(feature_lst[0])
+                if "500" in feature_lst[0]:
+                    feat_vec = torch.tensor(np.asarray([line[1:], lst_aa_dist[1:]], dtype=float).reshape(2, 500, 500)).type(
+                        torch.FloatTensor)
+                elif "1000" in feature_lst[0]:
+                    feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
+                else:
+                    pass
+                # print(feat_vec.shape)
+                df_combined_features[target_id] = feat_vec
+                count+=1
     return df_combined_features
 
 

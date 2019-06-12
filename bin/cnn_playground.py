@@ -266,9 +266,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                                                                                                  tar_feature_list,
                                                                                                  batch_size,
                                                                                                  train_val_test)
-    #print(len(train_loader))
-    #print(len(test_loader))
-    #print(next(iter(test_loader)))
+
     test_epoch_results = []
     test_epoch_results.append([])
     validation_epoch_results = []
@@ -301,10 +299,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                 target_feature_vectors).to(device), Variable(labels).to(device)
 
             # if comp_feature_vectors.shape[0]==batch_size:
-            inputs = None
             y_pred = None
-            #print(target_feature_vectors)
-            #print("?????????????????")
             target_feature_vectors = target_feature_vectors/210.0
             total_training_count += comp_feature_vectors.shape[0]
 
