@@ -8,7 +8,7 @@ from torchvision import transforms, utils
 from torch.autograd import Variable
 import torch.nn.functional as F
 import sys
-from dream_challenge_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
+from evaluation_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
 from torchvision import datasets
 import torchvision.transforms as transforms
 import itertools
@@ -19,7 +19,7 @@ from sklearn import preprocessing,metrics
 import sklearn
 # from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
 from cnn_models import CompFCNNTarCNN2 # , CompFCNNTarCNN
-from emetrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
+from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
 
@@ -424,6 +424,7 @@ batch_size = sys.argv[5]
 training_dataset = sys.argv[6]
 comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
 tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
+train_validation_test = sys.argv[9]
 
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
@@ -432,4 +433,4 @@ tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), train_val_test=True)
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), bool(train_validation_test))

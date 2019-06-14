@@ -4,22 +4,24 @@ import argparse
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument(
-    '--comp-hidden-layer-neurons',
+    #'--comp-hidden-layer-neurons',
+    '--chln',
     type=str,
     default="512_512",
     metavar='CHLN',
     help='number of neurons in compound hidden layers (default: 512_512)')
 parser.add_argument(
-    '--target-layer-neurons-after-flattened',
+    #'--target-layer-neurons-after-flattened',
+    '--tlnaf',
     type=int,
     default=512,
     metavar='TFFLAF',
     help='number of neurons after flattening target conv layers (default: 512)')
 parser.add_argument(
-    '--last-two-hidden-layer-neurons',
+    '--lhln',
     type=str,
     default="256_256",
-    metavar='CHLN',
+    metavar='LHLN',
     help='number of neurons in last two hidden layers before output layer (default: 256_256)')
 parser.add_argument(
     '--lr',
@@ -28,40 +30,49 @@ parser.add_argument(
     metavar='LR',
     help='learning rate (default: 0.01)')
 parser.add_argument(
-    '--batch-size',
+    # '--batch-size',
+    '--bs',
     type=int,
     default=32,
     metavar='BS',
     help='batch size (default: 32)')
 parser.add_argument(
-    '--training-data',
+    # '--training-data',
+    '--td',
     type=str,
     default="PDBBind",
     metavar='TD',
     help='the name of the training dataset (default: PDBBind)')
 
 parser.add_argument(
-    '--compound-features',
+    # '--compound-features',
+    '--cf',
     type=str,
     default="ecfp4",
     metavar='CF',
     help='compound features separated by underscore character (default: ecfp4)')
 parser.add_argument(
-    '--target-features',
+    # '--target-features',
+    '--tf',
     type=str,
     default="sequencematrix500",
     metavar='TF',
     help='target features separated by underscore character (default: sequencematrix500)')
 
 parser.add_argument(
-    '--train-test-validation',
-    type=bool,
-    default=False,
-    metavar='TTV',
-    help='Determines if data is divided into train-test-validation (default: False)')
+    # '--train-validation-test',
+    '--tvt',
+    type=int,
+    default=0,
+    metavar='TVT',
+    help='Determines if data is divided into train-validation-test (default: 0)')
+
 
 args = parser.parse_args()
-training_data= args.training_data
+print(args)
+training_data= args.td
+
+# full_training(args.td, args.chln, tar_feature_list, comp_hidden_layer_neurons, args.v, int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), bool(train_validation_test))
 
 """
 comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
