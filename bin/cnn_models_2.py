@@ -30,7 +30,7 @@ class CNNModule(torch.nn.Module):
 
     def __init__(self, num_of_neurons):
         super(CNNModule, self).__init__()
-        self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=8, kernel_size=5)
+        self.conv1 = torch.nn.Conv2d(in_channels=2, out_channels=8, kernel_size=5)
         self.conv2 = torch.nn.Conv2d(in_channels=8, out_channels=16, kernel_size=5)
         self.conv3 = torch.nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
         self.conv4 = torch.nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
