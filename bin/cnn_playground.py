@@ -303,13 +303,13 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
             # if comp_feature_vectors.shape[0]==batch_size:
             y_pred = None
-            print("======================")
-            print(target_feature_vectors[0])
-            print("----------------------")
+            # print("======================")
+            # print(target_feature_vectors[0])
+            # print("----------------------")
             target_feature_vectors[0] = target_feature_vectors[0]/210.0
 
-            print(target_feature_vectors[0])
-            print("======================")
+            # print(target_feature_vectors[0])
+            # print("======================")
             total_training_count += comp_feature_vectors.shape[0]
 
             y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
