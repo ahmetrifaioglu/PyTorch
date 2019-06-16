@@ -38,25 +38,27 @@ from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_M
 
 
 # Training settings
-parser = argparse.ArgumentParser(description='Dream Challenge Ray Test 2')
+parser = argparse.ArgumentParser(description='')
 parser.add_argument(
-    '--batch-size',
-    type=int,
-    default=64,
-    metavar='N',
-    help='input batch size for training (default: 64)')
+    #'--comp-hidden-layer-neurons',
+    '--chln',
+    type=str,
+    default="512_512",
+    metavar='CHLN',
+    help='number of neurons in compound hidden layers (default: 512_512)')
 parser.add_argument(
-    '--test-batch-size',
+    #'--target-layer-neurons-after-flattened',
+    '--tlnaf',
     type=int,
-    default=1000,
-    metavar='N',
-    help='input batch size for testing (default: 1000)')
+    default=512,
+    metavar='TFFLAF',
+    help='number of neurons after flattening target conv layers (default: 512)')
 parser.add_argument(
-    '--epochs',
-    type=int,
-    default=50,
-    metavar='N',
-    help='number of epochs to train (default: 10)')
+    '--lhln',
+    type=str,
+    default="256_256",
+    metavar='LHLN',
+    help='number of neurons in last two hidden layers before output layer (default: 256_256)')
 parser.add_argument(
     '--lr',
     type=float,
@@ -64,58 +66,43 @@ parser.add_argument(
     metavar='LR',
     help='learning rate (default: 0.01)')
 parser.add_argument(
-    '--momentum',
-    type=float,
-    default=0.5,
-    metavar='M',
-    help='SGD momentum (default: 0.5)')
-parser.add_argument(
-    '--no-cuda',
-    action='store_true',
-    default=False,
-    help='disables CUDA training')
-parser.add_argument(
-    '--seed',
+    # '--batch-size',
+    '--bs',
     type=int,
-    default=1,
-    metavar='S',
-    help='random seed (default: 1)')
+    default=32,
+    metavar='BS',
+    help='batch size (default: 32)')
 parser.add_argument(
-    '--first-comp-layer',
-    type=int,
-    default=1024,
-    metavar='F_COMP_LAYER',
-    help='number of neurons in the first compound layer (default: 1024)')
+    # '--training-data',
+    '--td',
+    type=str,
+    default="PDBBind",
+    metavar='TD',
+    help='the name of the training dataset (default: PDBBind)')
+
 parser.add_argument(
-    '--second-comp-layer',
-    type=int,
-    default=1024,
-    metavar='S_COMP_LAYER',
-    help='number of neurons in the second compound layer (default: 1024)')
+    # '--compound-features',
+    '--cf',
+    type=str,
+    default="ecfp4",
+    metavar='CF',
+    help='compound features separated by underscore character (default: ecfp4)')
 parser.add_argument(
-    '--first-tar-layer',
-    type=int,
-    default=1024,
-    metavar='F_TAR_LAYER',
-    help='number of neurons in the first target layer (default: 1024)')
+    # '--target-features',
+    '--tf',
+    type=str,
+    default="sequencematrix500",
+    metavar='TF',
+    help='target features separated by underscore character (default: sequencematrix500)')
+
 parser.add_argument(
-    '--second-tar-layer',
+    # '--train-validation-test',
+    '--tvt',
     type=int,
-    default=1024,
-    metavar='S_TAR_LAYER',
-    help='number of neurons in the second target layer (default: 1024)')
-parser.add_argument(
-    '--first-comb-layer',
-    type=int,
-    default=1024,
-    metavar='F_COMB_LAYER',
-    help='number of neurons in the first combined layer (default: 1024)')
-parser.add_argument(
-    '--second-comb-layer',
-    type=int,
-    default=1024,
-    metavar='S_COMB_LAYER',
-    help='number of neurons in the second combined layer (default: 1024)')
+    default=0,
+    metavar='TVT',
+    help='Determines if data is divided into train-validation-test (default: 0)')
+
 parser.add_argument(
     '--smoke-test', action="store_true", help="Finish quickly for testing")
 
@@ -146,17 +133,6 @@ def train_dream(args, config, reporter):
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
 
     def train(epoch):
-        """
-        model.train()
-        for batch_idx, (data, target) in enumerate(train_loader):
-            if args.cuda:
-                data, target = data.cuda(), target.cuda()
-            optimizer.zero_grad()
-            output = model(data)
-            loss = F.nll_loss(output, target)
-            loss.backward()
-            optimizer.step()
-        """
         model.train()
         total_training_loss,  = 0.0
         total_training_count = 0
@@ -215,8 +191,6 @@ def train_dream(args, config, reporter):
         """
         model.eval()
         regression_classifier = "r"
-        total_test_loss= 0.0
-        total_test_count = 0
 
         total_test_loss = 0.0
         total_test_count = 0
@@ -268,7 +242,6 @@ def train_dream(args, config, reporter):
 
 
 if __name__ == "__main__":
-    # datasets.MNIST('~/data', train=True, download=True)
     args = parser.parse_args()
 
     import numpy as np
@@ -288,7 +261,7 @@ if __name__ == "__main__":
             "exp": {
                 "stop": {
                     # "neg_mean_loss": 0.0,
-                    "training_iteration": 50 if args.smoke_test else 50,
+                    "training_iteration": 100 if args.smoke_test else 100,
                 },
                 "resources_per_trial": {
                     "cpu": 1,

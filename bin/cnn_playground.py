@@ -303,7 +303,8 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
             # if comp_feature_vectors.shape[0]==batch_size:
             y_pred = None
-            target_feature_vectors = target_feature_vectors/210.0
+            target_feature_vectors[0] = target_feature_vectors[0]/210.0
+            print(target_feature_vectors)
             total_training_count += comp_feature_vectors.shape[0]
 
             y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
@@ -326,7 +327,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                         validation_comp_feature_vectors).to(
                         device), Variable(
                         validation_target_feature_vectors).to(device), Variable(val_labels).to(device)
-                    validation_target_feature_vectors = validation_target_feature_vectors/210.0
+                    validation_target_feature_vectors[0] = validation_target_feature_vectors[0]/210.0
                     total_validation_count += validation_comp_feature_vectors.shape[0]
 
                     # if validation_comp_feature_vectors.shape[0] == batch_size:
@@ -361,7 +362,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                     device), Variable(
                     test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
 
-                test_target_feature_vectors = test_target_feature_vectors/210.0
+                test_target_feature_vectors[0] = test_target_feature_vectors[0]/210.0
                 total_test_count += test_comp_feature_vectors.shape[0]
 
                 # if test_comp_feature_vectors.shape[0] == batch_size:
