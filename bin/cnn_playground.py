@@ -303,8 +303,13 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
             # if comp_feature_vectors.shape[0]==batch_size:
             y_pred = None
+            print("======================")
+            print(target_feature_vectors[0])
+            print("----------------------")
             target_feature_vectors[0] = target_feature_vectors[0]/210.0
-            print(target_feature_vectors)
+
+            print(target_feature_vectors[0])
+            print("======================")
             total_training_count += comp_feature_vectors.shape[0]
 
             y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
@@ -437,4 +442,4 @@ train_validation_test = sys.argv[9]
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "davis_comp_targ_affinity.csv", "r", int(batch_size), bool(train_validation_test))
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "PDBBind", "r", int(batch_size), bool(train_validation_test))
