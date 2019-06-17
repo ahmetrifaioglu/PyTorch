@@ -23,7 +23,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
-    df_dti_data = pd.read_csv("../trainingFiles/PDBBind/dti_datasets/comp_targ_affinity.csv", header=None)
+    df_dti_data = pd.read_csv("{}/dti_datasets/comp_targ_affinity.csv".format(training_dataset_path), header=None)
     set_training_target_ids = set(df_dti_data.ix[:,1])
     available_targets  =set ()
     df_combined_features = dict()
@@ -38,11 +38,10 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             if target_id!="target id" and target_id in set_training_target_ids:
                 feat_vec = None
 
-                aadist_fl = open("../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500/{}.tsv".format(target_id) ,"r")
+                aadist_fl = open("{}/target_feature_vectors/aadistancematrix500/{}.tsv".format(training_dataset_path,  target_id) ,"r")
                 lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
                 aadist_fl.close()
 
-                # print(feature_lst[0])
                 if "500" in feature_lst[0]:
                     feat_vec = torch.tensor(np.asarray([line[1:], lst_aa_dist[1:]], dtype=float).reshape(2, 500, 500)).type(torch.FloatTensor)
                     #feat_vec = torch.tensor(

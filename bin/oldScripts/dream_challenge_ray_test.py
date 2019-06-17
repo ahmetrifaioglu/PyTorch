@@ -202,7 +202,7 @@ def train_dream(args, config, reporter):
             optimizer.step()
         """
         model.train()
-
+        criterion = torch.nn.MSELoss()
         total_training_loss = 0.0
         total_training_count = 0
         batch_number = 0
@@ -235,7 +235,7 @@ def train_dream(args, config, reporter):
 
             regression_classifier = "r"
             loss = None
-            criterion = torch.nn.MSELoss()
+
             if regression_classifier == "r":
                 loss = criterion(y_pred.squeeze(), labels)
             else:
@@ -275,7 +275,7 @@ def train_dream(args, config, reporter):
         total_validation_count = 0
         validation_predictions = []
         validation_labels = []
-
+        criterion = torch.nn.MSELoss()
         with torch.no_grad():  # torch.set_grad_enabled(False):
             for i, data in enumerate(test_loader):
                 # print("Validation")
@@ -298,7 +298,7 @@ def train_dream(args, config, reporter):
                     val_y_pred = model(val_comp_feature_vectors, val_target_feature_vectors)
 
                 # print(val_y_pred)
-                criterion = torch.nn.MSELoss()
+
                 loss_val = criterion(val_y_pred.squeeze(), val_labels)
                 total_validation_loss += float(loss_val.item())
 

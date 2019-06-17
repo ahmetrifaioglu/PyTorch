@@ -18,8 +18,7 @@ from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
 # from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
-from cnn_models import CompFCNNTarCNN2 # , CompFCNNTarCNN
-from cnn_models_2 import CompFCNNTarCNN
+from cnn_models import CompFCNNTarCNN2, CompFCNNTarCNN
 from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 import sys
@@ -247,7 +246,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 # comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 
-def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False):
+def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False, model_name):
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
@@ -273,9 +272,11 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
     validation_epoch_results = []
     validation_epoch_results.append([])
 
-
-    # model = CompFCNNTarCNN2(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
-    model = CompFCNNTarCNN(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1],
+    model = None
+    if model == "CompFCNNTarCNN2":
+        model = CompFCNNTarCNN2(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
+    elif model=="CompFCNNTarCNN2":
+        model = CompFCNNTarCNN(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1],
                             fc1, fc2, drop_prob=0.5).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
     criterion = torch.nn.MSELoss()
@@ -426,14 +427,15 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
 
 comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
-after_flattened_conv_layer_neurons = sys.argv[2]
-last_2_hidden_layer_list = sys.argv[3].split("_")
-learn_rate = sys.argv[4]
-batch_size = sys.argv[5]
+after_flattened_conv_layer_neurons = int(sys.argv[2])
+last_2_hidden_layer_list = [int(num) for num in sys.argv[3].split("_")]
+learn_rate = float(sys.argv[4])
+batch_size = int(sys.argv[5])
 training_dataset = sys.argv[6]
 comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
 tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
-train_validation_test = sys.argv[9]
+train_validation_test = bool(sys.argv[9])
+model_name = sys.argv[10]
 
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
@@ -442,4 +444,4 @@ train_validation_test = sys.argv[9]
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "PDBBind", "r", int(batch_size), bool(train_validation_test))
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name)

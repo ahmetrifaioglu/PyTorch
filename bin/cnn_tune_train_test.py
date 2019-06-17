@@ -1,49 +1,39 @@
 # Original Code here:
 # https://github.com/pytorch/examples/blob/master/mnist/main.py
 from __future__ import print_function, division
-
+import os
+import sys
 import argparse
+import pandas as pd
+import numpy as np
+import itertools
+import warnings
+import math
+import sklearn
+from sklearn import preprocessing,metrics
+from sklearn.metrics import f1_score, accuracy_score
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from torchvision import datasets, transforms
-
-import os
-import torch
-import pandas as pd
-import numpy as np
 from torch.utils.data import Dataset, DataLoader
-from torchvision import transforms, utils
 from torch.autograd import Variable
-import torch.nn.functional as F
-import sys
-from dream_challenge_metrics import rmse, pearson, ci, f1, average_AUC
 from torchvision import datasets
 import torchvision.transforms as transforms
-import itertools
-import warnings
-import math
-from sklearn.metrics import f1_score, accuracy_score
-from sklearn import preprocessing,metrics
-import sklearn
-import argparse
 from ray.tune import Trainable
-import torch.optim as optim
-# from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
-#from dream_challenge_models import FCModel1, FCModel2, FCPINNModel1, FCModel_3_Hidden_with_Modules, FCModel_3_Hidden, FCModel1_M
-from dream_challenge_data_processing import TrainingValidationShuffledDataLoader, get_nfold_data_loader_dict
-from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
+from evaluation_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
+from cnn_models import CompFCNNTarCNN2, CompFCNNTarCNN
+from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
+from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
 
 
 
 # Training settings
-parser = argparse.ArgumentParser(description='')
+parser = argparse.ArgumentParser(description='dasdsa')
 parser.add_argument(
-    #'--comp-hidden-layer-neurons',
     '--chln',
-    type=str,
-    default="512_512",
+    type=list,
+    default=[512, 512],
     metavar='CHLN',
     help='number of neurons in compound hidden layers (default: 512_512)')
 parser.add_argument(
@@ -55,8 +45,8 @@ parser.add_argument(
     help='number of neurons after flattening target conv layers (default: 512)')
 parser.add_argument(
     '--lhln',
-    type=str,
-    default="256_256",
+    type=list,
+    default=[256, 256],
     metavar='LHLN',
     help='number of neurons in last two hidden layers before output layer (default: 256_256)')
 parser.add_argument(
@@ -98,13 +88,38 @@ parser.add_argument(
 parser.add_argument(
     # '--train-validation-test',
     '--tvt',
-    type=int,
-    default=0,
+    type=bool,
+    default=True,
     metavar='TVT',
-    help='Determines if data is divided into train-validation-test (default: 0)')
+    help='Determines if data is divided into train-validation-test (default: True)')
+
+parser.add_argument(
+    '--seed',
+    type=int,
+    default=1,
+    metavar='S',
+    help='random seed (default: 1)')
+
+parser.add_argument(
+    '--epochs',
+    type=int,
+    default=100,
+    metavar='E',
+    help='num of epochs (default: 100)')
 
 parser.add_argument(
     '--smoke-test', action="store_true", help="Finish quickly for testing")
+
+args = parser.parse_args()
+print(args)
+train_loader, validation_loader, test_loader = None, None, None
+if args.tvt:
+    train_loader, validation_loader, test_loader = get_cnn_train_test_full_training_data_loader(args.td, [args.cf],
+                                                                                                [args.tf], args.bs,
+                                                                                                args.tvt)
+else:
+    train_loader, test_loader = get_cnn_train_test_full_training_data_loader(args.td, [args.cf], [args.tf], args.bs,
+                                                                             args.tvt)
 
 
 def train_dream(args, config, reporter):
@@ -115,26 +130,20 @@ def train_dream(args, config, reporter):
         print("GPU is available on this device!")
         device = "cuda"
 
-    args.cuda = not args.no_cuda and torch.cuda.is_available()
+    comp_hidden_lst = [int(num) for num in args.chln.split("_")]
+    fc1, fc2 = [int(num) for num in args.lhln.split("_")]
+    # args.cuda = not args.no_cuda and torch.cuda.is_available()
 
     torch.manual_seed(args.seed)
+    # print(args)
 
-    train_loader, validation_loader, test_loader = None, None, None
-    if train_val_test:
-        train_loader, validation_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size, train_val_test)
-    else:
-        train_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset,
-                                                                                                 comp_feature_list,
-                                                                                                 tar_feature_list,
-                                                                                                 batch_size,
-                                                                                                 train_val_test)
 
-    model = CompFCNNTarCNN2(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
-    optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
+    model = CompFCNNTarCNN2([args.tf], 1024, args.tlnaf, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
+    optimizer = torch.optim.Adam(model.parameters(), lr=args.lr)
 
     def train(epoch):
         model.train()
-        total_training_loss,  = 0.0
+        total_training_loss  = 0.0
         total_training_count = 0
 
         batch_number = 0
@@ -157,7 +166,7 @@ def train_dream(args, config, reporter):
             total_training_count += comp_feature_vectors.shape[0]
 
             y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
-
+            criterion = torch.nn.MSELoss()
             loss = criterion(y_pred.squeeze(), labels)
 
             total_training_loss += float(loss.item())
@@ -168,27 +177,6 @@ def train_dream(args, config, reporter):
 
 
     def test():
-        """
-        model.eval()
-        test_loss = 0
-        correct = 0
-        with torch.no_grad():
-            for data, target in test_loader:
-                if args.cuda:
-                    data, target = data.cuda(), target.cuda()
-                output = model(data)
-                # sum up batch loss
-                test_loss += F.nll_loss(output, target, reduction='sum').item()
-                # get the index of the max log-probability
-                pred = output.argmax(dim=1, keepdim=True)
-                correct += pred.eq(
-                    target.data.view_as(pred)).long().cpu().sum()
-
-        test_loss = test_loss / len(test_loader.dataset)
-        accuracy = float(correct.item()) / len(test_loader.dataset)
-        print(test_loss, accuracy)
-        reporter(mean_loss=test_loss, mean_accuracy=accuracy)
-        """
         model.eval()
         regression_classifier = "r"
 
@@ -212,6 +200,7 @@ def train_dream(args, config, reporter):
                 test_inputs = None
                 test_y_pred = None
                 test_y_pred = model(test_comp_feature_vectors, test_target_feature_vectors)
+                criterion = torch.nn.MSELoss()
                 loss_test = criterion(test_y_pred.squeeze(), tst_labels)
                 total_test_loss += float(loss_test.item())
                 for item in tst_labels:
@@ -235,15 +224,13 @@ def train_dream(args, config, reporter):
     for epoch in range(1, args.epochs + 1):
         print("================================================================================")
         print("Epoch number:\t{}".format(epoch))
-        print("Arguments:", args.first_comp_layer, args.second_comp_layer, args.first_tar_layer, args.second_tar_layer,
-              args.first_comb_layer, args.second_comb_layer, args.lr, args.momentum)
+        # print("Arguments:", args)
         train(epoch)
         test()
 
 
 if __name__ == "__main__":
     args = parser.parse_args()
-
     import numpy as np
     import ray
     from ray import tune
@@ -253,9 +240,10 @@ if __name__ == "__main__":
     sched = HyperBandScheduler(
         time_attr="training_iteration",
         reward_attr="neg_mean_loss",
-        max_t=400)
+        max_t=100)
     tune.register_trainable("train_dream",
                             lambda cfg, rprtr: train_dream(args, cfg, rprtr))
+
     tune.run_experiments(
         {
             "exp": {
@@ -265,31 +253,40 @@ if __name__ == "__main__":
                 },
                 "resources_per_trial": {
                     "cpu": 1,
-                    "gpu": 1
+                    "gpu": 0
                 },
                 "run": "train_dream",
                 "num_samples": 1 if args.smoke_test else 20,
                 # "checkpoint_at_end": True,
                 "config": {
                     "args": args,
+
+                    "chln": tune.sample_from(
+                        lambda spec: np.random.choice(["256_256", "512_256", "512_512", "1024_512", "1024_256", "1024_1024"])),
+
+                    "tlnaf": tune.sample_from(
+                        lambda spec: np.random.choice([64, 128, 256, 512, 1024])),
+
+                    "lhln": tune.sample_from(
+                        lambda spec: np.random.choice(["128_128", "256_256", "512_512", "1024_1024"])),
+
                     "lr": tune.sample_from(
-                        lambda spec: np.random.uniform(0.001, 0.1)),
-                    "momentum": tune.sample_from(
-                        lambda spec: np.random.uniform(0.1, 0.9)),
+                        lambda spec: np.random.uniform(0.0001, 0.1)),
 
-                    "first_comp_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second_comp_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "first_tar_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second_tar_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "first_comb_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
-                    "second_comb_layer": tune.sample_from(
-                        lambda spec: np.random.choice([32, 64, 128, 256, 512, 1024, 2048, 4096])),
+                    "bs": tune.sample_from(
+                        lambda spec: np.random.choice([16, 32])),
 
+                    "td": tune.sample_from(
+                        lambda spec: np.random.choice(["PDBBind"])),
+
+                    "cf": tune.sample_from(
+                        lambda spec: np.random.choice(["ecfp4"])),
+
+                    "tf": tune.sample_from(
+                        lambda spec: np.random.choice(["sequencematrix500"])),
+
+                    "tvt": tune.sample_from(
+                        lambda spec: np.random.choice([True])),
                 }
 
             }
