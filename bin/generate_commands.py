@@ -457,16 +457,23 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                         for comp_hid in comp_2_hidden_layer_list:
                             for do in dropout:
                                 for model in model_list:
-                                    command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(
-                                                job_group_name, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature,
-                                                train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s,
-                                                tr_data, target_feature, train_val_test, model, do)
+                                    #command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(
+                                    #            job_group_name, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature,
+                                    #            train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s,
+                                    #            tr_data, target_feature, train_val_test, model, do)
+
+                                    command_str = "python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(
+                                        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data,
+                                        target_feature,
+                                        train_val_test, model, do)
+
                                     #print(total_number_of_jobs % num_of_jobs_at_each_group)
                                     if ((total_number_of_jobs+ 1) % num_of_jobs_at_each_group)  == 0:
                                         #print(total_number_of_jobs)
                                         temp_group_job_list.append(command_str)
                                         job_number += 1
-                                        all_job_submission_fl.write("chmod +x ./{}.sh\n./{}.sh\n".format(job_number, job_number))
+                                        all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number))
+                                        all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
 
                                         job_fl = open("./{}/{}.sh".format(job_folder_path, job_number), "w")
                                         if job_number==1:
@@ -489,8 +496,11 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     if len(temp_group_job_list)!=0:
         job_fl = open("./{}/{}".format(job_folder_path, job_number + 1), "w")
+        all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number+1))
         all_job_submission_fl.write(
-            "chmod +x ./{}.sh\n./{}.sh\n".format(job_number + 1, job_number + 1))
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+                job_group_name, job_number+1, job_number+1))
+
         for job in temp_group_job_list:
             job_fl.write(job + "\n")
             job_fl.write("sleep 1\n")

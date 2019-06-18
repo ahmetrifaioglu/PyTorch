@@ -247,6 +247,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
 
 def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout):
+    print(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout)
     torch.manual_seed(1)
     use_gpu = torch.cuda.is_available()
 
