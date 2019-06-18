@@ -400,7 +400,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             print("==============================================================================")
             get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
                        total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
-
+        """
         if epoch==n_epoch-1:
             pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
             header = "Comp_ID\tTar_ID\tLabel\tPrediction"
@@ -408,6 +408,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             for ind in range(len(test_all_tar_ids)):
                 pred_fl.write("{}\t{}\t{}\t{}\n".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             pred_fl.close()
+        """
     # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
     """
     result_fl = open("../result_files/{}_full_500.tsv".format("_".join(sys.argv[1:])), "w")
