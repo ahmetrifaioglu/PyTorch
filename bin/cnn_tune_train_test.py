@@ -121,7 +121,6 @@ else:
     train_loader, test_loader = get_cnn_train_test_full_training_data_loader(args.td, [args.cf], [args.tf], args.bs,
                                                                              args.tvt)
 
-
 def train_dream(args, config, reporter):
     vars(args).update(config)
     device = "cpu"
@@ -235,6 +234,9 @@ if __name__ == "__main__":
     import ray
     from ray import tune
     from ray.tune.schedulers import HyperBandScheduler
+
+
+
 
     ray.init()
     sched = HyperBandScheduler(

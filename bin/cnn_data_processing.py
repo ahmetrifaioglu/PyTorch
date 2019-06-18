@@ -13,7 +13,7 @@ import sys
 
 
 cwd = os.getcwd()
-training_files_path = "{}/../trainingFiles".format(cwd)
+training_files_path = "{}PyTorch/trainingFiles".format(cwd.split("PyTorch")[0])
 compound_target_pair_dataset = "comp_targ_affinity.csv"
 
 def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):

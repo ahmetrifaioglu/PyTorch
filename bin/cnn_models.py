@@ -80,14 +80,14 @@ class CNNModule2(torch.nn.Module):
 
 
 class CompFCNNTarCNN2(nn.Module):
-    def __init__(self, tar_feature_list, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, tar_feature_list, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob):
         super(CompFCNNTarCNN2, self).__init__()
         self.tar_feature_list = tar_feature_list
         # print(tar_feature_list)
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
         self.cnn_flattened_layer = CNNModule2(tar_feature_list, num_of_tar_neurons)
         # dropout layer
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(drop_prob)
         self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)
         self.output = None
 
@@ -208,12 +208,12 @@ class CNNModule(torch.nn.Module):
 
 
 class CompFCNNTarCNN(nn.Module):
-    def __init__(self, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob=0.5):
+    def __init__(self, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob):
         super(CompFCNNTarCNN, self).__init__()
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
         self.cnn_flattened_layer = CNNModule(num_of_tar_neurons)
         # dropout layer
-        self.dropout = nn.Dropout(0.3)
+        self.dropout = nn.Dropout(drop_prob)
         self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)
         self.output = None
 
