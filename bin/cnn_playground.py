@@ -309,7 +309,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             # print("======================")
             # print(target_feature_vectors[0])
             # print("----------------------")
-            # target_feature_vectors[0] = target_feature_vectors[0]/210.0
+            #target_feature_vectors[0] = target_feature_vectors[0]/210.0
 
             # print(target_feature_vectors[0])
             # print("======================")
