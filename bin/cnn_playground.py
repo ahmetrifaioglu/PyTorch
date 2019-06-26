@@ -1,19 +1,20 @@
 from __future__ import print_function, division
 import os
+import sys
+import math
 import torch
-import pandas as pd
+import warnings
+import itertools
 import numpy as np
+import pandas as pd
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 from torch.autograd import Variable
 import torch.nn.functional as F
-import sys
 from evaluation_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
 from torchvision import datasets
 import torchvision.transforms as transforms
-import itertools
-import warnings
-import math
+
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
@@ -21,7 +22,7 @@ import sklearn
 from cnn_models import CompFCNNTarCNN2, CompFCNNTarCNN
 from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
 from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
-import sys
+
 
 # import statistics
 
@@ -308,7 +309,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             # print("======================")
             # print(target_feature_vectors[0])
             # print("----------------------")
-            target_feature_vectors[0] = target_feature_vectors[0]/210.0
+            # target_feature_vectors[0] = target_feature_vectors[0]/210.0
 
             # print(target_feature_vectors[0])
             # print("======================")
@@ -334,7 +335,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                         validation_comp_feature_vectors).to(
                         device), Variable(
                         validation_target_feature_vectors).to(device), Variable(val_labels).to(device)
-                    validation_target_feature_vectors[0] = validation_target_feature_vectors[0]/210.0
+                    # validation_target_feature_vectors[0] = validation_target_feature_vectors[0]/210.0
                     total_validation_count += validation_comp_feature_vectors.shape[0]
 
                     # if validation_comp_feature_vectors.shape[0] == batch_size:
@@ -369,7 +370,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                     device), Variable(
                     test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
 
-                test_target_feature_vectors[0] = test_target_feature_vectors[0]/210.0
+                # test_target_feature_vectors[0] = test_target_feature_vectors[0]/210.0
                 total_test_count += test_comp_feature_vectors.shape[0]
 
                 # if test_comp_feature_vectors.shape[0] == batch_size:

@@ -26,6 +26,29 @@ class FC_2_Layer(torch.nn.Module):
         out2 = F.dropout(self.relu(self.bn2(self.l2(out1))), self.drop_rate)
         return out2
 
+class FC_3_Layer(torch.nn.Module):
+
+    def __init__(self, number_of_inputs, neuron_l1, neuron_l2, neuron_l3, drop_rate):
+        super(FC_3_Layer, self).__init__()
+        self.l1 = torch.nn.Linear(number_of_inputs, neuron_l1)
+        self.bn1 = torch.nn.BatchNorm1d(num_features=neuron_l1)
+
+        self.l2 = torch.nn.Linear(neuron_l1, neuron_l2)
+        self.bn2 = torch.nn.BatchNorm1d(num_features=neuron_l2)
+
+        self.l3 = torch.nn.Linear(neuron_l2, neuron_l3)
+        self.bn3 = torch.nn.BatchNorm1d(num_features=neuron_l3)
+
+        self.relu = torch.nn.ReLU()
+        self.drop_rate = drop_rate
+
+
+    def forward(self, x):
+        out1 = F.dropout(self.relu(self.bn1(self.l1(x))), self.drop_rate)
+        out2 = F.dropout(self.relu(self.bn2(self.l2(out1))), self.drop_rate)
+        out3 = F.dropout(self.relu(self.bn2(self.l2(out2))), self.drop_rate)
+        return out3
+
 
 class CNNModule2(torch.nn.Module):
 
@@ -33,7 +56,7 @@ class CNNModule2(torch.nn.Module):
         super(CNNModule2, self).__init__()
         self.tar_feature_list = tar_feature_list
         #self.conv1 = torch.nn.Conv2d(in_channels=1, out_channels=16, kernel_size=7, stride=3, padding=4)
-        self.conv1 = torch.nn.Conv2d(in_channels=2, out_channels=16, kernel_size=7, stride=3, padding=4)
+        self.conv1 = torch.nn.Conv2d(in_channels=len(tar_feature_list), out_channels=16, kernel_size=7, stride=3, padding=4)
         self.conv2 = torch.nn.Conv2d(16, 32, kernel_size=3, stride=1, padding=1)
         self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
 
@@ -184,9 +207,9 @@ class BasicConv2d(nn.Module):
 # 4 layered CNN module
 class CNNModule(torch.nn.Module):
 
-    def __init__(self, num_of_neurons):
+    def __init__(self, tar_feature_list, num_of_neurons):
         super(CNNModule, self).__init__()
-        self.conv1 = torch.nn.Conv2d(in_channels=2, out_channels=8, kernel_size=5)
+        self.conv1 = torch.nn.Conv2d(in_channels=len(tar_feature_list), out_channels=8, kernel_size=5)
         self.conv2 = torch.nn.Conv2d(in_channels=8, out_channels=16, kernel_size=5)
         self.conv3 = torch.nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
         self.conv4 = torch.nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
@@ -208,10 +231,10 @@ class CNNModule(torch.nn.Module):
 
 
 class CompFCNNTarCNN(nn.Module):
-    def __init__(self, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob):
+    def __init__(self, tar_feature_list, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob):
         super(CompFCNNTarCNN, self).__init__()
         self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
-        self.cnn_flattened_layer = CNNModule(num_of_tar_neurons)
+        self.cnn_flattened_layer = CNNModule(tar_feature_list, num_of_tar_neurons)
         # dropout layer
         self.dropout = nn.Dropout(drop_prob)
         self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)

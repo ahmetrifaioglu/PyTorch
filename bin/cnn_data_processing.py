@@ -35,23 +35,39 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             target_id = line[0]
             available_targets.add(target_id)
 
+
             if target_id!="target id" and target_id in set_training_target_ids:
                 feat_vec = None
+                prot_feature_dict = dict()
+                prot_feature_dict[feature_lst[0]] = line[1:]
 
-                aadist_fl = open("{}/target_feature_vectors/aadistancematrix500/{}.tsv".format(training_dataset_path,  target_id) ,"r")
-                lst_aa_dist = aadist_fl.read().split("\n")[0].split("\t")
-                aadist_fl.close()
+                for feature in feature_lst[1:]:
+                    feature_matrix_fl = open(
+                        "{}/target_feature_vectors/{}/{}.tsv".format(training_dataset_path, feature, target_id),
+                        "r")
+                    prot_feature_dict[feature] = feature_matrix_fl.read().split("\n")[0].split("\t")[1:]
+                    feature_matrix_fl.close()
 
                 if "500" in feature_lst[0]:
-                    feat_vec = torch.tensor(np.asarray([line[1:], lst_aa_dist[1:]], dtype=float).reshape(2, 500, 500)).type(torch.FloatTensor)
-                    #feat_vec = torch.tensor(
-                    #    np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(
-                    #    torch.FloatTensor)
+                    prot_all_channel_features = []
+
+                    for feature in feature_lst:
+                        prot_all_channel_features.append(prot_feature_dict[feature])
+                    feat_vec = torch.tensor(
+                        np.asarray(prot_all_channel_features, dtype=float).reshape(len(feature_lst), 500, 500)).type(
+                        torch.FloatTensor)
+
                 elif "1000" in feature_lst[0]:
-                    feat_vec = torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 1000,1000)).type(torch.FloatTensor)
+                    prot_all_channel_features = []
+
+                    for feature in feature_lst:
+                        prot_all_channel_features.append(prot_feature_dict[feature])
+                    feat_vec = torch.tensor(
+                        np.asarray(prot_all_channel_features, dtype=float).reshape(len(feature_lst), 1000, 1000)).type(
+                        torch.FloatTensor)
                 else:
                     pass
-                # print(feat_vec.shape)
+
                 df_combined_features[target_id] = feat_vec
                 count+=1
     # print(len(available_targets))

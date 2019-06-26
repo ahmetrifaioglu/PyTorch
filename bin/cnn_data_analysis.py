@@ -10,7 +10,7 @@ import os
 import itertools
 import torch.nn as nn
 import sys
-from dream_challenge_data_processing import get_prot_id_seq_dict_from_fasta_fl
+#from cnn_data_processing import get_prot_id_seq_dict_from_fasta_fl
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
 
@@ -378,3 +378,98 @@ def remove_bioactivities_with_no_ecfp4():
         except:
             pass
 # remove_bioactivities_with_no_ecfp4()
+
+
+def draw_distribution_of_contacts():
+    import os
+    import zipfile
+    from bokeh.plotting import figure, output_file, show
+    import numpy as np
+    with zipfile.ZipFile('/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500.zip') as z:
+        for dist_fl_name in z.namelist():
+            if not os.path.isdir(dist_fl_name) and dist_fl_name.endswith("tsv"):
+                print(dist_fl_name)
+                dist_lst = []
+                prot_id = dist_fl_name.split(".")[0]
+                #dist_fl = open("{}/{}".format(dist_folder_path, dist_fl_name), "r")
+                with z.open(dist_fl_name) as f:
+                    row_ind = 0
+                    for line in f:
+                        col_values = str(line).split("\\t")
+                        # print(col_values)
+
+                        for col_ind in range(len(col_values)):
+                            dist = 0
+                            if col_ind > row_ind:
+                                if col_ind==row_ind or (col_ind!=row_ind and col_values[col_ind]!="0.0"):
+                                    try:
+                                        dist = float(col_values[col_ind])
+                                        dist_lst.append(dist)
+
+                                    except:
+                                        pass
+                        row_ind += 1
+                dist_lst = sorted(dist_lst)
+                # print(dist_lst)
+                output_file("line.html")
+
+                p = figure(plot_width=400, plot_height=400)
+                lst_indices = list(range(len(dist_lst)))
+
+                # print(lst_indices)
+                # add a circle renderer with a size, color, and alpha
+
+                arr_hist, edges = np.histogram(dist_lst,
+                                               bins=1000,
+                                               range=[0.0, 1.0])
+
+                # Put the information in a dataframe
+                distances = pd.DataFrame({'arr_dist': arr_hist,
+                                       'left': edges[:-1],
+                                       'right': edges[1:]})
+                # print(distances)
+
+                # Create the blank plot
+                p = figure(plot_height=600, plot_width=600,
+                           title='Histogram distances of aminoacids on 3D',
+                           x_axis_label='Aminoacid pairs',
+                           y_axis_label='Distance')
+
+                # Add a quad glyph
+                p.quad(bottom=0, top=distances['arr_dist'],
+                       left=distances['left'], right=distances['right'],
+                       fill_color='red', line_color='black')
+                print(pd.DataFrame(dist_lst).describe())
+                # Show the plot
+                show(p)
+
+                import numpy as np
+                from scipy.stats import norm
+                import matplotlib.pyplot as plt
+
+                # Generate some data for this demonstration.
+                data = np.asarray(dist_lst)
+                print(type(data))
+                # Fit a normal distribution to the data:
+                mu, std = norm.fit(np.asarray(data))
+
+                # Plot the histogram.
+                plt.hist(data, bins=100, density=True, alpha=0.6, color='g')
+
+                # Plot the PDF.
+                xmin, xmax = plt.xlim()
+                x = np.linspace(xmin, xmax, 100)
+                p = norm.pdf(x, mu, std)
+                plt.plot(x, p, 'k', linewidth=2)
+                title = "Fit results: mu = %.2f,  std = %.2f" % (mu, std)
+                plt.title(title)
+
+                plt.show()
+
+
+
+
+
+
+
+draw_distribution_of_contacts()
