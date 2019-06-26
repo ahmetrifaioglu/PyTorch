@@ -501,7 +501,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
         job_fl = open("./{}/{}".format(job_folder_path, job_number + 1), "w")
         all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number+1))
         all_job_submission_fl.write(
-            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+            "bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
                 job_group_name, job_number+1, job_number+1))
 
         for job in temp_group_job_list:
