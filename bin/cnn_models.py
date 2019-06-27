@@ -263,6 +263,86 @@ class CompFCNNTarCNN(nn.Module):
         return y_pred
 
 
+class CNNModule(torch.nn.Module):
+
+    def __init__(self, tar_feature_list, num_of_neurons):
+        super(CNNModule, self).__init__()
+        self.conv1 = torch.nn.Conv2d(in_channels=len(tar_feature_list), out_channels=8, kernel_size=5)
+        self.conv2 = torch.nn.Conv2d(in_channels=8, out_channels=16, kernel_size=5)
+        self.conv3 = torch.nn.Conv2d(in_channels=16, out_channels=32, kernel_size=3)
+        self.conv4 = torch.nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3)
+        self.pool = torch.nn.MaxPool2d(kernel_size=2, stride=2, padding=0)
+        self.fc1 = torch.nn.Linear(53824, num_of_neurons)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = self.pool(x)
+        x = F.relu(self.conv2(x))
+        x = self.pool(x)
+        x = F.relu(self.conv3(x))
+        x = self.pool(x)
+        x = F.relu(self.conv4(x))
+        x = self.pool(x)
+        x = x.view(-1, 53824)
+        x = F.relu(self.fc1(x))
+        return x
+
+class CNNModule3(torch.nn.Module):
+
+    def __init__(self, tar_feature_list, num_of_neurons):
+        super(CNNModule3, self).__init__()
+        self.conv1 = torch.nn.Conv2d(in_channels=len(tar_feature_list), out_channels=64, kernel_size=3, stride=2)
+        self.conv2 = torch.nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3, stride=2)
+        # self.conv3 = torch.nn.Conv2d(in_channels=64, out_channels=128, kernel_size=3)
+        self.pool = torch.nn.AvgPool2d(kernel_size=2, stride=2, padding=0)
+        self.fc1 = torch.nn.Linear(115200, num_of_neurons)
+
+    def forward(self, x):
+        x = F.relu(self.conv1(x))
+        x = self.pool(x)
+        x = F.relu(self.conv2(x))
+        x = self.pool(x)
+        #x = F.relu(self.conv3(x))
+        #x = self.pool(x)
+        x = x.view(-1, 115200)
+        x = F.relu(self.fc1(x))
+        return x
+
+
+
+class CompFCNNTarCNN3(nn.Module):
+    def __init__(self, tar_feature_list, number_of_comp_features, num_of_tar_neurons, comp_l1, comp_l2, fc_l1, fc_l2, drop_prob):
+        super(CompFCNNTarCNN3, self).__init__()
+        self.layer_2_comp = FC_2_Layer(number_of_comp_features, comp_l1, comp_l2, drop_prob)
+        self.cnn_flattened_layer = CNNModule3(tar_feature_list, num_of_tar_neurons)
+        # dropout layer
+        self.dropout = nn.Dropout(drop_prob)
+        self.layer_2_combined = FC_2_Layer(comp_l2 + num_of_tar_neurons, fc_l1, fc_l2, drop_prob)
+        self.output = None
+
+        self.output = torch.nn.Linear(fc_l2, 1)
+        self.relu = torch.nn.ReLU()
+        self.sigmoid = torch.nn.Sigmoid()
+        self.softmax = torch.nn.Softmax()
+        # self.drop_rate = drop_rate
+        self.r_c = "r"
+
+
+    def forward(self, x_comp, x_tar):
+        out2_comp = self.layer_2_comp.forward(x_comp)
+        out_tar = self.cnn_flattened_layer(x_tar)
+        combined_layer = torch.cat((out2_comp, out_tar), 1)
+        out_combined = self.layer_2_combined.forward(combined_layer)
+        y_pred = None
+
+        if self.r_c == "r":
+            y_pred = self.output(out_combined)
+        else:
+            y_pred = self.softmax(self.output(out_combined))
+
+        return y_pred
+
+
 """
 class CNNModule(torch.nn.Module):
 
