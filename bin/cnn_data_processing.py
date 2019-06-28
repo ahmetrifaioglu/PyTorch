@@ -233,7 +233,7 @@ def get_aa_match_encodings_max_value(aaindex_enconding):
     lst_encoding_fl = encoding_fl.read().split("\n")
     encoding_fl.close()
     starting_ind = -1
-    max_value = -math.inf
+    max_value = -1000000000
     for row_ind in range(len(lst_encoding_fl)-1):
         str_line = lst_encoding_fl[row_ind]
         if str_line.startswith("M rows"):
