@@ -110,7 +110,7 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
 
 def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
     arguments = [str(argm) for argm in sys.argv[1:]]
-    print("Arguments:", "-".join(arguments))
+    print("Arguments::", "-".join(arguments))
     torch.manual_seed(123)
     np.random.seed(123)
 
