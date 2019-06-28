@@ -67,3 +67,35 @@ for i, data in enumerate(train_loader):
     print(target_feature_vectors.shape)
     print(comp_feature_vectors.shape)
 """
+
+
+def get_scores_full(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, comp_tar_pair_dataset, fold_epoch_results):
+    deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
+        predictions))
+    # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
+    #    predictions))
+    deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
+        predictions))
+    deep_dta_mse = mse(np.asarray(labels), np.asarray(
+        predictions))
+
+    rmse_score = rmse(np.asarray(labels), np.asarray(
+        predictions))
+    pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
+    spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
+    ci_score = ci(np.asarray(labels), np.asarray(predictions))
+    prec_rec_f1_acc_mcc_threshold_dict = prec_rec_f1_acc_mcc(np.asarray(labels), np.asarray(predictions))
+    ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
+    fold_epoch_results.append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
+    print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test, total_validation_test_loss))
+    print("{} RM2:\t{}".format(validation_test, deep_dta_rm2))
+    print("{} MSE\t{}".format(validation_test, deep_dta_mse))
+    print("{} RMSE\t{}".format(validation_test, rmse_score))
+    print("{} c-index\t{}".format(validation_test, deep_dta_cindex))
+    print("{} Pearson:\t{}".format(validation_test, pearson_score))
+    print("{} Spearman:\t{}".format(validation_test, spearman_score))
+    print("{} Ci:\t{}".format(validation_test, ci_score))
+    print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
+
+    for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
+        print("{} {}:\t{}".format(validation_test, key, prec_rec_f1_acc_mcc_threshold_dict[key]))

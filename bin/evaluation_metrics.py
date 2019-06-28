@@ -202,7 +202,7 @@ def ci(y,f):
 
 
 
-def f1(y,f):
+def prec_rec_f1_acc_mcc(y,f):
     """
     Task:    To compute F1 score using the threshold of 7 M
              to binarize pKd's into true class labels.
@@ -212,16 +212,27 @@ def f1(y,f):
 
     Output:  f1     F1 score
     """
+    # 10 uM, 1 uM, 100 nM
+    threshold_lst = [5.0, 6.0, 7.0]
+    performance_threshold_dict = dict()
+    for threshold in threshold_lst:
+        y_binary = copy.deepcopy(y)
+        y_binary = preprocessing.binarize(y_binary.reshape(1,-1), threshold, copy=False)[0]
+        # print(y_binary)
+        f_binary = copy.deepcopy(f)
+        f_binary = preprocessing.binarize(f_binary.reshape(1,-1), threshold, copy=False)[0]
+        precision = metrics.precision_score(y_binary, f_binary)
+        recall =   metrics.recall_score(y_binary, f_binary)
+        f1_score = metrics.f1_score(y_binary, f_binary)
+        accuracy = metrics.accuracy_score(y_binary, f_binary)
+        mcc = metrics.matthews_corrcoef(y_binary, f_binary)
+        performance_threshold_dict["Precision {}".format(threshold)] = precision
+        performance_threshold_dict["Recall {}".format(threshold)] = recall
+        performance_threshold_dict["F1-Score {}".format(threshold)] = f1_score
+        performance_threshold_dict["Accuracy {}".format(threshold)] = accuracy
+        performance_threshold_dict["MCC {}".format(threshold)] = mcc
 
-    y_binary = copy.deepcopy(y)
-    y_binary = preprocessing.binarize(y_binary.reshape(1,-1), threshold=7.0, copy=False)[0]
-    # print(y_binary)
-    f_binary = copy.deepcopy(f)
-    f_binary = preprocessing.binarize(f_binary.reshape(1,-1), threshold=7.0, copy=False)[0]
-
-    f1 = metrics.f1_score(y_binary, f_binary)
-
-    return f1
+    return performance_threshold_dict
 
 
 
@@ -252,4 +263,13 @@ def average_AUC(y,f):
     avAUC = np.mean(auc)
 
     return avAUC
+
+def get_list_of_scores():
+    score_list = ["rm2", "CI (DEEPDTA)", "MSE", "RMSE", "Pearson", "Spearman",
+                  "CI (Challenge)", "Average AUC",
+                  "Precision 5.0", "Recall 5.0", "F1-Score 5.0", "Accuracy 5.0", "MCC 5.0",
+                  "Precision 6.0", "Recall 6.0", "F1-Score 6.0", "Accuracy 6.0", "MCC 6.0",
+                  "Precision 7.0", "Recall 7.0", "F1-Score 7.0", "Accuracy 7.0", "MCC 7.0",
+                  ]
+    return score_list
 

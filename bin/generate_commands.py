@@ -436,19 +436,20 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
     after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
     comp_2_hidden_layer_list = ["256_256", "512_256", "512_512", "1024_512", "1024_256", "1024_1024"]
-    comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
+    #comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
     last_2_hidden_layer_list = ["128_64", "256_128" "512_256", "1024_512"]
     training_dataset_list = ["DeepDTA_davis", "DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_davis_filtered"]
     training_dataset_list = ["PDBBind"]
+    training_dataset_list = ["DeepDTA_davis"]
     train_val_test = 1
     # target_feature = "sequencematrix1000"
     total_number_of_jobs = 0
     dropout = [0.2, 0.3, 0.5]
-    model_list = ["CompFCNNTarCNN", "CompFCNNTarCNN2"]
-    model_list = ["CompFCNNTarCNN2"]
-    target_feature = "sequencematrix500_blosum62500"
+    model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNN4Layers", "CompFCNNTarCNNModule2Layers", "CompFCNNTarCNN4LayersStride"]
+    # model_list = ["CompFCNNTarCNN2"]
+    target_feature = ["sequencematrix500", "sequencematrix500_blosum62LEQ500", "sequencematrix500_SIMK990101LEQ500", "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500"]
     temp_group_job_list = []
     job_number = 0
     all_job_submission_fl = open("{}/{}.sh".format(job_folder_path, job_group_name), "w")
@@ -460,48 +461,49 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                         for comp_hid in comp_2_hidden_layer_list:
                             for do in dropout:
                                 for model in model_list:
-                                    #command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(
-                                    #            job_group_name, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature,
-                                    #            train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s,
-                                    #            tr_data, target_feature, train_val_test, model, do)
+                                    for tar_feat in target_feature:
+                                        #command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(
+                                        #            job_group_name, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature,
+                                        #            train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s,
+                                        #            tr_data, target_feature, train_val_test, model, do)
 
-                                    command_str = "python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}".format(
-                                        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data,
-                                        target_feature,
-                                        train_val_test, model, do)
+                                        command_str = "python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}".format(
+                                            comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data,
+                                            tar_feat,
+                                            train_val_test, model, do, job_group_name)
 
-                                    #print(total_number_of_jobs % num_of_jobs_at_each_group)
-                                    if ((total_number_of_jobs+ 1) % num_of_jobs_at_each_group)  == 0:
-                                        #print(total_number_of_jobs)
-                                        temp_group_job_list.append(command_str)
-                                        job_number += 1
-                                        all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number))
-                                        all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
+                                        #print(total_number_of_jobs % num_of_jobs_at_each_group)
+                                        if ((total_number_of_jobs+ 1) % num_of_jobs_at_each_group)  == 0:
+                                            #print(total_number_of_jobs)
+                                            temp_group_job_list.append(command_str)
+                                            job_number += 1
+                                            all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number))
+                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
 
-                                        job_fl = open("./{}/{}.sh".format(job_folder_path, job_number), "w")
-                                        if job_number==1:
-                                            job_fl.write("mkdir ../../../log_files/{}\n".format(job_group_name))
-                                        for job in temp_group_job_list:
-                                            job_fl.write(job+"\n")
-                                            job_fl.write("sleep 1\n")
-                                        job_fl.close()
-                                        temp_group_job_list = []
+                                            job_fl = open("./{}/{}.sh".format(job_folder_path, job_number), "w")
+                                            if job_number==1:
+                                                job_fl.write("mkdir ../../../log_files/{}\n".format(job_group_name))
+                                            for job in temp_group_job_list:
+                                                job_fl.write(job+"\n")
+                                                job_fl.write("sleep 1\n")
+                                            job_fl.close()
+                                            temp_group_job_list = []
 
-                                    else:
-                                        temp_group_job_list.append(command_str)
-                                        # lst_params = []
-                                        # print("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../log_files/pdbbind_experiment_2_channel_model_2_15062019/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do))
-                                        #print(
-                                        #    "bsub -q research-rh74 -P gpu -M 15360 -R 'rusage[mem=15360]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
-                                        #        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid,
-                                        #        conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
-                                    total_number_of_jobs += 1
+                                        else:
+                                            temp_group_job_list.append(command_str)
+                                            # lst_params = []
+                                            # print("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../log_files/pdbbind_experiment_2_channel_model_2_15062019/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do))
+                                            #print(
+                                            #    "bsub -q research-rh74 -P gpu -M 15360 -R 'rusage[mem=15360]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
+                                            #        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid,
+                                            #        conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
+                                        total_number_of_jobs += 1
 
     if len(temp_group_job_list)!=0:
-        job_fl = open("./{}/{}".format(job_folder_path, job_number + 1), "w")
+        job_fl = open("./{}/{}.sh".format(job_folder_path, job_number + 1), "w")
         all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number+1))
         all_job_submission_fl.write(
-            "bsub -g /my_small_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
                 job_group_name, job_number+1, job_number+1))
 
         for job in temp_group_job_list:
@@ -511,7 +513,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_protein_cnn_commands("PDBBind_encoding_blosum62500_hyperparam_search_2_channel", 10)
+generate_protein_cnn_commands("DavisDataset_all_encodings_varying_channel", 40)
 # python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000
 # bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/1000_Deneme.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000"
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data

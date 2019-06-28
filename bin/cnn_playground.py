@@ -7,93 +7,113 @@ import warnings
 import itertools
 import numpy as np
 import pandas as pd
+import subprocess
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms, utils
 from torch.autograd import Variable
 import torch.nn.functional as F
-from evaluation_metrics import rmse, pearson, spearman, ci, f1, average_AUC, mse
+from evaluation_metrics import rmse, pearson, spearman, ci, prec_rec_f1_acc_mcc, average_AUC, mse
 from torchvision import datasets
 import torchvision.transforms as transforms
-
 from sklearn.metrics import f1_score, accuracy_score
 from sklearn import preprocessing,metrics
 import sklearn
-# from dream_challenge_PINN_models import FC_PINNModel_2_2_2, FC_PINNModel_2_2_2_Modules, FC_PINNModel_2_3_2_Modules, FC_PINNModel_3_5_2_Modules#, FC_PINNModel_4_4_2,  FC_PINNModel_3_3_2
-from cnn_models import CompFCNNTarCNN2, CompFCNNTarCNN, CompFCNNTarCNN3
-from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr
-from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader
+from cnn_models import CompFCNNTarCNNModuleInception, CompFCNNTarCNN4Layers, CompFCNNTarCNNModule2Layers, CompFCNNTarCNN4LayersStride
+from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr, get_list_of_scores
+from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader, get_aa_match_encodings_max_value
 
+warnings.filterwarnings(action='ignore')
 
-# import statistics
+cwd = os.getcwd()
+project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
 n_epoch = 100
 num_of_folds = 5
 
-def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, fold, epoch, comp_tar_pair_dataset, fold_epoch_results):
-    deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
-        predictions))
-    # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
-    #    predictions))
-    deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
-        predictions))
-    deep_dta_mse = mse(np.asarray(labels), np.asarray(
-        predictions))
+def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
+    model=None
+    if model_name == "CompFCNNTarCNNModuleInception":
+        model = CompFCNNTarCNNModuleInception(tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second,
+                                fc1, fc2, dropout)
+    elif model_name=="CompFCNNTarCNN4Layers":
+        model = CompFCNNTarCNN4Layers(tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second,
+                            fc1, fc2, dropout)
+    elif model_name=="CompFCNNTarCNNModule2Layers":
+        model = CompFCNNTarCNNModule2Layers(tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second,
+                            fc1, fc2, dropout)
+    elif model_name=="CompFCNNTarCNN4LayersStride":
+        model = CompFCNNTarCNN4LayersStride(tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second,
+                            fc1, fc2, dropout)
+    return model
 
-    #rmse_score = rmse(np.asarray(labels), np.asarray(
-    #    predictions))
-    pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
-    spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
-    ci_score = ci(np.asarray(labels), np.asarray(predictions))
-    f1_score = f1(np.asarray(labels), np.asarray(predictions))
-    ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
-    fold_epoch_results[-1].append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
-    print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss, validation_test, total_validation_test_loss))
-    # print("{} RMSE:\t{}".format(validation_test, rmse_score))  # rmse, pearson, spearman, ci, ci, average_AUC
-    print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
-    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
-    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
+
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, comp_tar_pair_dataset, fold_epoch_results, fold=None):
+    score_dict = {"rm2": None, "CI (DEEPDTA)": None, "MSE": None, "RMSE": None, "Pearson": None,
+                  "Spearman": None, "CI (Challenge)": None, "Average AUC": None,
+                  "Precision 5.0": None, "Recall 5.0": None, "F1-Score 5.0": None, "Accuracy 5.0": None, "MCC 5.0": None,
+                  "Precision 6.0": None, "Recall 6.0": None, "F1-Score 6.0": None, "Accuracy 6.0": None, "MCC 6.0": None,
+                  "Precision 7.0": None, "Recall 7.0": None, "F1-Score 7.0": None, "Accuracy 7.0": None, "MCC 7.0": None,
+                  }
+    score_list = get_list_of_scores()
+
+    score_dict["rm2"] = get_rm2(np.asarray(labels), np.asarray(
+        predictions))
+    score_dict["CI (DEEPDTA)"] = get_cindex(np.asarray(labels), np.asarray(
+        predictions))
+    score_dict["MSE"] = mse(np.asarray(labels), np.asarray(
+        predictions))
+    score_dict["RMSE"] = rmse(np.asarray(labels), np.asarray(
+        predictions))
+    score_dict["Pearson"] = pearson(np.asarray(labels), np.asarray(predictions))
+    score_dict["Spearman"] = spearman(np.asarray(labels), np.asarray(predictions))
+    score_dict["CI (Challenge)"] = ci(np.asarray(labels), np.asarray(predictions))
+    score_dict["Average AUC"] = average_AUC(np.asarray(labels), np.asarray(predictions))
+
+    prec_rec_f1_acc_mcc_threshold_dict = prec_rec_f1_acc_mcc(np.asarray(labels), np.asarray(predictions))
+    for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
+        score_dict[key] = prec_rec_f1_acc_mcc_threshold_dict[key]
+
+    """
+    lst_calculated_scores = []
+    for scr in score_list:
+        lst_calculated_scores.append(score_dict[scr])
+    """
+
+    if fold!=None:
+        fold_epoch_results[-1].append(score_dict)
+        print("Fold:{}\tEpoch:{}\tTraining Loss:{}\t{} Loss:{}".format(fold + 1, epoch, total_training_loss,
+                                                                       validation_test, total_validation_test_loss))
+    else:
+        fold_epoch_results.append(score_dict)
+        print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test,
+                                                              total_validation_test_loss))
+    for scr in score_list:
+        print("{} {}:\t{}".format(validation_test, scr, score_dict[scr]))
+    """
+    print("{} RM2:\t{}".format(validation_test, deep_dta_rm2))
+    print("{} MSE\t{}".format(validation_test, deep_dta_mse))
+    print("{} RMSE\t{}".format(validation_test, rmse_score))
+    print("{} c-index\t{}".format(validation_test, deep_dta_cindex))
     print("{} Pearson:\t{}".format(validation_test, pearson_score))
     print("{} Spearman:\t{}".format(validation_test, spearman_score))
     print("{} Ci:\t{}".format(validation_test, ci_score))
-    print("{} F1-Score:\t{}".format(validation_test, f1_score))
-    print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
-    # print("{} IDG File:\t{}".format(validation_test, comp_tar_pair_dataset))
-    # print("{} Number of training samples:\t{}".format(validation_test, total_training_count))
-    # print("{} Number of validation samples:\t{}".format(validation_test, total_validation_count))
-
-def get_scores_full(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, comp_tar_pair_dataset, fold_epoch_results):
-    deep_dta_rm2 = get_rm2(np.asarray(labels), np.asarray(
-        predictions))
-    # deep_dta_aupr = get_aupr(np.asarray(labels), np.asarray(
-    #    predictions))
-    deep_dta_cindex = get_cindex(np.asarray(labels), np.asarray(
-        predictions))
-    deep_dta_mse = mse(np.asarray(labels), np.asarray(
-        predictions))
-
-    rmse_score = rmse(np.asarray(labels), np.asarray(
-        predictions))
-    pearson_score = pearson(np.asarray(labels), np.asarray(predictions))
-    spearman_score = spearman(np.asarray(labels), np.asarray(predictions))
-    ci_score = ci(np.asarray(labels), np.asarray(predictions))
-    f1_score = f1(np.asarray(labels), np.asarray(predictions))
-    ave_auc_score = average_AUC(np.asarray(labels), np.asarray(predictions))
-    fold_epoch_results.append([deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score])
-    print("Epoch:{}\tTraining Loss:{}\t{} Loss:{}".format(epoch, total_training_loss, validation_test, total_validation_test_loss))
-    print("{} DeepDTA RM2:\t{}".format(validation_test, deep_dta_rm2))
-    print("{} DeepDTA MSE\t{}".format(validation_test, deep_dta_mse))
-    print("{} DeepDTA RMSE\t{}".format(validation_test, rmse_score))
-    print("{} DeepDTA c-index\t{}".format(validation_test, deep_dta_cindex))
-    print("{} Pearson:\t{}".format(validation_test, pearson_score))
-    print("{} Spearman:\t{}".format(validation_test, spearman_score))
-    print("{} Ci:\t{}".format(validation_test, ci_score))
-    print("{} F1-Score:\t{}".format(validation_test, f1_score))
     print("{} Average_AUC:\t{}".format(validation_test, ave_auc_score))
 
+    for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
+        
+    """
 
 
-def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size):
-    torch.manual_seed(1)
+
+
+
+
+def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
+    arguments = [str(argm) for argm in sys.argv[1:]]
+    print("Arguments:", "-".join(arguments))
+    torch.manual_seed(123)
+    np.random.seed(123)
+
     use_gpu = torch.cuda.is_available()
 
     device = "cpu"
@@ -106,21 +126,23 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
     loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size)
 
-    test_fold_epoch_results = []
-    validation_fold_epoch_results = []
+    validation_fold_epoch_results, test_fold_epoch_results = [], []
+
     for fold in range(num_of_folds):
         test_fold_epoch_results.append([])
         validation_fold_epoch_results.append([])
         train_loader, valid_loader = loader_fold_dict[fold]
+
         print("FOLD : {}".format(fold + 1))
 
-        model = CompFCNNTarCNN2(1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, drop_prob=0.5).to(device)
+        model = get_model(model_nm, tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0],
+                          comp_hidden_lst[1], fc1, fc2, dropout).to(device)
         optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
         criterion = torch.nn.MSELoss()
         optimizer.zero_grad()
 
         for epoch in range(n_epoch):
-            #print("Epoch :{}".format(epoch))
+            print("Epoch :{}".format(epoch))
             total_training_loss, total_validation_loss, total_test_loss = 0.0, 0.0, 0.0
             total_training_count, total_validation_count, total_test_count = 0, 0, 0
             validation_predictions, validation_labels, test_predictions, test_labels = [], [], [], []
@@ -131,27 +153,17 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                 # clear gradient DO NOT forget you fool!
                 optimizer.zero_grad()
 
-                # get the inputs
-                #comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
                 comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids = data
-                # wrap them in Variable
                 comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                     target_feature_vectors).to(device), Variable(labels).to(device)
-                # if comp_feature_vectors.shape[0]==batch_size:
-                inputs = None
-                y_pred = None
 
                 total_training_count += comp_feature_vectors.shape[0]
-
                 y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
-
                 loss = criterion(y_pred.squeeze(), labels)
-
                 total_training_loss += float(loss.item())
                 loss.backward()
                 optimizer.step()
-
-            #print("Epoch {} training loss:".format(epoch), total_training_loss)
+            print("Epoch {} training loss:".format(epoch), total_training_loss)
 
             model.eval()
             with torch.no_grad():  # torch.set_grad_enabled(False):
@@ -162,10 +174,6 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         val_target_feature_vectors).to(device), Variable(val_labels).to(device)
 
                     total_validation_count += val_comp_feature_vectors.shape[0]
-
-                    # if val_comp_feature_vectors.shape[0] == batch_size:
-                    val_inputs = None
-                    val_y_pred = None
                     val_y_pred  = model(val_comp_feature_vectors, val_target_feature_vectors)
                     loss_val = criterion(val_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_val.item())
@@ -183,9 +191,6 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
                     total_test_count += test_comp_feature_vectors.shape[0]
 
-                    # if test_comp_feature_vectors.shape[0] == batch_size:
-                    test_inputs = None
-                    test_y_pred = None
                     test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
                     loss_test = criterion(test_y_pred.squeeze(), tst_labels)
                     total_test_loss += float(loss_test.item())
@@ -198,58 +203,55 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, fold, epoch, comp_tar_pair_dataset, validation_fold_epoch_results)
+                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, comp_tar_pair_dataset, validation_fold_epoch_results, fold)
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
-                           total_test_loss, fold, epoch, comp_tar_pair_dataset, test_fold_epoch_results)
+                           total_test_loss, epoch, comp_tar_pair_dataset, test_fold_epoch_results, fold)
 
                 if epoch==n_epoch-1:
-                    #print(test_fold_epoch_results)
-                    rmse_results = [float(rslt[2]) for rslt in test_fold_epoch_results[fold]]
-                    # print(rmse_results)
-                    # print(min(rmse_results))
-                    if min(rmse_results) >= 0.30:
-                            sys.exit("Terminating training since minimum MSE is higher than the threshold!")
+                    #print(len(test_fold_epoch_results[-1]))
+                    mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
 
+                    #if min(mse_results)>= 0.30:
+                    #    sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
-    # deep_dta_rm2, deep_dta_cindex, deep_dta_mse, pearson_score, spearman_score, ci_score, f1_score, ave_auc_score
-    result_fl = open("../result_files/{}.tsv".format("_".join(sys.argv[1:])), "w")
-    header = "test_deep_dta_rm2\ttest_deep_dta_cindex\ttest_deep_dta_mse\ttest_pearson_score\ttest_spearman_score\ttest_ci_score\ttest_f1_score\ttest_ave_auc_score\tval_deep_dta_rm2\tval_deep_dta_cindex\tval_deep_dta_mse\tval_pearson_score\tval_spearman_score\tval_ci_score\tval_f1_score\tval_ave_auc_score"
-    #print(header)
-    #print(test_fold_epoch_results)
+    if not os.path.exists("{}/result_files/{}".format(project_file_path, experiment_name)):
+        subprocess.call("mkdir {}".format("{}/result_files/{}".format(project_file_path, experiment_name)), shell=True)
+
+    result_fl = open("{}/result_files/{}/{}.tsv".format(project_file_path, experiment_name, "-".join(sys.argv[1:])), "w")
+    score_list = get_list_of_scores()
+    header = "test {}\tvalidation {}".format("\ttest ".join(score_list), "\tvalidation ".join(score_list))
     result_fl.write(header+"\n")
     for epoch_ind in range(n_epoch):
 
         epoch_test_combined_rslt_lst = []
         epoch_val_combined_rslt_lst = []
-        for rslt_ind in range(len(test_fold_epoch_results[0][epoch_ind])):
+        for rslt_ind in range(len(score_list)):
             fold_combined_test_result_list = []
             fold_combined_val_result_list = []
             for fold_num in range(num_of_folds):
-                fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
-                fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][rslt_ind])
+                fold_combined_test_result_list.append(test_fold_epoch_results[fold_num][epoch_ind][score_list[rslt_ind]])
+                fold_combined_val_result_list.append(validation_fold_epoch_results[fold_num][epoch_ind][score_list[rslt_ind]])
 
             str_test_fold_combined_list = ",".join([str(item) for item in fold_combined_test_result_list])
             str_val_fold_combined_list = ",".join([str(item) for item in fold_combined_val_result_list])
+
             epoch_test_combined_rslt_lst.append(str_test_fold_combined_list)
-            #epoch_test_combined_rslt_lst.append(str(statistics.mean(fold_combined_test_result_list)))
-            #epoch_test_combined_rslt_lst.append(str(statistics.pstdev(fold_combined_test_result_list)))
             epoch_val_combined_rslt_lst.append(str_val_fold_combined_list)
-            #epoch_val_combined_rslt_lst.append(str(statistics.mean(fold_combined_val_result_list)))
-            #epoch_val_combined_rslt_lst.append(str(statistics.pstdev(fold_combined_val_result_list)))
-            #epoch_combined_rslt_lst.append(str_val_fold_combined_list)
 
         result_line = "\t".join(["\t".join(epoch_test_combined_rslt_lst), "\t".join(epoch_val_combined_rslt_lst)])
         result_fl.write(result_line + "\n")
-        #print(result_line)
+
 
     result_fl.close()
-# comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
 
 
 def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout):
-    print(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout)
-    torch.manual_seed(1)
+    arguments = [str(argm) for argm in sys.argv[1:]]
+    print("Arguments:", "-".join(arguments))
+
+    torch.manual_seed(123)
+    np.random.seed(123)
     use_gpu = torch.cuda.is_available()
 
     device = "cpu"
@@ -259,6 +261,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
         device = "cuda"
     else:
         print("CPU is available on this device!")
+
     train_loader, validation_loader, test_loader = None, None, None
     if train_val_test:
         train_loader, validation_loader, test_loader = get_cnn_train_test_full_training_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size, train_val_test)
@@ -268,21 +271,12 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                                                                                                  tar_feature_list,
                                                                                                  batch_size,
                                                                                                  train_val_test)
-
-    test_epoch_results = []
-    test_epoch_results.append([])
-    validation_epoch_results = []
+    validation_epoch_results, test_epoch_results = [], []
     validation_epoch_results.append([])
+    test_epoch_results.append([])
 
-    model = None
-    if model_nm == "CompFCNNTarCNN2":
-        model = CompFCNNTarCNN2(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, dropout).to(device)
-    elif model_nm=="CompFCNNTarCNN":
-        model = CompFCNNTarCNN(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1],
-                            fc1, fc2, dropout).to(device)
-    elif model_nm=="CompFCNNTarCNN3":
-        model = CompFCNNTarCNN3(tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1],
-                            fc1, fc2, dropout).to(device)
+    model = get_model(model_nm, tar_feature_list, 1024, tar_num_of_last_neurons, comp_hidden_lst[0], comp_hidden_lst[1], fc1, fc2, dropout).to(device)
+
     optimizer = torch.optim.Adam(model.parameters(), lr=learn_rate)
     criterion = torch.nn.MSELoss()
     optimizer.zero_grad()
@@ -291,9 +285,11 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
         print("Epoch :{}".format(epoch))
         total_training_loss, total_test_loss, total_validation_loss = 0.0, 0.0, 0.0
         total_training_count, total_test_count, total_validation_count = 0, 0, 0
-        test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [],[] ,[]
+        test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [], [], []
         validation_predictions, validation_labels, validation_all_comp_ids, validation_all_tar_ids = [], [], [], []
+
         batch_number = 0
+
         model.train()
         for i, data in enumerate(train_loader):
             batch_number += 1
@@ -301,27 +297,13 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             optimizer.zero_grad()
 
             # get the inputs
-            #comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids, number_of_comp_features, number_of_target_features = data
             comp_feature_vectors, target_feature_vectors, labels, compound_ids, target_ids = data
-            # wrap them in Variable
             comp_feature_vectors, target_feature_vectors, labels = Variable(comp_feature_vectors).to(device), Variable(
                 target_feature_vectors).to(device), Variable(labels).to(device)
 
-            # if comp_feature_vectors.shape[0]==batch_size:
-            y_pred = None
-            # print("======================")
-            # print(target_feature_vectors[0])
-            # print("----------------------")
-            #target_feature_vectors[0] = target_feature_vectors[0]/210.0
-
-            # print(target_feature_vectors[0])
-            # print("======================")
             total_training_count += comp_feature_vectors.shape[0]
-
             y_pred = model(comp_feature_vectors, target_feature_vectors).to(device)
-
             loss = criterion(y_pred.squeeze(), labels)
-
             total_training_loss += float(loss.item())
             loss.backward()
             optimizer.step()
@@ -338,15 +320,13 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                         validation_comp_feature_vectors).to(
                         device), Variable(
                         validation_target_feature_vectors).to(device), Variable(val_labels).to(device)
-                    # validation_target_feature_vectors[0] = validation_target_feature_vectors[0]/210.0
+
                     total_validation_count += validation_comp_feature_vectors.shape[0]
 
-                    # if validation_comp_feature_vectors.shape[0] == batch_size:
-                    # validation_inputs = None
-                    # validation_y_pred = None
                     validation_y_pred = model(validation_comp_feature_vectors, validation_target_feature_vectors)
                     loss_validation = criterion(validation_y_pred.squeeze(), val_labels)
                     total_validation_loss += float(loss_validation.item())
+
                     for item in val_labels:
                         validation_labels.append(float(item.item()))
 
@@ -358,12 +338,14 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
                     for item in validation_target_ids:
                         validation_all_tar_ids.append(item)
+
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores_full(validation_labels, validation_predictions, "Validation", total_training_loss,
+                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss,
                                 total_validation_loss, epoch, comp_tar_pair_dataset, validation_epoch_results)
 
             print("Epoch {} validation loss:".format(epoch), total_validation_loss)
+
         model.eval()
         with torch.no_grad():  # torch.set_grad_enabled(False):
 
@@ -373,11 +355,8 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                     device), Variable(
                     test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
 
-                # test_target_feature_vectors[0] = test_target_feature_vectors[0]/210.0
                 total_test_count += test_comp_feature_vectors.shape[0]
 
-                # if test_comp_feature_vectors.shape[0] == batch_size:
-                test_inputs = None
                 test_y_pred = None
                 test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
                 loss_test = criterion(test_y_pred.squeeze(), tst_labels)
@@ -400,9 +379,10 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                 for ind in range(len(test_all_tar_ids)):
                     print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
                 print("=====PREDICTIONS=====")
+
         if regression_classifier == "r":
             print("==============================================================================")
-            get_scores_full(test_labels, test_predictions, "Test", total_training_loss,
+            get_scores(test_labels, test_predictions, "Test", total_training_loss,
                        total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
         """
         if epoch==n_epoch-1:
@@ -428,9 +408,6 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
     result_fl.close()
     """
-# comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size
-
-
 
 comp_hidden_layer_neurons = [int(num) for num in sys.argv[1].split("_")]
 after_flattened_conv_layer_neurons = int(sys.argv[2])
@@ -443,6 +420,7 @@ tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 train_validation_test = bool(sys.argv[9])
 model_name = sys.argv[10]
 dropout_prob = float(sys.argv[11])
+experiment_name = sys.argv[12]
 
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
@@ -451,4 +429,5 @@ dropout_prob = float(sys.argv[11])
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)

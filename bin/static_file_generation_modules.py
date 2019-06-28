@@ -231,7 +231,11 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/SIMK990101.tsv
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 500, "SIMK990101.txt")
 
+# python static_file_generation_modules.py > ../trainingFiles/DeepDTA_davis/target_feature_vectors/SIMK990101500.tsv
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 500, "SIMK990101.txt")
 
+# python static_file_generation_modules.py > ../trainingFiles/DeepDTA_davis/target_feature_vectors/blosum62500_normalized.tsv
+# save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 500, "blosum62.txt")
 
 # Components-smiles-stereo-oe.smi and Components-inchi.ich.txt were downloaded from  http://ligand-expo.rcsb.org/ld-download.html
 def create_ecfp4_feature_file_for_pdbbind_ligands():
@@ -426,9 +430,9 @@ def create_dti_dataset_for_pdbbind():
 # create_dti_dataset_for_pdbbind()
 
 def create_single_target_feature_vector_files_using_combined():
-    feature_name = "blosum62500"
-    input_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors"
-    output_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/{}".format(feature_name)
+    feature_name = "SIMK990101500"
+    input_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/target_feature_vectors"
+    output_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/target_feature_vectors/{}".format(feature_name)
     with open("{}/{}.tsv".format(input_path, feature_name)) as f:
         for line in f:
             line = line.split("\n")[0]

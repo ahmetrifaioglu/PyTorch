@@ -17,7 +17,8 @@ training_files_path = "{}PyTorch/trainingFiles".format(cwd.split("PyTorch")[0])
 compound_target_pair_dataset = "comp_targ_affinity.csv"
 
 def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
-    sorted(feature_lst)
+    #sorted(feature_lst)
+    target_matrix_max_value_dict = get_max_values_for_target_types(feature_lst)
     training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
     comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
     tar_feature_vector_path = "{}/target_feature_vectors".format(training_dataset_path)
@@ -39,6 +40,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
             if target_id!="target id" and target_id in set_training_target_ids:
                 feat_vec = None
                 prot_feature_dict = dict()
+                # first channel represents the encoding
                 prot_feature_dict[feature_lst[0]] = line[1:]
 
                 for feature in feature_lst[1:]:
@@ -51,8 +53,12 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
                 if "500" in feature_lst[0]:
                     prot_all_channel_features = []
 
+
                     for feature in feature_lst:
-                        prot_all_channel_features.append(prot_feature_dict[feature])
+                        prot_all_channel_features.append(
+                            np.asarray(prot_feature_dict[feature], dtype=float)/target_matrix_max_value_dict[
+                                feature.split("LEQ")[0]])
+
                     feat_vec = torch.tensor(
                         np.asarray(prot_all_channel_features, dtype=float).reshape(len(feature_lst), 500, 500)).type(
                         torch.FloatTensor)
@@ -61,7 +67,9 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
                     prot_all_channel_features = []
 
                     for feature in feature_lst:
-                        prot_all_channel_features.append(prot_feature_dict[feature])
+                        prot_all_channel_features.append(
+                            np.asarray(prot_feature_dict[feature], dtype=float) / target_matrix_max_value_dict[
+                                feature.split("LEQ")[0]])
                     feat_vec = torch.tensor(
                         np.asarray(prot_all_channel_features, dtype=float).reshape(len(feature_lst), 1000, 1000)).type(
                         torch.FloatTensor)
@@ -154,7 +162,9 @@ def get_cnn_test_val_folds_train_data_loader(training_data_name, comp_feature_li
         train_indices  = []
         for tr_fold_in in folds_id_list:
             train_indices.extend(folds[tr_fold_in])
-
+        train_indices = train_indices#[:10]
+        val_indices = val_indices#[:10]
+        test = test# [:10]
         train_sampler = SubsetRandomSampler(train_indices)
         valid_sampler = SubsetRandomSampler(val_indices)
 
@@ -217,4 +227,36 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, comp_featur
 
 
 
+def get_aa_match_encodings_max_value(aaindex_enconding):
+    import math
+    encoding_fl = open("../../../trainingFiles/encodings/{}.txt".format(aaindex_enconding))
+    lst_encoding_fl = encoding_fl.read().split("\n")
+    encoding_fl.close()
+    starting_ind = -1
+    max_value = -math.inf
+    for row_ind in range(len(lst_encoding_fl)-1):
+        str_line = lst_encoding_fl[row_ind]
+        if str_line.startswith("M rows"):
+            starting_ind = row_ind + 1
 
+        if  not str_line.startswith("//") and starting_ind != -1 and row_ind >= starting_ind:
+            str_line = str_line.split(" ")
+
+            while "" in str_line:
+                str_line.remove("")
+
+            for col_ind in range(len(str_line)):
+                max_value = max(max_value, round(float(str_line[col_ind]),3))
+
+    return max_value
+
+# print(get_aa_match_encodings_max_value("SIMK990101.txt"))
+
+def get_max_values_for_target_types(tar_feature_list):
+    tar_feat_max_dict = dict()
+    tar_feat_max_dict["sequencematrix500"] = 210.0
+    for tar_feat in tar_feature_list[1:]:
+        tar_feat = tar_feat.split("LEQ")[0]
+        tar_feat_max_dict[tar_feat] = get_aa_match_encodings_max_value(tar_feat)
+
+    return tar_feat_max_dict
