@@ -431,13 +431,13 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     import subprocess
     job_folder_path = "job_commands/{}".format(job_group_name)
     subprocess.call("mkdir {}".format(job_folder_path), shell=True)
-    batch_size = [16, 32]
-    lst_learning_rate = [0.0001, 0.005, 0.001, 0.01]
+    batch_size = [32]
+    lst_learning_rate = [0.0001, 0.005, 0.001]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
     after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
-    comp_2_hidden_layer_list = ["256_256", "512_256", "512_512", "1024_512", "1024_256", "1024_1024"]
+    comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
     #comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
-    last_2_hidden_layer_list = ["128_64", "256_128" "512_256", "1024_512"]
+    last_2_hidden_layer_list = ["256_128" "512_256", "1024_512"]
     training_dataset_list = ["DeepDTA_davis", "DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_davis_filtered"]
@@ -446,8 +446,8 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     train_val_test = 1
     # target_feature = "sequencematrix1000"
     total_number_of_jobs = 0
-    dropout = [0.2, 0.3, 0.5]
-    model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNN4Layers", "CompFCNNTarCNNModule2Layers", "CompFCNNTarCNN4LayersStride"]
+    dropout = [0.25, 0.5]
+    model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNNModule2Layers", "CompFCNNTarCNN4LayersStride"]
     # model_list = ["CompFCNNTarCNN2"]
     target_feature = ["sequencematrix500", "sequencematrix500_blosum62LEQ500", "sequencematrix500_SIMK990101LEQ500", "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500"]
     temp_group_job_list = []
@@ -513,7 +513,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_protein_cnn_commands("DavisDataset_all_encodings_varying_channel", 40)
+generate_protein_cnn_commands("DavisDataset_all_encodings_varying_channel", 2)
 # python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000
 # bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/1000_Deneme.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000"
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data

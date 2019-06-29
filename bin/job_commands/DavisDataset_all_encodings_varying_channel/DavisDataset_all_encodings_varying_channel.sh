@@ -1382,3 +1382,347 @@ chmod +x ./691.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/691.out "./691.sh"
 chmod +x ./692.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/692.out "./692.sh"
+chmod +x ./693.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/693.out "./693.sh"
+chmod +x ./694.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/694.out "./694.sh"
+chmod +x ./695.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/695.out "./695.sh"
+chmod +x ./696.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/696.out "./696.sh"
+chmod +x ./697.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/697.out "./697.sh"
+chmod +x ./698.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/698.out "./698.sh"
+chmod +x ./699.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/699.out "./699.sh"
+chmod +x ./700.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/700.out "./700.sh"
+chmod +x ./701.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/701.out "./701.sh"
+chmod +x ./702.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/702.out "./702.sh"
+chmod +x ./703.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/703.out "./703.sh"
+chmod +x ./704.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/704.out "./704.sh"
+chmod +x ./705.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/705.out "./705.sh"
+chmod +x ./706.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/706.out "./706.sh"
+chmod +x ./707.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/707.out "./707.sh"
+chmod +x ./708.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/708.out "./708.sh"
+chmod +x ./709.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/709.out "./709.sh"
+chmod +x ./710.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/710.out "./710.sh"
+chmod +x ./711.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/711.out "./711.sh"
+chmod +x ./712.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/712.out "./712.sh"
+chmod +x ./713.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/713.out "./713.sh"
+chmod +x ./714.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/714.out "./714.sh"
+chmod +x ./715.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/715.out "./715.sh"
+chmod +x ./716.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/716.out "./716.sh"
+chmod +x ./717.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/717.out "./717.sh"
+chmod +x ./718.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/718.out "./718.sh"
+chmod +x ./719.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/719.out "./719.sh"
+chmod +x ./720.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/720.out "./720.sh"
+chmod +x ./721.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/721.out "./721.sh"
+chmod +x ./722.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/722.out "./722.sh"
+chmod +x ./723.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/723.out "./723.sh"
+chmod +x ./724.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/724.out "./724.sh"
+chmod +x ./725.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/725.out "./725.sh"
+chmod +x ./726.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/726.out "./726.sh"
+chmod +x ./727.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/727.out "./727.sh"
+chmod +x ./728.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/728.out "./728.sh"
+chmod +x ./729.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/729.out "./729.sh"
+chmod +x ./730.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/730.out "./730.sh"
+chmod +x ./731.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/731.out "./731.sh"
+chmod +x ./732.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/732.out "./732.sh"
+chmod +x ./733.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/733.out "./733.sh"
+chmod +x ./734.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/734.out "./734.sh"
+chmod +x ./735.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/735.out "./735.sh"
+chmod +x ./736.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/736.out "./736.sh"
+chmod +x ./737.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/737.out "./737.sh"
+chmod +x ./738.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/738.out "./738.sh"
+chmod +x ./739.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/739.out "./739.sh"
+chmod +x ./740.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/740.out "./740.sh"
+chmod +x ./741.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/741.out "./741.sh"
+chmod +x ./742.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/742.out "./742.sh"
+chmod +x ./743.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/743.out "./743.sh"
+chmod +x ./744.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/744.out "./744.sh"
+chmod +x ./745.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/745.out "./745.sh"
+chmod +x ./746.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/746.out "./746.sh"
+chmod +x ./747.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/747.out "./747.sh"
+chmod +x ./748.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/748.out "./748.sh"
+chmod +x ./749.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/749.out "./749.sh"
+chmod +x ./750.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/750.out "./750.sh"
+chmod +x ./751.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/751.out "./751.sh"
+chmod +x ./752.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/752.out "./752.sh"
+chmod +x ./753.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/753.out "./753.sh"
+chmod +x ./754.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/754.out "./754.sh"
+chmod +x ./755.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/755.out "./755.sh"
+chmod +x ./756.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/756.out "./756.sh"
+chmod +x ./757.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/757.out "./757.sh"
+chmod +x ./758.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/758.out "./758.sh"
+chmod +x ./759.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/759.out "./759.sh"
+chmod +x ./760.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/760.out "./760.sh"
+chmod +x ./761.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/761.out "./761.sh"
+chmod +x ./762.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/762.out "./762.sh"
+chmod +x ./763.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/763.out "./763.sh"
+chmod +x ./764.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/764.out "./764.sh"
+chmod +x ./765.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/765.out "./765.sh"
+chmod +x ./766.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/766.out "./766.sh"
+chmod +x ./767.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/767.out "./767.sh"
+chmod +x ./768.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/768.out "./768.sh"
+chmod +x ./769.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/769.out "./769.sh"
+chmod +x ./770.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/770.out "./770.sh"
+chmod +x ./771.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/771.out "./771.sh"
+chmod +x ./772.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/772.out "./772.sh"
+chmod +x ./773.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/773.out "./773.sh"
+chmod +x ./774.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/774.out "./774.sh"
+chmod +x ./775.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/775.out "./775.sh"
+chmod +x ./776.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/776.out "./776.sh"
+chmod +x ./777.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/777.out "./777.sh"
+chmod +x ./778.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/778.out "./778.sh"
+chmod +x ./779.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/779.out "./779.sh"
+chmod +x ./780.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/780.out "./780.sh"
+chmod +x ./781.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/781.out "./781.sh"
+chmod +x ./782.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/782.out "./782.sh"
+chmod +x ./783.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/783.out "./783.sh"
+chmod +x ./784.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/784.out "./784.sh"
+chmod +x ./785.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/785.out "./785.sh"
+chmod +x ./786.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/786.out "./786.sh"
+chmod +x ./787.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/787.out "./787.sh"
+chmod +x ./788.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/788.out "./788.sh"
+chmod +x ./789.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/789.out "./789.sh"
+chmod +x ./790.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/790.out "./790.sh"
+chmod +x ./791.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/791.out "./791.sh"
+chmod +x ./792.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/792.out "./792.sh"
+chmod +x ./793.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/793.out "./793.sh"
+chmod +x ./794.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/794.out "./794.sh"
+chmod +x ./795.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/795.out "./795.sh"
+chmod +x ./796.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/796.out "./796.sh"
+chmod +x ./797.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/797.out "./797.sh"
+chmod +x ./798.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/798.out "./798.sh"
+chmod +x ./799.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/799.out "./799.sh"
+chmod +x ./800.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/800.out "./800.sh"
+chmod +x ./801.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/801.out "./801.sh"
+chmod +x ./802.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/802.out "./802.sh"
+chmod +x ./803.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/803.out "./803.sh"
+chmod +x ./804.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/804.out "./804.sh"
+chmod +x ./805.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/805.out "./805.sh"
+chmod +x ./806.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/806.out "./806.sh"
+chmod +x ./807.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/807.out "./807.sh"
+chmod +x ./808.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/808.out "./808.sh"
+chmod +x ./809.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/809.out "./809.sh"
+chmod +x ./810.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/810.out "./810.sh"
+chmod +x ./811.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/811.out "./811.sh"
+chmod +x ./812.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/812.out "./812.sh"
+chmod +x ./813.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/813.out "./813.sh"
+chmod +x ./814.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/814.out "./814.sh"
+chmod +x ./815.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/815.out "./815.sh"
+chmod +x ./816.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/816.out "./816.sh"
+chmod +x ./817.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/817.out "./817.sh"
+chmod +x ./818.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/818.out "./818.sh"
+chmod +x ./819.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/819.out "./819.sh"
+chmod +x ./820.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/820.out "./820.sh"
+chmod +x ./821.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/821.out "./821.sh"
+chmod +x ./822.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/822.out "./822.sh"
+chmod +x ./823.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/823.out "./823.sh"
+chmod +x ./824.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/824.out "./824.sh"
+chmod +x ./825.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/825.out "./825.sh"
+chmod +x ./826.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/826.out "./826.sh"
+chmod +x ./827.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/827.out "./827.sh"
+chmod +x ./828.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/828.out "./828.sh"
+chmod +x ./829.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/829.out "./829.sh"
+chmod +x ./830.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/830.out "./830.sh"
+chmod +x ./831.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/831.out "./831.sh"
+chmod +x ./832.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/832.out "./832.sh"
+chmod +x ./833.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/833.out "./833.sh"
+chmod +x ./834.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/834.out "./834.sh"
+chmod +x ./835.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/835.out "./835.sh"
+chmod +x ./836.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/836.out "./836.sh"
+chmod +x ./837.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/837.out "./837.sh"
+chmod +x ./838.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/838.out "./838.sh"
+chmod +x ./839.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/839.out "./839.sh"
+chmod +x ./840.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/840.out "./840.sh"
+chmod +x ./841.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/841.out "./841.sh"
+chmod +x ./842.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/842.out "./842.sh"
+chmod +x ./843.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/843.out "./843.sh"
+chmod +x ./844.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/844.out "./844.sh"
+chmod +x ./845.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/845.out "./845.sh"
+chmod +x ./846.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/846.out "./846.sh"
+chmod +x ./847.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/847.out "./847.sh"
+chmod +x ./848.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/848.out "./848.sh"
+chmod +x ./849.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/849.out "./849.sh"
+chmod +x ./850.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/850.out "./850.sh"
+chmod +x ./851.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/851.out "./851.sh"
+chmod +x ./852.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/852.out "./852.sh"
+chmod +x ./853.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/853.out "./853.sh"
+chmod +x ./854.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/854.out "./854.sh"
+chmod +x ./855.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/855.out "./855.sh"
+chmod +x ./856.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/856.out "./856.sh"
+chmod +x ./857.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/857.out "./857.sh"
+chmod +x ./858.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/858.out "./858.sh"
+chmod +x ./859.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/859.out "./859.sh"
+chmod +x ./860.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/860.out "./860.sh"
+chmod +x ./861.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/861.out "./861.sh"
+chmod +x ./862.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/862.out "./862.sh"
+chmod +x ./863.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/863.out "./863.sh"
+chmod +x ./864.sh
+bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/DavisDataset_all_encodings_varying_channel/864.out "./864.sh"
