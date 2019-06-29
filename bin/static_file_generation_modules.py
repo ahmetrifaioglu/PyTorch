@@ -226,7 +226,7 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 1000)
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/blosum62LEQ500.tsv
-save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 500, "blosum62.txt")
+save_all_flattened_sequence_matrices("../trainingFiles/PDBBind/helper_files/targets.fasta", 500, "blosum62.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/SIMK990101.tsv
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 500, "SIMK990101.txt")
