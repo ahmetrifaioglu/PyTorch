@@ -212,7 +212,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
 
-                    if min(mse_results)>= 0.28:
+                    if min(mse_results)>= 0.27:
                         sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
     if not os.path.exists("{}/result_files/{}".format(project_file_path, experiment_name)):
