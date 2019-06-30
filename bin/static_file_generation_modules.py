@@ -4,7 +4,7 @@ import itertools
 import torch
 import numpy as np
 import torch.nn as nn
-
+import subprocess
 
 
 def remove_nonstandard_aas(prot_seq):
@@ -226,7 +226,7 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 1000)
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/blosum62LEQ500.tsv
-save_all_flattened_sequence_matrices("../trainingFiles/PDBBind/helper_files/targets.fasta", 500, "blosum62.txt")
+# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind/helper_files/targets.fasta", 500, "blosum62.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/SIMK990101.tsv
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 500, "SIMK990101.txt")
@@ -430,9 +430,10 @@ def create_dti_dataset_for_pdbbind():
 # create_dti_dataset_for_pdbbind()
 
 def create_single_target_feature_vector_files_using_combined():
-    feature_name = "SIMK990101500"
-    input_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/target_feature_vectors"
-    output_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/target_feature_vectors/{}".format(feature_name)
+    feature_name = "SIMK990101LEQ500"
+    input_path = "../trainingFiles/DeepDTA_davis/target_feature_vectors"
+    output_path = "../trainingFiles/DeepDTA_davis/target_feature_vectors/{}".format(feature_name)
+    subprocess.call("mkdir {}".format(output_path))
     with open("{}/{}.tsv".format(input_path, feature_name)) as f:
         for line in f:
             line = line.split("\n")[0]
@@ -441,5 +442,5 @@ def create_single_target_feature_vector_files_using_combined():
             output_fl.write(line)
             output_fl.close()
 
-# create_single_target_feature_vector_files_using_combined()
+create_single_target_feature_vector_files_using_combined()
 
