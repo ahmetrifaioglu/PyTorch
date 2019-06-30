@@ -479,7 +479,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                             job_number += 1
                                             all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number))
                                             all_job_submission_fl.write(
-                                                "./{}.sh > ../result_files/{}.out\n".format((job_number),
+                                                "./{}.sh > ../../../result_files/{}.out\n".format((job_number),
                                                                                         (job_number)))
                                             #all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
 
@@ -505,7 +505,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     if len(temp_group_job_list)!=0:
         job_fl = open("./{}/{}.sh".format(job_folder_path, job_number + 1), "w")
         all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number+1))
-        all_job_submission_fl.write("./{}.sh > ../result_files/{}.out\n".format((job_number+1), (job_number+1)))
+        all_job_submission_fl.write("./{}.sh > ../../../result_files/{}.out\n".format((job_number+1), (job_number+1)))
         #all_job_submission_fl.write(
         #    "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
         #        job_group_name, job_number+1, job_number+1))
