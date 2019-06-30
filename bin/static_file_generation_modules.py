@@ -431,8 +431,8 @@ def create_dti_dataset_for_pdbbind():
 
 def create_single_target_feature_vector_files_using_combined():
     feature_name = "blosum62LEQ500"
-    input_path = "../trainingFiles/DeepDTA_davis/target_feature_vectors"
-    output_path = "../trainingFiles/DeepDTA_davis/target_feature_vectors/{}".format(feature_name)
+    input_path = "../trainingFiles/PDBBind/target_feature_vectors"
+    output_path = "../trainingFiles/PDBBind/target_feature_vectors/{}".format(feature_name)
     subprocess.call("mkdir {}".format(output_path))
     with open("{}/{}.tsv".format(input_path, feature_name)) as f:
         for line in f:
