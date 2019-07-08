@@ -217,7 +217,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         if min(mse_results) >= 0.26:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
                     elif training_dataset=="DeepDTA_davis_filtered":
-                        if min(mse_results) >= 0.90:
+                        if min(mse_results) >= 0.86:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
 
