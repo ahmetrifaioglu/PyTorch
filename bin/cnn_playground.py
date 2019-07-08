@@ -208,12 +208,18 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, epoch, comp_tar_pair_dataset, test_fold_epoch_results, fold)
 
+
                 if epoch==n_epoch-1:
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
+                    exit_threshold = None
+                    if training_dataset=="DeepDTA_davis":
+                        if min(mse_results) >= 0.26:
+                            sys.exit("Terminating training since minimum MSE is higher than the threshold!")
+                    elif training_dataset=="DeepDTA_davis_filtered":
+                        if min(mse_results) >= 0.90:
+                            sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
-                    if min(mse_results)>= 0.26:
-                        sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
     if not os.path.exists("{}/result_files/{}".format(project_file_path, experiment_name)):
         subprocess.call("mkdir {}".format("{}/result_files/{}".format(project_file_path, experiment_name)), shell=True)

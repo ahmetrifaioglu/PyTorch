@@ -97,7 +97,6 @@ def get_numpy_target_dict_combined_feature_vectors_single(training_data_name, ta
     return torch.tensor(np.asarray([line[1:]], dtype=float).reshape(1, 500, 500)).type(torch.FloatTensor)
 
 
-
 def get_list_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     sorted(feature_lst)
     training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
@@ -182,7 +181,6 @@ def get_cnn_test_val_folds_train_data_loader(training_data_name, comp_feature_li
     return loader_fold_dict, test_loader
 
 
-
 def get_cnn_train_test_full_training_data_loader(training_data_name, comp_feature_list, tar_feature_list, batch_size=32, train_val_test=False):
     import numpy as np
     import json
@@ -226,7 +224,6 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, comp_featur
     return train_loader, test_loader
 
 
-
 def get_aa_match_encodings_max_value(aaindex_enconding):
     import math
     encoding_fl = open("../../../trainingFiles/encodings/{}.txt".format(aaindex_enconding))
@@ -260,3 +257,66 @@ def get_max_values_for_target_types(tar_feature_list):
         tar_feat_max_dict[tar_feat] = get_aa_match_encodings_max_value(tar_feat)
 
     return tar_feat_max_dict
+
+
+def get_chembl_target_id_uniprot_mapping():
+    chembl_uniprot_dict = dict()
+    chembl_training_files_path = "../trainingFiles/ChEMBL25/helper_files"
+    with open("{}/{}".format(chembl_training_files_path, "chembl_uniprot_mapping.txt")) as f:
+        for line in f:
+            if not line.startswith("#") and line != "":
+                line=line.split("\n")[0]
+                u_id, chembl_id, defin, target_type = line.split("\t")
+
+                if target_type=='SINGLE PROTEIN':
+
+                    try:
+                        chembl_uniprot_dict[chembl_id].append(u_id)
+                    except:
+                        chembl_uniprot_dict[chembl_id] = [u_id]
+
+    for key in chembl_uniprot_dict.keys():
+        if len(chembl_uniprot_dict[key])!=1:
+            print(key, chembl_uniprot_dict[key])
+    return chembl_uniprot_dict
+
+#get_chembl_target_id_uniprot_mapping()
+
+
+def get_chembl_target_id_protein_name_mapping():
+    chembl_def_dict = dict()
+    chembl_training_files_path = "../trainingFiles/ChEMBL25/helper_files"
+    with open("{}/{}".format(chembl_training_files_path, "chembl_uniprot_mapping.txt")) as f:
+        for line in f:
+            if not line.startswith("#") and line != "":
+                line=line.split("\n")[0]
+                u_id, chembl_id, defin, target_type = line.split("\t")
+                if target_type=='SINGLE PROTEIN':
+                    try:
+                        chembl_def_dict[chembl_id].append(defin)
+                    except:
+                        chembl_def_dict[chembl_id] = [defin]
+    return chembl_def_dict
+
+
+def get_uniprot_chembl_target_id_mapping():
+    uniprot_chembl_dict = dict()
+    chembl_training_files_path = "../trainingFiles/ChEMBL25/helper_files"
+    with open("{}/{}".format(chembl_training_files_path, "chembl_uniprot_mapping.txt")) as f:
+        for line in f:
+            if not line.startswith("#") and line != "":
+                line = line.split("\n")[0]
+                u_id, chembl_id, defin, target_type = line.split("\t")
+                if target_type == 'SINGLE PROTEIN':
+                    try:
+                        uniprot_chembl_dict[u_id].append(chembl_id)
+                    except:
+                        uniprot_chembl_dict[u_id] = [chembl_id]
+    """
+    for key in uniprot_chembl_dict.keys():
+        if len(uniprot_chembl_dict[key])!=1:
+            print(key, uniprot_chembl_dict[key])
+    """
+    return uniprot_chembl_dict
+
+

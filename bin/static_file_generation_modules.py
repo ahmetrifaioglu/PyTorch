@@ -5,6 +5,11 @@ import torch
 import numpy as np
 import torch.nn as nn
 import subprocess
+import pandas as pd
+
+cwd = os.getcwd()
+training_files_path = "{}PyTorch/trainingFiles".format(cwd.split("PyTorch")[0])
+
 
 
 def remove_nonstandard_aas(prot_seq):
@@ -136,6 +141,7 @@ def get_aa_match_encodings():
             aa_match_encoding_dict[aa_pair[::-1]] = encod_int
             encod_int += 1
     return aa_match_encoding_dict
+
 
 def get_aa_match_encodings_generic(aaindex_enconding):
     aa_list = get_aa_list()
@@ -444,3 +450,122 @@ def create_single_target_feature_vector_files_using_combined():
 
 # create_single_target_feature_vector_files_using_combined()
 
+def get_single_protein_family_associated_compounds(dataset_name, family_name):
+    import numpy as np
+    family_target_fl = "{}_target_ids.tsv".format(family_name)
+    helper_fl_path = os.path.join(training_files_path, dataset_name, "helper_files")
+    family_target_fl = os.path.join(helper_fl_path, family_target_fl)
+    filtered_interaction_dataset_fl = os.path.join(helper_fl_path, "chembl25_preprocessed_sp_b_pchembl_data.txt")
+
+    # print(family_target_fl)
+    df_family_chembl_targets = pd.read_csv(family_target_fl, sep="\t")
+    df_family_chembl_targets = df_family_chembl_targets.loc[df_family_chembl_targets['Type'] == "SINGLE PROTEIN"]
+    # df_family_chembl_targets = df_family_chembl_targets["ChEMBL ID"]
+    # list_family_chembl_ids = df_family_chembl_targets["ChEMBL ID"].tolist()
+    # dict_of_chembl_ids = {chembl_id: None for chembl_id in list_family_chembl_ids}
+
+    # print(dict_of_chembl_ids)
+    df_filtered_association = pd.read_csv(filtered_interaction_dataset_fl, sep="\t", index_col=False)
+    df_only_family_associations = pd.merge(df_family_chembl_targets, df_filtered_association, how="inner", left_on="ChEMBL ID", right_on="Target_CHEMBL_ID")
+    unique_compound_ids = set(df_only_family_associations["Compound_CHEMBL_ID"].tolist())
+    #print(len(unique_compound_ids))
+    compound_fl = open(os.path.join(helper_fl_path, "{}_compound_ids.txt".format(family_name)), "w")
+    for comp in unique_compound_ids:
+        compound_fl.write("{}\n".format(comp))
+    compound_fl.close()
+
+"""
+get_single_protein_family_associated_compounds("ChEMBL25", "gpcr")
+get_single_protein_family_associated_compounds("ChEMBL25", "nuclearreceptor")
+get_single_protein_family_associated_compounds("ChEMBL25", "ionchannel")
+get_single_protein_family_associated_compounds("ChEMBL25", "kinase")
+"""
+
+
+def deepdta_create_filtered_fold_file(davis_kiba):
+    import pickle
+    import numpy as np
+    import math
+    import json
+    from random import shuffle
+
+    dataset_path = "../trainingFiles/DeepDTA_original/data/{}".format(davis_kiba)
+
+    prot_id_seq_dict = json.load(open("{}/proteins.txt".format(dataset_path)))
+    comp_id_smiles_dict = json.load(open("{}/ligands_can.txt".format(dataset_path)))
+    ind_prot_id_dict, ind_comp_id_dict = dict(), dict()
+    ind = 0
+    for prot_id, seq in prot_id_seq_dict.items():
+        ind_prot_id_dict[ind] = prot_id
+        ind += 1
+
+    ind = 0
+    for comp_id, smiles in comp_id_smiles_dict.items():
+        ind_comp_id_dict[ind] = comp_id
+        ind += 1
+
+    affinity_matrix  = pickle.load(open("{}/Y".format(dataset_path),"rb"), encoding='latin1')
+    n_of_rows, n_of_cols = affinity_matrix.shape
+    label_row_inds, label_col_inds = np.where(affinity_matrix!=1.0e+04)
+    # print(label_row_inds[0], label_col_inds[0])
+    shuffled_indices = list(range(len(label_row_inds)))
+    shuffle(shuffled_indices)
+    # print(shuffled_indices)
+    """
+    count = 0
+    training_test_val_indices = []
+    for ind in shuffled_indices:
+        # print(ind)
+        training_test_val_indices.append((label_row_inds[ind]*n_of_cols+label_col_inds[ind]))
+        # print((label_row_inds[ind]*n_of_cols+label_col_inds[ind]))
+        count += 1
+        #if count>=100:
+        #    break
+
+    #print(len(training_test_val_indices))
+    #print(len(set(training_test_val_indices)))
+    """
+    train_folds = []
+    number_of_samples_each_fold = int(len(shuffled_indices)/6)
+    for i in range(5):
+
+        train_folds.append(shuffled_indices[i*number_of_samples_each_fold:(i+1)*number_of_samples_each_fold])
+
+
+    test_folds = shuffled_indices[5*number_of_samples_each_fold:]
+
+    train_folds_fl = open("/Users/trman/Downloads/DeepDTA-master/data/davis/folds/train_fold_setting1.txt", "w")
+    train_folds_fl.write(str(train_folds))
+    train_folds_fl.close()
+
+    test_folds_fl = open("/Users/trman/Downloads/DeepDTA-master/data/davis/folds/test_fold_setting1.txt", "w")
+    test_folds_fl.write(str(test_folds))
+    test_folds_fl.close()
+
+    assert [ind for fold in train_folds for ind in fold]+test_folds == shuffled_indices
+
+    """
+    # training_test_val_indices
+
+    # print(sorted([ind for fold in train_folds for ind in fold]+test_folds, reverse=True))
+    # print(affinity_matrix[2,16])
+    # print(affinity_matrix.flatten()[900])
+    """
+# deepdta_create_filtered_fold_file("davis")
+
+def create_deepdta_non_5_filtered_dataset():
+    full_dti_dataset_path = "/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/dti_datasets/comp_targ_affinity.csv"
+
+    dti_data_fl = open(full_dti_dataset_path, "r")
+    lst_dti_data_fl = dti_data_fl.read().split("\n")
+    dti_data_fl.close()
+
+    while "" in lst_dti_data_fl:
+        lst_dti_data_fl.remove("")
+
+    for line in lst_dti_data_fl:
+        comp_id , tar_id, binding_affinity = line.split(",")
+        if binding_affinity != "5.0":
+            print(line)
+
+# create_deepdta_non_5_filtered_dataset()

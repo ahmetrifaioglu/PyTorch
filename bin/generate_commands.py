@@ -440,9 +440,10 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     last_2_hidden_layer_list = ["256_128" "512_256", "1024_512"]
     training_dataset_list = ["DeepDTA_davis", "DeepDTA_kiba"]
     training_dataset_list = ["DeepDTA_kiba"]
-    training_dataset_list = ["DeepDTA_davis_filtered"]
+
     training_dataset_list = ["DeepDTA_davis"]
     training_dataset_list = ["PDBBind"]
+    training_dataset_list = ["DeepDTA_davis_filtered"]
     train_val_test = 1
     # target_feature = "sequencematrix1000"
     total_number_of_jobs = 0
@@ -478,11 +479,13 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                             temp_group_job_list.append(command_str)
                                             job_number += 1
                                             all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number))
-                                            all_job_submission_fl.write(
-                                                "./{}.sh > ../../../result_files/{}.out\n".format((job_number),
-                                                                                        (job_number)))
-                                            #all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
-
+                                            #all_job_submission_fl.write(
+                                            #    "./{}.sh > ../../../result_files/{}.out\n".format((job_number),
+                                            #                                            (job_number)))
+                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(job_group_name, job_number, job_number))
+                                            # all_job_submission_fl.write(
+                                            #    "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+                                            #         job_group_name, job_number, job_number))
                                             job_fl = open("./{}/{}.sh".format(job_folder_path, job_number), "w")
                                             if job_number==1:
                                                 job_fl.write("mkdir ../../../log_files/{}\n".format(job_group_name))
@@ -505,9 +508,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     if len(temp_group_job_list)!=0:
         job_fl = open("./{}/{}.sh".format(job_folder_path, job_number + 1), "w")
         all_job_submission_fl.write("chmod +x ./{}.sh\n".format(job_number+1))
-        all_job_submission_fl.write("./{}.sh > ../../../result_files/{}.out\n".format((job_number+1), (job_number+1)))
+        # all_job_submission_fl.write("./{}.sh > ../../../result_files/{}.out\n".format((job_number+1), (job_number+1)))
+        all_job_submission_fl.write(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+                job_group_name, job_number+1, job_number+1))
         #all_job_submission_fl.write(
-        #    "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+        #    "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
         #        job_group_name, job_number+1, job_number+1))
 
         for job in temp_group_job_list:
@@ -517,8 +523,8 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-# generate_protein_cnn_commands("DavisDataset_all_encodings_varying_channel", 2)
-generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
+generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 2)
+# generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
 # python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000
 # bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/1000_Deneme.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000"
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
