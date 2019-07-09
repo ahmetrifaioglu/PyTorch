@@ -523,7 +523,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 2)
+generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 20)
 # generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
 # python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000
 # bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/1000_Deneme.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000"

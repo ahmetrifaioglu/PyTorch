@@ -3,7 +3,7 @@ import os
 import pandas as pd
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/1000_cnn_davis_results"
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/corrected_davis_500_cnn_exp_results"
-result_file_path = "/Users/trman/Desktop/DavisDataset_all_encodings_varying_channel"
+result_file_path = "/Users/trman/Desktop/DavisDataset_filtered_all_encodings_varying_channel"
 
 
 def get_5_fold_results_fold_thresholds():
@@ -53,7 +53,7 @@ def get_5_fold_results_fold_thresholds():
                         if fold_results[i]> best_metric_result_dict[metric][i]:
                             best_metric_result_dict[metric][i] = fold_results[i]
 
-        print(best_metric_result_dict)
+        # print(best_metric_result_dict)
         mean_std_results_dict = dict()
         for metric in metric_list:
             mean_rslt = statistics.mean(best_metric_result_dict[metric])
