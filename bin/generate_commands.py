@@ -430,7 +430,7 @@ def generate_protein_rnn_commands():
 def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     import subprocess
     job_folder_path = "job_commands/{}".format(job_group_name)
-    result_folder_path = "../result_files/{}".format(job_group_name)
+    result_folder_path = "../../../result_files/{}".format(job_group_name)
     subprocess.call("mkdir {}".format(job_folder_path), shell=True)
     # subprocess.call("mkdir {}".format(result_folder_path), shell=True)
     batch_size = [32]
