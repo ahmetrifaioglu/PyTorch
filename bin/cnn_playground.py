@@ -213,7 +213,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
                     if training_dataset=="DeepDTA_davis":
-                        if min(mse_results) >= 0.26:
+                        if min(mse_results) >= 0.30:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
                     elif training_dataset=="DeepDTA_davis_filtered":
                         if min(mse_results) >= 0.68:

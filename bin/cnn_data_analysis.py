@@ -472,4 +472,4 @@ def draw_distribution_of_contacts():
 
 
 
-draw_distribution_of_contacts()
+# draw_distribution_of_contacts()
