@@ -517,6 +517,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     if len(temp_group_job_list)!=0:
         job_fl = open("./{}/{}_{}.sh".format(job_folder_path, job_number + 1, num_of_jobs_at_each_group), "w")
+        job_fl.write("#!/bin/sh")
         all_job_submission_fl.write("chmod +x ./{}_{}.sh\n".format(job_number+1, num_of_jobs_at_each_group))
 
         # kansil jobs
@@ -539,7 +540,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel_2", 20)
+generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 20)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_filtered_ebi_cpu_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
