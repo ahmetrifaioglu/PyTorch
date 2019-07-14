@@ -488,12 +488,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                             #all_job_submission_fl.write(
                                             #    "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
                                             #                                            (job_number), num_of_jobs_at_each_group))
-                                            # all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
+                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
 
                                             #
-                                            all_job_submission_fl.write(
-                                                "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(
-                                                     job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
+                                            #all_job_submission_fl.write(
+                                            #    "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(
+                                            #         job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
                                             job_fl = open("./{}/{}_{}.sh".format(job_folder_path, job_number, num_of_jobs_at_each_group), "w")
                                             if job_number==1:
                                                 job_fl.write("mkdir ../../../log_files/{}\n".format(job_group_name))
