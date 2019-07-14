@@ -538,7 +538,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-# generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 20)
+generate_protein_cnn_commands("DavisDataset_filtered_all_encodings_varying_channel", 20)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_filtered_ebi_cpu_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
