@@ -3,7 +3,7 @@ import os
 import pandas as pd
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/1000_cnn_davis_results"
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/corrected_davis_500_cnn_exp_results"
-result_file_path = "/Users/trman/Desktop/DavisDataset_filtered_all_encodings_varying_channel"
+result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/DavisDataset_filtered_all_encodings_varying_channel"
 
 
 def get_5_fold_results_fold_thresholds():
@@ -25,6 +25,48 @@ def get_5_fold_results_fold_thresholds():
        'validation MCC 6.0', 'validation Precision 7.0',
        'validation Recall 7.0', 'validation F1-Score 7.0',
        'validation Accuracy 7.0', 'validation MCC 7.0']
+
+    """
+    metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
+                   'test Pearson', 'test Spearman', 'test CI (Challenge)',
+                   'test Average AUC',
+
+                   'test Precision 10uM', 'test Recall 10uM',
+                   'test F1-Score 10uM', 'test Accuracy 10uM', 'test MCC 10uM',
+
+                   'test Precision 1uM', 'test Recall 1uM', 'test F1-Score 1uM',
+                   'test Accuracy 1uM', 'test MCC 1uM',
+
+                   'test Precision 100nM',
+                   'test Recall 100nM', 'test F1-Score 100nM', 'test Accuracy 100nM',
+                   'test MCC 100nM',
+
+                   'test Precision 30nM',
+                   'test Recall 30nM', 'test F1-Score 30nM', 'test Accuracy 30nM',
+                   'test MCC 30nM',
+
+                   'validation rm2', 'validation CI (DEEPDTA)',
+                   'validation MSE', 'validation RMSE', 'validation Pearson',
+                   'validation Spearman', 'validation CI (Challenge)',
+                   'validation Average AUC',
+
+                   'validation Precision 10uM',
+                   'validation Recall 10uM', 'validation F1-Score 10uM',
+                   'validation Accuracy 10uM', 'validation MCC 10uM',
+
+                   'validation Precision 1uM', 'validation Recall 1uM',
+                   'validation F1-Score 1uM', 'validation Accuracy 1uM',
+                   'validation MCC 1uM',
+
+                   'validation Precision 100nM',
+                   'validation Recall 100nM', 'validation F1-Score 100nM',
+                   'validation Accuracy 100nM', 'validation MCC 100nM',
+
+                   'validation Precision 30nM',
+                   'validation Recall 30nM', 'validation F1-Score 30nM',
+                   'validation Accuracy 30nM', 'validation MCC 30nM'
+                   ]
+    """
 
     str_header = "fl_name\tepoch_num"
     for metric in metric_list:

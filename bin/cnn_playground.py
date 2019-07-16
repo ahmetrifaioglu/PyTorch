@@ -54,6 +54,13 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
                   "Precision 6.0": None, "Recall 6.0": None, "F1-Score 6.0": None, "Accuracy 6.0": None, "MCC 6.0": None,
                   "Precision 7.0": None, "Recall 7.0": None, "F1-Score 7.0": None, "Accuracy 7.0": None, "MCC 7.0": None,
                   }
+
+    score_dict = {"rm2": None, "CI (DEEPDTA)": None, "MSE": None, "RMSE": None, "Pearson": None,
+                  "Spearman": None, "CI (Challenge)": None, "Average AUC": None,
+                  "Precision 10uM": None, "Recall 10uM": None, "F1-Score 10uM": None, "Accuracy 10uM": None, "MCC 10uM": None,
+                  "Precision 1uM": None, "Recall 1uM": None, "F1-Score 1uM": None, "Accuracy 1uM": None, "MCC 1uM": None,
+                  "Precision 100nM": None, "Recall 100nM": None, "F1-Score 100nM": None, "Accuracy 100nM": None, "MCC 100nM": None,
+                  "Precision 30nM": None, "Recall 30nM": None, "F1-Score 30nM": None, "Accuracy 30nM": None, "MCC 30nM": None,}
     score_list = get_list_of_scores()
 
     score_dict["rm2"] = get_rm2(np.asarray(labels), np.asarray(
@@ -434,5 +441,7 @@ experiment_name = sys.argv[12]
 # full_training(["ecfp4"], ["sequencematrix1000"], [1024, 512], int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, int(after_flattened_conv_layer_neurons), int(last_2_hidden_layer_list[0]), int(last_2_hidden_layer_list[1]), float(learn_rate), "xxx.csv", "r", int(batch_size))
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
-# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
-train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+
+
+full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
+# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)

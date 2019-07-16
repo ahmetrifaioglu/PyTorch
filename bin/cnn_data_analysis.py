@@ -10,13 +10,16 @@ import os
 import itertools
 import torch.nn as nn
 import sys
-#from cnn_data_processing import get_prot_id_seq_dict_from_fasta_fl
+from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
+from evaluation_metrics import get_scores_generic
+
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
 
-# training_data_name = "DeepDTA_davis"
-# training_data_name = "DeepDTA_kiba"
-training_data_name = "PDBBind"
+# training_data_name = "Davis"
+#training_data_name = "Davis_Filtered"
+#training_data_name = "Kiba"
+training_data_name = "PDBBind_Refined"
 compound_feature_list = "ecfp4".split("_")
 target_feature_list = "sequencematrix1000".split("_")
 compound_target_pair_dataset = "comp_targ_affinity.csv"
@@ -40,69 +43,53 @@ def get_prot_seq_lengths_given_fasta(fasta_fl_path):
     for prot_id, seq in prot_id_seq_dict.items():
         seq_len_list.append([prot_id, len(seq)])
         seq_len_dict[prot_id] = len(seq)
-    seq_len_list = sorted(seq_len_list, key=itemgetter(1))
+    sorted_seq_len_list = sorted(seq_len_list, key=itemgetter(1))
+    seq_len_list = [seq_len for prot_id, seq_len in sorted_seq_len_list]
     for prot_ind in range(len(seq_len_list)):
-        print("{}\t{}\t{}".format(prot_ind, seq_len_list[prot_ind][0], seq_len_list[prot_ind][1]))
+         print("{}\t{}\t{}".format(prot_ind, sorted_seq_len_list[prot_ind][0], sorted_seq_len_list[prot_ind][1]))
     return seq_len_list, seq_len_dict
 
 
-def plot_seq_length(fasta_fl_path, interval, dataset_name):
+def plot_seq_length_quad(fasta_fl_path, interval, dataset_name):
     import bokeh
     from bokeh.io import show, output_file
     from bokeh.plotting import figure
     from bokeh.models import ColumnDataSource, FixedTicker, PrintfTickFormatter
     from bokeh.io import export_svgs
     from bokeh.io import export_png
+    from bokeh.models import HoverTool
 
-    seq_len_list, _ = get_prot_seq_lengths_given_fasta(fasta_fl_path)
-
-    interval_count_dict = {}
-    interval_step = interval * (int(seq_len_list[0][1] / interval) + 1)
-
-    interval_count_dict[interval_step] = 0
-    int_count = 0
-    for prot_id, seq_len in seq_len_list:
-        # 0-50 51-100
-        if seq_len <= interval_step:
-            int_count += 1
-            # print("{}\t{}\t{}".format(prot_id, seq_len, interval_step))
-        else:
-            # interval_dist_list.append(int_count)
-            interval_count_dict[interval_step] = int_count
-            interval_step = interval * (int(seq_len / interval) + 1)
-            int_count = 1
-            #  print("{}\t{}\t{}".format(prot_id, seq_len, interval_step))
-    interval_count_dict[interval_step] = int_count
-    #  print(interval_count_dict)
-    interval_dist_list = []
-    count_list = []
-    # print(interval_dist_list)
-    starting_dict = interval
-    while starting_dict <= interval_step:
-        if starting_dict not in interval_count_dict.keys():
-            interval_count_dict[starting_dict] = 0
-            interval_dist_list.append(starting_dict)
-            count_list.append(0)
-        else:
-            interval_dist_list.append(starting_dict)
-            count_list.append(interval_count_dict[starting_dict])
-        starting_dict += interval
-
-    # print(sum(interval_dist_list))
-    print(interval_count_dict)
-    # print(interval_dist_list[-1])
-    # interval_dist_list = [item for item in interval_dist_list]
-    adj_interval_dist_list = interval_dist_list#[item - interval / 2 for item in interval_dist_list]
-    print(count_list)
-    len_list = ["<=500", "501-1000", "1001-1500", "1501-2000", "2001-2500", "2501-3000", "3001-3500", "3501-4000","4001-4500","4501-5000"]
-    p = figure(x_range=len_list, plot_width=1400, plot_height=700,
+    sorted_seq_len_list, _ = get_prot_seq_lengths_given_fasta(fasta_fl_path)
+    tools = "pan,wheel_zoom,box_zoom,reset"
+    p = figure(tools=tools, plot_width=1400, plot_height=700,
                title="Distribution of Sequence Lenghts - {} Dataset".format(dataset_name),
-               toolbar_location=None, tools="")
+               x_axis_label='Sequence Length',
+               y_axis_label='Number of Protein Sequences')
 
-    p.vbar(x=len_list, top=count_list, width=0.9)
+
+    p.title.text_font_size = '20pt'
+    p.title.align = "center"
+    # print((sorted_seq_len_list))
+    arr_hist, edges = np.histogram(sorted_seq_len_list,
+                                   bins=list(range(0, 2750, interval)),
+                                   range=[0, 2750])
+
+    delays = pd.DataFrame({'arr_length': arr_hist,
+                           'left': edges[:-1],
+                           'right': edges[1:]})
+    delays['f_interval'] = ['%d - %d' % (left, right) for left, right in zip(delays['left'], delays['right'])]
+    delays['f_count'] = ['%d' % (count) for count in delays['arr_length']]
+
+    src = ColumnDataSource(delays)
+    print(src.data.keys())
+    p.quad(bottom=0, left="left", right="right", top="arr_length",  source=src,
+           fill_color='red', line_color='black')
+
+    hover = HoverTool(tooltips=[('Sequence Length', '@f_interval'), ('Count', '@f_count')])
+    p.add_tools(hover)
 
     p.xgrid.grid_line_color = None
-    #p.x_range.start = 0
+    # p.x_range.start = 0
     p.y_range.start = 0
     p.xaxis.axis_label = 'Sequence Length'
     p.xaxis.axis_label_text_font_size = "20pt"
@@ -111,15 +98,75 @@ def plot_seq_length(fasta_fl_path, interval, dataset_name):
     p.yaxis.axis_label_text_font_size = "20pt"
     p.yaxis.major_label_text_font_size = "15pt"
 
-    # p.xaxis.ticker = FixedTicker(ticks=list(range(0, interval_step+1, interval)), minor_ticks=interval_dist_list)
-    # p.minor_ticks = interval_dist_list
     show(p)
     p.output_backend = "svg"
     export_svgs(p, filename="../figures/{}_{}_seq_length_dist.svg".format(dataset_name, interval))
     export_png(p, filename="../figures/{}_{}_seq_length_dist.png".format(dataset_name, interval))
 
-# plot_seq_length("{}/targets.fasta".format(helper_fl_path), 500, training_data_name)
-# plot_seq_length("{}/targets.fasta".format(helper_fl_path), 500, training_data_name)
+# plot_seq_length_quad("{}/targets.fasta".format(helper_fl_path), 50, training_data_name)
+
+def plot_bioact_dist_quad(fasta_fl_path, interval, dataset_name):
+    import bokeh
+    from bokeh.io import show, output_file
+    from bokeh.plotting import figure
+    from bokeh.models import ColumnDataSource, FixedTicker, PrintfTickFormatter
+    from bokeh.io import export_svgs
+    from bokeh.io import export_png
+    from bokeh.models import HoverTool
+    from bokeh.models import SingleIntervalTicker, LinearAxis
+
+    df_bioactivity = pd.read_csv("{}/comp_targ_affinity.csv".format(comp_tar_training_dataset_path), header=None)
+    sorted_bioactivities_list = sorted(df_bioactivity.iloc[:,2].values)
+
+    tools = "pan,wheel_zoom,box_zoom,reset"
+    p = figure(tools=tools, plot_width=1400, plot_height=700,
+               title="Distribution of Bioactivity Values - {} Dataset".format(dataset_name),
+               # x_axis_label='Bioacitivity Value (-log(Ki/Kd))',
+               y_axis_label='Number of Bioactivities')
+
+    p.title.text_font_size = '20pt'
+    p.title.align = "center"
+
+    # print((sorted_seq_len_list))
+    arr_hist, edges = np.histogram(sorted_bioactivities_list,
+                                   bins=list(np.arange(5, 12.0, interval)),
+                                   range=[5, 12.0])
+
+    delays = pd.DataFrame({'arr_length': arr_hist,
+                           'left': edges[:-1],
+                           'right': edges[1:]})
+    delays['f_interval'] = ['%d - %d' % (left, right) for left, right in zip(delays['left'], delays['right'])]
+    delays['f_count'] = ['%d' % (count) for count in delays['arr_length']]
+
+    src = ColumnDataSource(delays)
+    print(src.data.keys())
+    p.quad(bottom=0, left="left", right="right", top="arr_length",  source=src,
+           fill_color='red', line_color='black')
+
+    hover = HoverTool(tooltips=[('Bioactivity Value Range', '@f_interval'), ('Count', '@f_count')])
+    p.add_tools(hover)
+
+    p.xgrid.grid_line_color = None
+    # p.x_range.start = 0
+    p.y_range.start = 0
+    ticker = SingleIntervalTicker(interval=interval, num_minor_ticks=5)
+    p.xaxis.ticker = ticker
+    #xaxis = LinearAxis(ticker=ticker)
+    #p.xaxis
+    p.xaxis.axis_label = 'Bioacitivity Value (-log(Ki/Kd))'
+    p.xaxis.axis_label_text_font_size = "20pt"
+    p.xaxis.major_label_text_font_size = "10pt"
+    p.yaxis.axis_label = 'Number of Bioactivities'
+    p.yaxis.axis_label_text_font_size = "20pt"
+    p.yaxis.major_label_text_font_size = "15pt"
+
+    show(p)
+    p.output_backend = "svg"
+    export_svgs(p, filename="../figures/{}_{}_bioact_val_dist.svg".format(dataset_name, interval))
+    export_png(p, filename="../figures/{}_{}_bioact_val_dist.png".format(dataset_name, interval))
+
+
+# plot_bioact_dist_quad("{}/targets.fasta".format(helper_fl_path), 0.25, training_data_name)
 
 def get_number_of_bioactivity_distribution_based_on_seq_len():
     import bokeh
@@ -170,29 +217,7 @@ def get_number_of_bioactivity_distribution_based_on_seq_len():
 # get_number_of_bioactivity_distribution_based_on_seq_len()
 
 
-def convert_wrongly_created_result_files_into_proper_format(result_folder_name):
-    import os
-    # "davis_500_cnn_exp_results"
-    for fl in os.listdir("../resultFiles/{}".format(result_folder_name)):
-        str_fl = open("../resultFiles/{}/{}".format(result_folder_name,fl), "r")
-        lst_fl= str_fl.read().split("\n")
-        str_fl.close()
-        corrected_fl = open("../resultFiles/corrected_{}/corrected_{}".format(result_folder_name, fl), "w")
-        header = lst_fl[0]
-        corrected_fl.write(header+ "\n")
-        #print(lst_fl[1])
-        fold_results_lst = lst_fl[1].split("\t")
-        #print(fold_results_lst)
-        for line in fold_results_lst:
-            correct_line = "\t".join(line[1:-1].split(", "))
-            corrected_fl.write("{}\n".format(correct_line))
-            # print("\t".join(line[1:-1].split(", ")))
-            #print(line)
-        corrected_fl.close()
 
-
-# convert_wrongly_created_result_files_into_proper_format("davis_500_cnn_exp_results")
-# convert_wrongly_created_result_files_into_proper_format("davis_1000_cnn_exp_results")
 def get_seq_len_mean_vectors(interval, first_seq_num, first_error):
     #interval = 250
     interval_count_dict = {}
@@ -380,6 +405,9 @@ def remove_bioactivities_with_no_ecfp4():
 # remove_bioactivities_with_no_ecfp4()
 
 
+
+
+
 def draw_distribution_of_contacts():
     import os
     import zipfile
@@ -467,9 +495,27 @@ def draw_distribution_of_contacts():
                 plt.show()
 
 
-
-
-
-
-
 # draw_distribution_of_contacts()
+
+def calculate_performances_for_deepchem_pdbind():
+    df_predictions = pd.read_csv("{}/PDBBind_Refined/helper_files/refined_report.csv".format(training_files_path),
+                                 sep=",")
+
+    lst_methods = df_predictions.columns.values[3:]
+    for method in lst_methods:
+
+        method_specific_predictions = df_predictions.loc[:,["id", "assign", "-logKd/Ki", method]].dropna()
+        method_specific_test_predictions = method_specific_predictions.loc[method_specific_predictions['assign'] == "test"]
+        labels_values =np.asarray(method_specific_test_predictions["-logKd/Ki"].values, dtype=float)
+        predictions = np.asarray(method_specific_test_predictions[method].values, dtype=float)
+        # print(labels_values[:10])
+        # print(predictions[:10])
+        print("======================== METHOD: {} ======================== ".format(method))
+        get_scores_generic(labels_values, predictions, "test")
+        #print(labels_values)
+        #print(method_specific_test_predictions)
+
+
+
+
+calculate_performances_for_deepchem_pdbind()

@@ -569,3 +569,53 @@ def create_deepdta_non_5_filtered_dataset():
             print(line)
 
 # create_deepdta_non_5_filtered_dataset()
+
+def create_pdbind_train_validation_test_folds_based_on_their_predictions():
+    df_predictions = pd.read_csv("{}/PDBBind_Refined/helper_files/refined_report.csv".format(training_files_path), sep = ",")
+    df_dti_dataset = pd.read_csv("{}/PDBBind_Refined/dti_datasets/comp_targ_affinity.csv".format(training_files_path), header=None, sep = ",")
+    # print(df_dti_dataset)
+    dict_id_traintestval = dict()
+    for ind, row in df_predictions.iterrows():
+        id = row["id"]
+        train_test_val = row["assign"]
+        bioact_val = row["-logKd/Ki"]
+        dict_id_traintestval[id] = train_test_val
+        # print(id, train_test_val, bioact_val)
+
+    training_ids = []
+    validation_ids = []
+    test_ids = []
+
+    for ind, row in df_dti_dataset.iterrows():
+        comp_id = row[0]
+        pdb_id = row[1]
+        try:
+            if dict_id_traintestval[pdb_id]=="train":
+                training_ids.append(ind)
+            elif dict_id_traintestval[pdb_id]=="valid":
+                validation_ids.append(ind)
+            elif dict_id_traintestval[pdb_id]=="test":
+                test_ids.append(ind)
+            else:
+                pass
+        except:
+            training_ids.append(ind)
+
+    # print([training_ids, validation_ids])
+    # print(test_ids)
+    # print(len(training_ids)+len(validation_ids)+len(test_ids))
+        #print(ind, comp_id, pdb_id)
+
+
+    """
+    lst_methods = df_predictions.columns.values[3:]
+    for method in lst_methods:
+
+        method_specific_predictions = df_predictions.loc[:,["id", "assign", "-logKd/Ki", method]].dropna()
+        method_specific_test_predictions = method_specific_predictions.loc[method_specific_predictions['assign'] == "test"]
+        
+        print(method)
+        print(method_specific_test_predictions)
+        break
+    """
+# create_pdbind_train_validation_test_folds_based_on_their_predictions()

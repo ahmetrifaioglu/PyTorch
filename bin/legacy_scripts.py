@@ -99,3 +99,104 @@ def get_scores_full(labels, predictions, validation_test, total_training_loss, t
 
     for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
         print("{} {}:\t{}".format(validation_test, key, prec_rec_f1_acc_mcc_threshold_dict[key]))
+
+def plot_seq_length(fasta_fl_path, interval, dataset_name):
+    import bokeh
+    from bokeh.io import show, output_file
+    from bokeh.plotting import figure
+    from bokeh.models import ColumnDataSource, FixedTicker, PrintfTickFormatter
+    from bokeh.io import export_svgs
+    from bokeh.io import export_png
+
+    seq_len_list, _ = get_prot_seq_lengths_given_fasta(fasta_fl_path)
+
+    interval_count_dict = {}
+    interval_step = interval * (int(seq_len_list[0][1] / interval) + 1)
+
+    interval_count_dict[interval_step] = 0
+    int_count = 0
+    for prot_id, seq_len in seq_len_list:
+        # 0-50 51-100
+        if seq_len <= interval_step:
+            int_count += 1
+            # print("{}\t{}\t{}".format(prot_id, seq_len, interval_step))
+        else:
+            # interval_dist_list.append(int_count)
+            interval_count_dict[interval_step] = int_count
+            interval_step = interval * (int(seq_len / interval) + 1)
+            int_count = 1
+            #  print("{}\t{}\t{}".format(prot_id, seq_len, interval_step))
+    interval_count_dict[interval_step] = int_count
+    #  print(interval_count_dict)
+    interval_dist_list = []
+    count_list = []
+    # print(interval_dist_list)
+    starting_dict = interval
+    while starting_dict <= interval_step:
+        if starting_dict not in interval_count_dict.keys():
+            interval_count_dict[starting_dict] = 0
+            interval_dist_list.append(starting_dict)
+            count_list.append(0)
+        else:
+            interval_dist_list.append(starting_dict)
+            count_list.append(interval_count_dict[starting_dict])
+        starting_dict += interval
+
+    # print(sum(interval_dist_list))
+    print(interval_count_dict)
+    # print(interval_dist_list[-1])
+    # interval_dist_list = [item for item in interval_dist_list]
+    adj_interval_dist_list = interval_dist_list#[item - interval / 2 for item in interval_dist_list]
+    print(count_list)
+    len_list = ["<=500", "501-1000", "1001-1500", "1501-2000", "2001-2500", "2501-3000", "3001-3500", "3501-4000","4001-4500","4501-5000"]
+    p = figure(x_range=len_list, plot_width=1400, plot_height=700,
+               title="Distribution of Sequence Lenghts - {} Dataset".format(dataset_name),
+               toolbar_location=None, tools="")
+
+    p.vbar(x=len_list, top=count_list, width=0.9)
+
+    p.xgrid.grid_line_color = None
+    #p.x_range.start = 0
+    p.y_range.start = 0
+    p.xaxis.axis_label = 'Sequence Length'
+    p.xaxis.axis_label_text_font_size = "20pt"
+    p.xaxis.major_label_text_font_size = "15pt"
+    p.yaxis.axis_label = 'Number of Protein Sequences'
+    p.yaxis.axis_label_text_font_size = "20pt"
+    p.yaxis.major_label_text_font_size = "15pt"
+
+    # p.xaxis.ticker = FixedTicker(ticks=list(range(0, interval_step+1, interval)), minor_ticks=interval_dist_list)
+    # p.minor_ticks = interval_dist_list
+    show(p)
+    p.output_backend = "svg"
+    export_svgs(p, filename="../figures/{}_{}_seq_length_dist.svg".format(dataset_name, interval))
+    export_png(p, filename="../figures/{}_{}_seq_length_dist.png".format(dataset_name, interval))
+
+# plot_seq_length("{}/targets.fasta".format(helper_fl_path), 500, training_data_name)
+# plot_seq_length("{}/targets.fasta".format(helper_fl_path), 500, training_data_name)
+
+
+def convert_wrongly_created_result_files_into_proper_format(result_folder_name):
+    import os
+    # "davis_500_cnn_exp_results"
+    for fl in os.listdir("../resultFiles/{}".format(result_folder_name)):
+        str_fl = open("../resultFiles/{}/{}".format(result_folder_name,fl), "r")
+        lst_fl= str_fl.read().split("\n")
+        str_fl.close()
+        corrected_fl = open("../resultFiles/corrected_{}/corrected_{}".format(result_folder_name, fl), "w")
+        header = lst_fl[0]
+        corrected_fl.write(header+ "\n")
+        #print(lst_fl[1])
+        fold_results_lst = lst_fl[1].split("\t")
+        #print(fold_results_lst)
+        for line in fold_results_lst:
+            correct_line = "\t".join(line[1:-1].split(", "))
+            corrected_fl.write("{}\n".format(correct_line))
+            # print("\t".join(line[1:-1].split(", ")))
+            #print(line)
+        corrected_fl.close()
+
+
+# convert_wrongly_created_result_files_into_proper_format("davis_500_cnn_exp_results")
+# convert_wrongly_created_result_files_into_proper_format("davis_1000_cnn_exp_results")
+
