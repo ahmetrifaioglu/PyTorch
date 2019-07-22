@@ -250,7 +250,7 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "KESO980101.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/GRAR740104LEQ500.tsv
-save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "GRAR740104.txt")
+# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "GRAR740104.txt")
 
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/MIYS850102LEQ500.tsv
