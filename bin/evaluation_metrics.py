@@ -90,8 +90,6 @@ from scipy import stats
 from sklearn import preprocessing,metrics
 
 
-
-
 def rmse(y,f):
     """
     Task:    To compute root mean squared error (RMSE)
@@ -106,6 +104,7 @@ def rmse(y,f):
 
     return rmse
 
+
 def mse(y,f):
     """
     Task:    To compute root mean squared error (RMSE)
@@ -119,8 +118,6 @@ def mse(y,f):
     mse = ((y - f)**2).mean(axis=0)
 
     return mse
-
-
 
 
 def pearson(y,f):
@@ -138,8 +135,6 @@ def pearson(y,f):
     return rp
 
 
-
-
 def spearman(y,f):
     """
     Task:    To compute Spearman's rank correlation coefficient
@@ -153,8 +148,6 @@ def spearman(y,f):
     rs = stats.spearmanr(y, f)[0]
 
     return rs
-
-
 
 
 def ci(y,f):
@@ -200,8 +193,6 @@ def ci(y,f):
     return ci
 
 
-
-
 def prec_rec_f1_acc_mcc(y,f):
     """
     Task:    To compute F1 score using the threshold of 7 M
@@ -239,8 +230,6 @@ def prec_rec_f1_acc_mcc(y,f):
     return performance_threshold_dict
 
 
-
-
 def average_AUC(y,f):
 
     """
@@ -268,6 +257,7 @@ def average_AUC(y,f):
 
     return avAUC
 
+
 def get_list_of_scores():
     score_list = ["rm2", "CI (DEEPDTA)", "MSE", "RMSE", "Pearson", "Spearman",
                   "CI (Challenge)", "Average AUC",
@@ -279,7 +269,36 @@ def get_list_of_scores():
     return score_list
 
 
-def get_scores_generic(labels, predictions, validation_test):
+def get_validation_test_metric_list_of_scores():
+    score_list =  get_list_of_scores()
+    test_score_list = ["test {}".format(scr) for scr in score_list]
+    validation_score_list = ["validation {}".format(scr) for scr in score_list]
+    validation_test_metric_list = test_score_list + validation_score_list
+    # print(validation_test_list)
+    """
+    validation_test_metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
+                   'test Pearson', 'test Spearman', 'test CI (Challenge)',
+                   'test Average AUC', 'test Precision 5.0', 'test Recall 5.0',
+                   'test F1-Score 5.0', 'test Accuracy 5.0', 'test MCC 5.0',
+                   'test Precision 6.0', 'test Recall 6.0', 'test F1-Score 6.0',
+                   'test Accuracy 6.0', 'test MCC 6.0', 'test Precision 7.0',
+                   'test Recall 7.0', 'test F1-Score 7.0', 'test Accuracy 7.0',
+                   'test MCC 7.0', 'validation rm2', 'validation CI (DEEPDTA)',
+                   'validation MSE', 'validation RMSE', 'validation Pearson',
+                   'validation Spearman', 'validation CI (Challenge)',
+                   'validation Average AUC', 'validation Precision 5.0',
+                   'validation Recall 5.0', 'validation F1-Score 5.0',
+                   'validation Accuracy 5.0', 'validation MCC 5.0',
+                   'validation Precision 6.0', 'validation Recall 6.0',
+                   'validation F1-Score 6.0', 'validation Accuracy 6.0',
+                   'validation MCC 6.0', 'validation Precision 7.0',
+                   'validation Recall 7.0', 'validation F1-Score 7.0',
+                   'validation Accuracy 7.0', 'validation MCC 7.0']
+    """
+    return validation_test_metric_list
+
+
+def get_scores_generic(labels, predictions, validation_test, single_line_print=False):
     score_dict = {"rm2": None, "CI (DEEPDTA)": None, "MSE": None, "RMSE": None, "Pearson": None,
                   "Spearman": None, "CI (Challenge)": None, "Average AUC": None,
                   "Precision 10uM": None, "Recall 10uM": None, "F1-Score 10uM": None, "Accuracy 10uM": None,
@@ -309,6 +328,14 @@ def get_scores_generic(labels, predictions, validation_test):
     for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
         score_dict[key] = prec_rec_f1_acc_mcc_threshold_dict[key]
 
-    for scr in score_list:
-        print("{} {}:\t{}".format(validation_test, scr, score_dict[scr]))
+
+    str_single_line_performances = ""
+    if single_line_print:
+        print("\t".join(score_list))
+        for scr in score_list:
+            str_single_line_performances += "{}\t".format(score_dict[scr])
+        print(str_single_line_performances)
+    else:
+        for scr in score_list:
+            print("{} {}:\t{}".format(validation_test, scr, score_dict[scr]))
 

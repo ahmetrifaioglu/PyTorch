@@ -3,70 +3,17 @@ import os
 import pandas as pd
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/1000_cnn_davis_results"
 # result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/resultFiles/corrected_davis_500_cnn_exp_results"
-result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/DavisDataset_filtered_all_encodings_varying_channel"
+
 
 
 def get_5_fold_results_fold_thresholds():
-    metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
-       'test Pearson', 'test Spearman', 'test CI (Challenge)',
-       'test Average AUC', 'test Precision 5.0', 'test Recall 5.0',
-       'test F1-Score 5.0', 'test Accuracy 5.0', 'test MCC 5.0',
-       'test Precision 6.0', 'test Recall 6.0', 'test F1-Score 6.0',
-       'test Accuracy 6.0', 'test MCC 6.0', 'test Precision 7.0',
-       'test Recall 7.0', 'test F1-Score 7.0', 'test Accuracy 7.0',
-       'test MCC 7.0', 'validation rm2', 'validation CI (DEEPDTA)',
-       'validation MSE', 'validation RMSE', 'validation Pearson',
-       'validation Spearman', 'validation CI (Challenge)',
-       'validation Average AUC', 'validation Precision 5.0',
-       'validation Recall 5.0', 'validation F1-Score 5.0',
-       'validation Accuracy 5.0', 'validation MCC 5.0',
-       'validation Precision 6.0', 'validation Recall 6.0',
-       'validation F1-Score 6.0', 'validation Accuracy 6.0',
-       'validation MCC 6.0', 'validation Precision 7.0',
-       'validation Recall 7.0', 'validation F1-Score 7.0',
-       'validation Accuracy 7.0', 'validation MCC 7.0']
 
-    """
-    metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
-                   'test Pearson', 'test Spearman', 'test CI (Challenge)',
-                   'test Average AUC',
 
-                   'test Precision 10uM', 'test Recall 10uM',
-                   'test F1-Score 10uM', 'test Accuracy 10uM', 'test MCC 10uM',
+    from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-                   'test Precision 1uM', 'test Recall 1uM', 'test F1-Score 1uM',
-                   'test Accuracy 1uM', 'test MCC 1uM',
+    result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/DavisDataset_filtered_all_encodings_varying_channel"
 
-                   'test Precision 100nM',
-                   'test Recall 100nM', 'test F1-Score 100nM', 'test Accuracy 100nM',
-                   'test MCC 100nM',
-
-                   'test Precision 30nM',
-                   'test Recall 30nM', 'test F1-Score 30nM', 'test Accuracy 30nM',
-                   'test MCC 30nM',
-
-                   'validation rm2', 'validation CI (DEEPDTA)',
-                   'validation MSE', 'validation RMSE', 'validation Pearson',
-                   'validation Spearman', 'validation CI (Challenge)',
-                   'validation Average AUC',
-
-                   'validation Precision 10uM',
-                   'validation Recall 10uM', 'validation F1-Score 10uM',
-                   'validation Accuracy 10uM', 'validation MCC 10uM',
-
-                   'validation Precision 1uM', 'validation Recall 1uM',
-                   'validation F1-Score 1uM', 'validation Accuracy 1uM',
-                   'validation MCC 1uM',
-
-                   'validation Precision 100nM',
-                   'validation Recall 100nM', 'validation F1-Score 100nM',
-                   'validation Accuracy 100nM', 'validation MCC 100nM',
-
-                   'validation Precision 30nM',
-                   'validation Recall 30nM', 'validation F1-Score 30nM',
-                   'validation Accuracy 30nM', 'validation MCC 30nM'
-                   ]
-    """
+    metric_list = get_validation_test_metric_list_of_scores()
 
     str_header = "fl_name\tepoch_num"
     for metric in metric_list:
@@ -107,71 +54,71 @@ def get_5_fold_results_fold_thresholds():
         for metric in metric_list:
             str_result += "\t{}\t{}".format(mean_std_results_dict[metric][0], mean_std_results_dict[metric][1])
         print(str_result)
-# test_deep_dta_rm2	test_deep_dta_cindex	test_deep_dta_mse	test_pearson_score	test_spearman_score	test_ci_score	test_f1_score	test_ave_auc_score
+
 
 get_5_fold_results_fold_thresholds()
-def get_5_fold_results():
-    metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
-                   "test_spearman_score", "test_ci_score", "val_f1_score", "val_ave_auc_score"]
-
-    str_header = "fl_name\tepoch_num"
-    for metric in metric_list:
-        str_header += "\t{}_mean\t{}_std".format(metric, metric)
-    print(str_header)
-    for fl in os.listdir(result_file_path):
-        results_df  = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
-        best_epoch_result_dict=dict()
-        best_average_rmse = 1000000
-        for ind, row in results_df.iterrows():
-            mean_std_results_dict = dict()
-            for metric in metric_list:
-                fold_results = [float(rslt) for rslt in row[metric].split(",")]
-                mean_rslt = statistics.mean(fold_results)
-                stddev_rslt = statistics.pstdev(fold_results)
-                #print(mean_rslt, stddev_rslt)
-                mean_std_results_dict[metric] = (mean_rslt, stddev_rslt)
 
 
-            if mean_std_results_dict["test_deep_dta_mse"][0] < best_average_rmse:
-                for metric in metric_list:
-                    best_epoch_result_dict[metric] = mean_std_results_dict[metric]
-                best_epoch_result_dict["epoch_num"] = ind + 1
+def get_train_test_validation_setting_results():
+    from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-        str_result = "{}\t{}".format(fl,str(best_epoch_result_dict["epoch_num"]))
-        for metric in metric_list:
-            str_result += "\t{}\t{}".format(best_epoch_result_dict[metric][0], best_epoch_result_dict[metric][1])
-        print(str_result)
-#test_deep_dta_rm2	test_deep_dta_cindex	test_deep_dta_mse	test_pearson_score	test_spearman_score	test_ci_score	test_f1_score	test_ave_auc_score
+    result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/pdbbind_refined_dataset_all_encodings_varying_channel"
 
-# get_5_fold_results()
-def get_full_training_results():
-    metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
-                   "test_spearman_score", "test_ci_score", 	"test_f1_score","test_ave_auc_score"]
-
-    str_header = "\t".join(["fl_name\tepoch_num", "\t".join(metric_list)])
+    validation_test_list = get_validation_test_metric_list_of_scores()
+    # print(validation_test_list)
+    str_header = "\t".join(["fl_name\tepoch_num", "\t".join(validation_test_list)])
 
     print(str_header)
+
+
     for fl in os.listdir(result_file_path):
-        results_df = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
-        best_epoch_result_dict = dict()
-        best_rmse = 1000000
-        best_epoch_num = -1
+        if fl.endswith("out"):
+            result_fl = open(os.path.join(result_file_path, fl), "r")
+
+            lst_result_fl = result_fl.read().split("\n")
+            result_fl.close()
+            h_params = None
+            dict_fl_best_results = dict()
+
+            last_val_test_result_dict = dict()
+            for mt in validation_test_list:
+                last_val_test_result_dict[mt] = 10000000
+            last_val_test_result_dict["epoch"] = -1
+
+            for line in lst_result_fl:
+                # set initial performance for the result file
+                if line.startswith("Arguments: "):
+                    h_params = line.split("Arguments: ")[1]
+                    dict_fl_best_results[h_params] = dict()
+                    for mt in validation_test_list:
+                        dict_fl_best_results[h_params][mt] = 10000000
+                    dict_fl_best_results[h_params]["epoch"] = -1
+
+                # at each new epoch check the best val scores and reset the last_val_test_result_dict
+                # dict_fl_best_result[h_params] if necessary
+                elif line.startswith("Epoch:") and "Validation Loss" in line:
+                    epoch_num = int(line.split("\t")[0].split(":")[1]) -1
 
 
-        for ind, row in results_df.iterrows():
-            results_dict = dict()
-            for metric in metric_list:
-                results_dict[metric] = results_df[metric]
+                    if last_val_test_result_dict["Validation MSE"] < dict_fl_best_results[h_params]["Validation MSE"]:
+                        last_val_test_result_dict["epoch"] = epoch_num
+                        dict_fl_best_results[h_params] = last_val_test_result_dict
+                        # dict_fl_best_results[h_params]["epoch"] = epoch_num
+                    last_val_test_result_dict = dict()
+                    last_val_test_result_dict["epoch"] = -1
 
-            if row["test_deep_dta_mse"] < best_rmse:
-                for metric in metric_list:
-                    best_epoch_result_dict[metric] = row[metric]
-                    best_epoch_num = ind + 1
-        #print(fl)
-        #print(best_epoch_result_dict)
-        str_result = "{}\t{}".format(fl, str(best_epoch_num))
-        for metric in metric_list:
-            str_result += "\t{}".format(best_epoch_result_dict[metric])
-        print(str_result)
+                elif line.startswith("Validation") or line.startswith("Test"):
+                    metric_name, perf_value = line.split(":\t")
+                    last_val_test_result_dict[metric_name] = float(perf_value)
 
-# get_full_training_results()
+
+
+
+            str_result = "{}\t{}".format(h_params, dict_fl_best_results[h_params]["epoch"])
+            for metric in validation_test_list:
+                str_result += "\t{}".format(dict_fl_best_results[h_params][metric])
+
+            print(str_result)
+
+
+# get_train_test_validation_setting_results()

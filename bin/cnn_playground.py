@@ -353,7 +353,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss,
+                get_scores(validation_labels, validation_predictions, "validation", total_training_loss,
                                 total_validation_loss, epoch, comp_tar_pair_dataset, validation_epoch_results)
 
             print("Epoch {} validation loss:".format(epoch), total_validation_loss)
@@ -394,7 +394,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
 
         if regression_classifier == "r":
             print("==============================================================================")
-            get_scores(test_labels, test_predictions, "Test", total_training_loss,
+            get_scores(test_labels, test_predictions, "test", total_training_loss,
                        total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
         """
         if epoch==n_epoch-1:
@@ -443,5 +443,5 @@ experiment_name = sys.argv[12]
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
 
 
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
-# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)

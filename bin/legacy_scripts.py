@@ -200,3 +200,99 @@ def convert_wrongly_created_result_files_into_proper_format(result_folder_name):
 # convert_wrongly_created_result_files_into_proper_format("davis_500_cnn_exp_results")
 # convert_wrongly_created_result_files_into_proper_format("davis_1000_cnn_exp_results")
 
+    """
+    metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
+       'test Pearson', 'test Spearman', 'test CI (Challenge)',
+       'test Average AUC', 'test Precision 5.0', 'test Recall 5.0',
+       'test F1-Score 5.0', 'test Accuracy 5.0', 'test MCC 5.0',
+       'test Precision 6.0', 'test Recall 6.0', 'test F1-Score 6.0',
+       'test Accuracy 6.0', 'test MCC 6.0', 'test Precision 7.0',
+       'test Recall 7.0', 'test F1-Score 7.0', 'test Accuracy 7.0',
+       'test MCC 7.0', 'validation rm2', 'validation CI (DEEPDTA)',
+       'validation MSE', 'validation RMSE', 'validation Pearson',
+       'validation Spearman', 'validation CI (Challenge)',
+       'validation Average AUC', 'validation Precision 5.0',
+       'validation Recall 5.0', 'validation F1-Score 5.0',
+       'validation Accuracy 5.0', 'validation MCC 5.0',
+       'validation Precision 6.0', 'validation Recall 6.0',
+       'validation F1-Score 6.0', 'validation Accuracy 6.0',
+       'validation MCC 6.0', 'validation Precision 7.0',
+       'validation Recall 7.0', 'validation F1-Score 7.0',
+       'validation Accuracy 7.0', 'validation MCC 7.0']
+
+    """
+
+    metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
+                   'test Pearson', 'test Spearman', 'test CI (Challenge)',
+                   'test Average AUC',
+
+                   'test Precision 10uM', 'test Recall 10uM',
+                   'test F1-Score 10uM', 'test Accuracy 10uM', 'test MCC 10uM',
+
+                   'test Precision 1uM', 'test Recall 1uM', 'test F1-Score 1uM',
+                   'test Accuracy 1uM', 'test MCC 1uM',
+
+                   'test Precision 100nM',
+                   'test Recall 100nM', 'test F1-Score 100nM', 'test Accuracy 100nM',
+                   'test MCC 100nM',
+
+                   'test Precision 30nM',
+                   'test Recall 30nM', 'test F1-Score 30nM', 'test Accuracy 30nM',
+                   'test MCC 30nM',
+
+                   'validation rm2', 'validation CI (DEEPDTA)',
+                   'validation MSE', 'validation RMSE', 'validation Pearson',
+                   'validation Spearman', 'validation CI (Challenge)',
+                   'validation Average AUC',
+
+                   'validation Precision 10uM',
+                   'validation Recall 10uM', 'validation F1-Score 10uM',
+                   'validation Accuracy 10uM', 'validation MCC 10uM',
+
+                   'validation Precision 1uM', 'validation Recall 1uM',
+                   'validation F1-Score 1uM', 'validation Accuracy 1uM',
+                   'validation MCC 1uM',
+
+                   'validation Precision 100nM',
+                   'validation Recall 100nM', 'validation F1-Score 100nM',
+                   'validation Accuracy 100nM', 'validation MCC 100nM',
+
+                   'validation Precision 30nM',
+                   'validation Recall 30nM', 'validation F1-Score 30nM',
+                   'validation Accuracy 30nM', 'validation MCC 30nM'
+                   ]
+
+def get_5_fold_results():
+    metric_list = ["test_deep_dta_rm2", "test_deep_dta_cindex", "test_deep_dta_mse", "test_pearson_score",
+                   "test_spearman_score", "test_ci_score", "val_f1_score", "val_ave_auc_score"]
+
+    str_header = "fl_name\tepoch_num"
+    for metric in metric_list:
+        str_header += "\t{}_mean\t{}_std".format(metric, metric)
+    print(str_header)
+    for fl in os.listdir(result_file_path):
+        results_df  = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
+        best_epoch_result_dict=dict()
+        best_average_rmse = 1000000
+        for ind, row in results_df.iterrows():
+            mean_std_results_dict = dict()
+            for metric in metric_list:
+                fold_results = [float(rslt) for rslt in row[metric].split(",")]
+                mean_rslt = statistics.mean(fold_results)
+                stddev_rslt = statistics.pstdev(fold_results)
+                #print(mean_rslt, stddev_rslt)
+                mean_std_results_dict[metric] = (mean_rslt, stddev_rslt)
+
+
+            if mean_std_results_dict["test_deep_dta_mse"][0] < best_average_rmse:
+                for metric in metric_list:
+                    best_epoch_result_dict[metric] = mean_std_results_dict[metric]
+                best_epoch_result_dict["epoch_num"] = ind + 1
+
+        str_result = "{}\t{}".format(fl,str(best_epoch_result_dict["epoch_num"]))
+        for metric in metric_list:
+            str_result += "\t{}\t{}".format(best_epoch_result_dict[metric][0], best_epoch_result_dict[metric][1])
+        print(str_result)
+#test_deep_dta_rm2	test_deep_dta_cindex	test_deep_dta_mse	test_pearson_score	test_spearman_score	test_ci_score	test_f1_score	test_ave_auc_score
+
+# get_5_fold_results()

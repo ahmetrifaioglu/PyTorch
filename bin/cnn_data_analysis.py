@@ -11,7 +11,7 @@ import itertools
 import torch.nn as nn
 import sys
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
-from evaluation_metrics import get_scores_generic
+from evaluation_metrics import get_scores_generic, get_list_of_scores
 
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
@@ -511,9 +511,7 @@ def calculate_performances_for_deepchem_pdbind():
         # print(labels_values[:10])
         # print(predictions[:10])
         print("======================== METHOD: {} ======================== ".format(method))
-        get_scores_generic(labels_values, predictions, "test")
-        #print(labels_values)
-        #print(method_specific_test_predictions)
+        get_scores_generic(labels_values, predictions, "test", True)
 
 
 

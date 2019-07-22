@@ -143,7 +143,7 @@ def get_aa_match_encodings():
     return aa_match_encoding_dict
 
 
-def get_aa_match_encodings_generic(aaindex_enconding):
+def get_aa_match_encodings_generic(aaindex_enconding, full_matrix=False):
     aa_list = get_aa_list()
     encoding_fl = open("../trainingFiles/encodings/{}".format(aaindex_enconding))
     lst_encoding_fl = encoding_fl.read().split("\n")
@@ -166,13 +166,16 @@ def get_aa_match_encodings_generic(aaindex_enconding):
             for col_ind in range(len(str_line)):
                 # print(str_line)
                 # print(row_aa_ind, col_ind, aa_list[row_aa_ind], aa_list[col_ind], str_line[col_ind] )
-                aa_match_encoding_dict["{}{}".format(aa_list[row_aa_ind], aa_list[col_ind])] = round(float(str_line[col_ind]),3)
-                aa_match_encoding_dict["{}{}".format(aa_list[col_ind], aa_list[row_aa_ind])] = round(float(str_line[col_ind]),3)
-
-    # print(aa_match_encoding_dict)
+                if not full_matrix:
+                    aa_match_encoding_dict["{}{}".format(aa_list[row_aa_ind], aa_list[col_ind])] = round(float(str_line[col_ind]),3)
+                    aa_match_encoding_dict["{}{}".format(aa_list[col_ind], aa_list[row_aa_ind])] = round(float(str_line[col_ind]),3)
+                else:
+                    aa_match_encoding_dict["{}{}".format(aa_list[row_aa_ind], aa_list[col_ind])] = round(
+                        float(str_line[col_ind]), 3)
+    # print(aa_match_encoding_dict)
     return aa_match_encoding_dict
 
-# get_aa_match_encodings_generic("blosum62.txt")
+# get_aa_match_encodings_generic("ZHAC000103.txt", True)
 
 def get_sequence_matrix(seq, size, aaindex_enconding=None):
     aa_match_encoding_dict = None
@@ -242,6 +245,10 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 
 # python static_file_generation_modules.py > ../trainingFiles/DeepDTA_davis/target_feature_vectors/blosum62500_normalized.tsv
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/DeepDTA_davis/helper_files/targets.fasta", 500, "blosum62.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/KESO980101LEQ500.tsv
+save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "KESO980101.txt")
+
 
 # Components-smiles-stereo-oe.smi and Components-inchi.ich.txt were downloaded from  http://ligand-expo.rcsb.org/ld-download.html
 def create_ecfp4_feature_file_for_pdbbind_ligands():
