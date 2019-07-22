@@ -253,6 +253,10 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "GRAR740104.txt")
 
 
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/MIYS850102LEQ500.tsv
+save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "MIYS850102.txt")
+
+
 # Components-smiles-stereo-oe.smi and Components-inchi.ich.txt were downloaded from  http://ligand-expo.rcsb.org/ld-download.html
 def create_ecfp4_feature_file_for_pdbbind_ligands():
     from operator import itemgetter

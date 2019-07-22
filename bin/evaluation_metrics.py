@@ -275,26 +275,6 @@ def get_validation_test_metric_list_of_scores():
     validation_score_list = ["validation {}".format(scr) for scr in score_list]
     validation_test_metric_list = test_score_list + validation_score_list
     # print(validation_test_list)
-    """
-    validation_test_metric_list = ['test rm2', 'test CI (DEEPDTA)', 'test MSE', 'test RMSE',
-                   'test Pearson', 'test Spearman', 'test CI (Challenge)',
-                   'test Average AUC', 'test Precision 5.0', 'test Recall 5.0',
-                   'test F1-Score 5.0', 'test Accuracy 5.0', 'test MCC 5.0',
-                   'test Precision 6.0', 'test Recall 6.0', 'test F1-Score 6.0',
-                   'test Accuracy 6.0', 'test MCC 6.0', 'test Precision 7.0',
-                   'test Recall 7.0', 'test F1-Score 7.0', 'test Accuracy 7.0',
-                   'test MCC 7.0', 'validation rm2', 'validation CI (DEEPDTA)',
-                   'validation MSE', 'validation RMSE', 'validation Pearson',
-                   'validation Spearman', 'validation CI (Challenge)',
-                   'validation Average AUC', 'validation Precision 5.0',
-                   'validation Recall 5.0', 'validation F1-Score 5.0',
-                   'validation Accuracy 5.0', 'validation MCC 5.0',
-                   'validation Precision 6.0', 'validation Recall 6.0',
-                   'validation F1-Score 6.0', 'validation Accuracy 6.0',
-                   'validation MCC 6.0', 'validation Precision 7.0',
-                   'validation Recall 7.0', 'validation F1-Score 7.0',
-                   'validation Accuracy 7.0', 'validation MCC 7.0']
-    """
     return validation_test_metric_list
 
 
