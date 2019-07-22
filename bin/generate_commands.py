@@ -439,19 +439,17 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
     comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
     #comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
-    last_2_hidden_layer_list = ["256_128" "512_256", "1024_512"]
+    last_2_hidden_layer_list = ["256_128" "512_256", "1024_512", "1024_1024"]
 
-    training_dataset_list = ["Davis"]
-
-
+    # training_dataset_list = ["Davis"]
+    # training_dataset_list = ["PDBBind_Refined"]
     training_dataset_list = ["Davis_Filtered"]
-    training_dataset_list = ["PDBBind_Refined"]
     train_val_test = 1
     # target_feature = "sequencematrix1000"
     total_number_of_jobs = 0
     dropout = [0.10, 0.25]
     model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNNModule2Layers", "CompFCNNTarCNN4LayersStride"]
-    model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNN4LayersStride"]
+    model_list = ["CompFCNNTarCNNModuleInception"]
     # model_list = ["CompFCNNTarCNN2"]
     target_feature = ["sequencematrix500", "sequencematrix500_blosum62LEQ500", "sequencematrix500_SIMK990101LEQ500", "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500"]
     temp_group_job_list = []
@@ -485,9 +483,10 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                             all_job_submission_fl.write("chmod +x ./{}_{}.sh\n".format(job_number, num_of_jobs_at_each_group))
 
 
-                                            all_job_submission_fl.write(
-                                                "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
-                                                                                        (job_number), num_of_jobs_at_each_group))
+                                            # KanSil  Jobs
+                                            # all_job_submission_fl.write(
+                                            #    "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
+                                            #                                            (job_number), num_of_jobs_at_each_group))
 
                                             # GPU Jobs
                                             all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
@@ -523,12 +522,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
         all_job_submission_fl.write("chmod +x ./{}_{}.sh\n".format(job_number+1, num_of_jobs_at_each_group))
 
         # kansil jobs
-        all_job_submission_fl.write("./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number+1), num_of_jobs_at_each_group, job_group_name, (job_number+1), num_of_jobs_at_each_group))
+        # all_job_submission_fl.write("./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number+1), num_of_jobs_at_each_group, job_group_name, (job_number+1), num_of_jobs_at_each_group))
 
         # GPU jobs
-        #all_job_submission_fl.write(
-        #    "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
-        #        job_group_name, job_number+1, job_number+1))
+        all_job_submission_fl.write(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+                job_group_name, job_number+1, job_number+1))
 
         # CPU jobs
         #all_job_submission_fl.write(
@@ -542,7 +541,8 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_protein_cnn_commands("pdbbind_refined_dataset_all_encodings_varying_channel", 1)
+generate_protein_cnn_commands("davis_dataset_filtered_ebi_gpu_encoding_blosum62_SIMK990101", 20)
+# generate_protein_cnn_commands("pdbbind_refined_dataset_all_encodings_varying_channel", 1)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_filtered_ebi_cpu_only_aa_match_encoding", 1)
 # generate_protein_cnn_commands("PDBBind_kansil_workstation_blosum", 1)
