@@ -262,7 +262,10 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/SIMK990101.tsv
-save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
+# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000103.tsv
+save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000103.txt")
 
 
 
