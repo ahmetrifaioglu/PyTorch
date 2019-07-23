@@ -181,6 +181,8 @@ def get_sequence_matrix(seq, size, aaindex_enconding=None):
     aa_match_encoding_dict = None
     if aaindex_enconding==None:
         aa_match_encoding_dict = get_aa_match_encodings()
+    elif aaindex_enconding=="ZHAC000103":
+        aa_match_encoding_dict = get_aa_match_encodings_generic(aaindex_enconding, full_matrix=True)
     else:
         aa_match_encoding_dict = get_aa_match_encodings_generic(aaindex_enconding)
     # print(aa_match_encoding_dict)
@@ -257,7 +259,10 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "MIYS850102.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000106LEQ500.tsv
-save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
+# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/SIMK990101.tsv
+save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
 
 
 
