@@ -18,7 +18,7 @@ training_files_path = "{}/../trainingFiles".format(cwd)
 
 # training_data_name = "Davis"
 #training_data_name = "Davis_Filtered"
-#training_data_name = "Kiba"
+#training_data_name = "KIBA"
 training_data_name = "PDBBind_Refined"
 compound_feature_list = "ecfp4".split("_")
 target_feature_list = "sequencematrix1000".split("_")
