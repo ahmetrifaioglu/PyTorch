@@ -443,8 +443,9 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     # training_dataset_list = ["Davis"]
     # training_dataset_list = ["PDBBind_Refined"]
-    training_dataset_list = ["PDBBind_Refined"]
+
     training_dataset_list = ["Davis_Filtered"]
+    training_dataset_list = ["PDBBind_Refined"]
     # use below line for train test validation
     train_val_test = 1
     # target_feature = "sequencematrix1000"
@@ -549,7 +550,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-# generate_protein_cnn_commands("pdbbind_refined_kansil_dataset_pairwise_sequencematrix500_SIMK990101LEQ500_GRAR740104LEQ500_MIYS850102LEQ500_KESO980101LEQ500_ZHAC000106LEQ500_ZHAC000103LEQ500_blosum62LEQ500", 1)
+generate_protein_cnn_commands("pdbbind_refined_kansil_dataset_pairwise_sequencematrix500_SIMK990101LEQ500_GRAR740104LEQ500_MIYS850102LEQ500_KESO980101LEQ500_ZHAC000106LEQ500_ZHAC000103LEQ500_blosum62LEQ500", 1)
 # generate_protein_cnn_commands("davis_dataset_filtered_ebi_gpu_encoding_blosum62_SIMK990101", 20)
 # generate_protein_cnn_commands("pdbbind_refined_dataset_all_encodings_varying_channel", 1)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_aa_match_encoding", 1)
