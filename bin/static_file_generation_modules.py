@@ -254,20 +254,39 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/GRAR740104LEQ500.tsv
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "GRAR740104.txt")
 
-
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/MIYS850102LEQ500.tsv
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "MIYS850102.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000106LEQ500.tsv
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
 
-# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/SIMK990101.tsv
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/SIMK990101LEQ500.tsv
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
 
-# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000103.tsv
-save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000103.txt")
+# python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000103LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000103.txt")
 
+# ====================================================
 
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/KESO980101LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "KESO980101.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/GRAR740104LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "GRAR740104.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/MIYS850102LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "MIYS850102.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/ZHAC000106LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "ZHAC000106.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/SIMK990101LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "SIMK990101.txt")
+
+# python static_file_generation_modules.py > ../trainingFiles/Davis/target_feature_vectors/ZHAC000103LEQ500.tsv
+# save_all_flattened_sequence_matrices("../trainingFiles/Davis/helper_files/targets.fasta", 500, "ZHAC000103.txt")
+
+# ====================================================
 
 
 # Components-smiles-stereo-oe.smi and Components-inchi.ich.txt were downloaded from  http://ligand-expo.rcsb.org/ld-download.html
@@ -462,11 +481,11 @@ def create_dti_dataset_for_pdbbind():
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/data/folds/test_fold_setting1_general.txt
 # create_dti_dataset_for_pdbbind()
 
-def create_single_target_feature_vector_files_using_combined():
-    feature_name = "blosum62LEQ500"
-    input_path = "../trainingFiles/PDBBind/target_feature_vectors"
-    output_path = "../trainingFiles/PDBBind/target_feature_vectors/{}".format(feature_name)
-    # subprocess.call("mkdir {}".format(output_path))
+def create_single_target_feature_vector_files_using_combined(feature_name, dataset):
+    # feature_name = "blosum62LEQ500"
+    input_path = "../trainingFiles/{}/target_feature_vectors".format(dataset)
+    output_path = "../trainingFiles/{}/target_feature_vectors/{}".format(dataset, feature_name)
+    subprocess.call("mkdir {}".format(output_path), shell=True)
     with open("{}/{}.tsv".format(input_path, feature_name)) as f:
         for line in f:
             line = line.split("\n")[0]
@@ -475,7 +494,12 @@ def create_single_target_feature_vector_files_using_combined():
             output_fl.write(line)
             output_fl.close()
 
-# create_single_target_feature_vector_files_using_combined()
+create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
 
 def get_single_protein_family_associated_compounds(dataset_name, family_name):
     import numpy as np
