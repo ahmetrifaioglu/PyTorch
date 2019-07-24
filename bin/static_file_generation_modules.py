@@ -494,12 +494,12 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
             output_fl.write(line)
             output_fl.close()
 
-create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
-create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "PDBBind_Refined")
-create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "PDBBind_Refined")
-create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
-create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
-create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
 
 def get_single_protein_family_associated_compounds(dataset_name, family_name):
     import numpy as np
