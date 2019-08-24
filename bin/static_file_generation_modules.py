@@ -670,3 +670,37 @@ def create_pdbind_train_validation_test_folds_based_on_their_predictions():
         break
     """
 # create_pdbind_train_validation_test_folds_based_on_their_predictions()
+
+def create_deepdta_train_test_indices_folds_simboost():
+    import json
+    #indices are starts with 1 in R therefore we increased all indices by 1
+    output_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis/data/folds_simboost"
+    train_validation_fold_lst = json.load(open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis/data/folds/train_fold_setting1.txt"))
+    test_fold_lst = json.load(open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis/data/folds/test_fold_setting1.txt"))
+
+    for fold_id in range(len(train_validation_fold_lst)):
+        out_validation_fl = open("{}/validation_fold_{}.csv".format(output_path, fold_id + 1), "w")
+        out_validation_fl.write("indices\n")
+
+        out_train_fl = open("{}/train_fold_{}.csv".format(output_path, fold_id + 1), "w")
+        out_train_fl.write("indices\n")
+
+        for fold_id2 in range(len(train_validation_fold_lst)):
+            if fold_id==fold_id2:
+                out_validation_fl.write("\n".join([str(ind + 1) for ind in train_validation_fold_lst[fold_id2]]))
+            else:
+                out_train_fl.write("\n".join([str(ind + 1) for ind in train_validation_fold_lst[fold_id2]])+"\n")
+        out_train_fl.close()
+        out_validation_fl.close()
+
+    out_test_fl = open("{}/test.csv".format(output_path), "w")
+    out_test_fl.write("indices\n")
+    out_test_fl.write("\n".join([str(ind + 1) for ind in test_fold_lst]))
+    out_test_fl.close()
+
+
+
+
+
+
+create_deepdta_train_test_indices_folds_simboost()

@@ -525,10 +525,10 @@ def calculate_performances_for_simboost():
 
     for i in range(5):
         # print(i)
-        df_predictions = pd.read_csv("{}/pred_fold_{}_.csv".format(result_file_path, i+1),
+        df_predictions = pd.read_csv("{}/test_pred_fold_{}_.csv".format(result_file_path, i+1),
                                      sep=",")
-
-        df_labels = pd.read_csv("{}/label_fold_{}_.csv".format(result_file_path, i+1),
+        # test_label_fold_1_.csv
+        df_labels = pd.read_csv("{}/test_label_fold_{}_.csv".format(result_file_path, i+1),
                                      sep=",")
 
         predictions = list(df_predictions.loc[:, "x"])

@@ -11,7 +11,7 @@ def get_5_fold_results_fold_thresholds():
 
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/DavisDataset_filtered_all_encodings_varying_channel"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_filtered_ebi_gpu_encoding_blosum62_SIMK990101"
 
     metric_list = get_validation_test_metric_list_of_scores()
 
@@ -62,7 +62,7 @@ get_5_fold_results_fold_thresholds()
 def get_train_test_validation_setting_results():
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive/Projects/PyTorch/result_files/pdbbind_refined_dataset_all_encodings_varying_channel"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/pdbbind_refined_dataset_all_encodings_varying_channel"
 
     validation_test_list = get_validation_test_metric_list_of_scores()
     # print(validation_test_list)
@@ -96,18 +96,18 @@ def get_train_test_validation_setting_results():
 
                 # at each new epoch check the best val scores and reset the last_val_test_result_dict
                 # dict_fl_best_result[h_params] if necessary
-                elif line.startswith("Epoch:") and "Validation Loss" in line:
+                elif line.startswith("Epoch:") and "validation Loss" in line:
                     epoch_num = int(line.split("\t")[0].split(":")[1]) -1
 
 
-                    if last_val_test_result_dict["Validation MSE"] < dict_fl_best_results[h_params]["Validation MSE"]:
+                    if last_val_test_result_dict["validation MSE"] < dict_fl_best_results[h_params]["validation MSE"]:
                         last_val_test_result_dict["epoch"] = epoch_num
                         dict_fl_best_results[h_params] = last_val_test_result_dict
                         # dict_fl_best_results[h_params]["epoch"] = epoch_num
                     last_val_test_result_dict = dict()
                     last_val_test_result_dict["epoch"] = -1
 
-                elif line.startswith("Validation") or line.startswith("Test"):
+                elif line.startswith("validation") or line.startswith("test"):
                     metric_name, perf_value = line.split(":\t")
                     last_val_test_result_dict[metric_name] = float(perf_value)
 
@@ -122,3 +122,4 @@ def get_train_test_validation_setting_results():
 
 
 # get_train_test_validation_setting_results()
+
