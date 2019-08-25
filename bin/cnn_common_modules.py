@@ -1,7 +1,7 @@
 import sys
 
-def eprint(*args, **kwargs):
-    print(*args, file=sys.stderr, **kwargs)
+#def eprint(*args, **kwargs):
+#    print(*args, file=sys.stderr, **kwargs)
 
 
 def get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path):
