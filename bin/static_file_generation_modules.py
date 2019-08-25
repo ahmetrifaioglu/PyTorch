@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl, eprint
 import itertools
@@ -32,8 +31,6 @@ def convert_pdbbind_sequences_into_fasta_format():
             print(lst_seq_fl[1])
             #print(lst_seq_fl)
 
-# python static_file_generation_modules.py > ../trainingFiles/PDBBind/helper_files/targets.fasta
-# convert_pdbbind_sequences_into_fasta_format()
 
 
 def get_padded_sequence_matrix(np_arr, size):
