@@ -483,6 +483,7 @@ def create_dti_dataset_for_pdbbind():
 
 def create_single_target_feature_vector_files_using_combined(feature_name, dataset):
     # feature_name = "blosum62LEQ500"
+    print(feature_name)
     input_path = "../trainingFiles/{}/target_feature_vectors".format(dataset)
     output_path = "../trainingFiles/{}/target_feature_vectors/{}".format(dataset, feature_name)
     subprocess.call("mkdir {}".format(output_path), shell=True)
@@ -495,11 +496,11 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
             output_fl.close()
 
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
+# create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
+# create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
+# create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "Davis_Filtered")
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "Davis_Filtered")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "Davis_Filtered")
 
 def get_single_protein_family_associated_compounds(dataset_name, family_name):
     import numpy as np
@@ -703,4 +704,4 @@ def create_deepdta_train_test_indices_folds_simboost():
 
 
 
-create_deepdta_train_test_indices_folds_simboost()
+# create_deepdta_train_test_indices_folds_simboost()
