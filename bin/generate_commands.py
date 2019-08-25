@@ -497,16 +497,16 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                 for model in model_list:
                                     for tar_feat in target_feature:
                                         # print(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do)
-                                        command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" " \
-                                                      "-M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}\"".format(
-                                                    job_group_name,
-                                            comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do,
-                                            comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do, job_group_name)
+                                        #command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" " \
+                                        #              "-M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}\"".format(
+                                        #            job_group_name,
+                                        #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do,
+                                        #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do, job_group_name)
 
-                                        #command_str = "python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}".format(
-                                        #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data,
-                                        #    tar_feat,
-                                        #    train_val_test, model, do, job_group_name)
+                                        command_str = "python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}".format(
+                                            comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data,
+                                            tar_feat,
+                                            train_val_test, model, do, job_group_name)
 
                                         #print(total_number_of_jobs % num_of_jobs_at_each_group)
                                         if ((total_number_of_jobs+ 1) % num_of_jobs_at_each_group)  == 0:
