@@ -102,19 +102,19 @@ def save_all_aa_distance_matrices(dist_folder_path, size):
         eprint(count)
         normalize_and_print_flattened_aa_distance_matrices(dist_folder_path, fl, size)
 
-"""
+
 # save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_4001_8000", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500_normalized_1_4000.tsv
-# save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_1_4000", 1000)
+#save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_1_4000", 1000 )
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_1_4000.tsv
 # save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_4001_8000", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500_normalized_4001_8000.tsv
 # save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_4001_8000", 1000)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_4001_8000.tsv
 
-# save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_8001_11918", 500)
+#save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_8001_11918", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_4001_8000.tsv
-"""
+
 
 
 def get_aa_list():
@@ -257,10 +257,10 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "MIYS850102.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000106LEQ500.tsv
-# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
+#save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000106.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/SIMK990101LEQ500.tsv
-# save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
+#save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "SIMK990101.txt")
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind_Refined/target_feature_vectors/ZHAC000103LEQ500.tsv
 # save_all_flattened_sequence_matrices("../trainingFiles/PDBBind_Refined/helper_files/targets.fasta", 500, "ZHAC000103.txt")
@@ -494,10 +494,10 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
             output_fl.write(line)
             output_fl.close()
 
-# create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
-# create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
-# create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
-# create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "Davis_Filtered")
+#create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
+#create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
+#create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
+#create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "Davis_Filtered")
 create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "Davis_Filtered")
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "Davis_Filtered")
 
