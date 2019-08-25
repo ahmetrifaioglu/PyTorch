@@ -102,6 +102,7 @@ def save_all_aa_distance_matrices(dist_folder_path, size):
         eprint(count)
         normalize_and_print_flattened_aa_distance_matrices(dist_folder_path, fl, size)
 
+"""
 # save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_4001_8000", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix500_normalized_1_4000.tsv
 # save_all_aa_distance_matrices("/Users/trman/Downloads/PBDbind_residue_distance_maps_1_4000", 1000)
@@ -113,7 +114,7 @@ def save_all_aa_distance_matrices(dist_folder_path, size):
 
 # save_all_aa_distance_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/target_feature_vectors/PBDbind_residue_distance_maps_8001_11918", 500)
 # python dream_challenge_data_processing.py > ../trainingFiles/PDBBind/target_feature_vectors/aadistancematrix1000_normalized_4001_8000.tsv
-
+"""
 
 
 def get_aa_list():
