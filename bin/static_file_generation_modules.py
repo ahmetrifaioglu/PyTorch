@@ -171,7 +171,7 @@ def get_aa_match_encodings_generic(aaindex_enconding, full_matrix=False):
                 else:
                     aa_match_encoding_dict["{}{}".format(aa_list[row_aa_ind], aa_list[col_ind])] = round(
                         float(str_line[col_ind]), 3)
-    # print(aa_match_encoding_dict)
+    #print(aa_match_encoding_dict)
     return aa_match_encoding_dict
 
 # get_aa_match_encodings_generic("ZHAC000103.txt", True)
