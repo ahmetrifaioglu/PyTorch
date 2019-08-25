@@ -11,7 +11,7 @@ def get_5_fold_results_fold_thresholds():
 
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_filtered_ebi_gpu_encoding_blosum62_SIMK990101"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_filtered_cd .."
 
     metric_list = get_validation_test_metric_list_of_scores()
 
