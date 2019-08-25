@@ -654,7 +654,7 @@ def create_pdbind_train_validation_test_folds_based_on_their_predictions():
 
     # print([training_ids, validation_ids])
     # print(test_ids)
-    # print(len(training_ids)+len(validation_ids)+len(test_ids))
+    #print(len(training_ids)+len(validation_ids)+len(test_ids))
         #print(ind, comp_id, pdb_id)
 
 
