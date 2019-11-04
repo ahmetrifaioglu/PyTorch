@@ -219,10 +219,10 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                 if epoch==n_epoch-1:
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
-                    if training_dataset=="DeepDTA_davis":
+                    if training_dataset=="Davis":
                         if min(mse_results) >= 0.30:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
-                    elif training_dataset=="DeepDTA_davis_filtered":
+                    elif training_dataset=="Davis_Filtered":
                         if min(mse_results) >= 0.68:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
@@ -443,5 +443,5 @@ experiment_name = sys.argv[12]
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
 
 
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
-# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "DeepDTA_davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind", "r", batch_size, train_validation_test, model_name, dropout_prob)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "Davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
