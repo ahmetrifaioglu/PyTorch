@@ -11,7 +11,7 @@ def get_5_fold_results_fold_thresholds():
 
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_filtered_cd .."
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_filtered_dataset_ebi_gpu_combined_best_encodings"
 
     metric_list = get_validation_test_metric_list_of_scores()
 
@@ -62,7 +62,7 @@ get_5_fold_results_fold_thresholds()
 def get_train_test_validation_setting_results():
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/pdbbind_refined_dataset_all_encodings_varying_channel"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/pdbbind_refined_dataset_kansil_combined_best_encodings"
 
     validation_test_list = get_validation_test_metric_list_of_scores()
     # print(validation_test_list)
@@ -120,6 +120,5 @@ def get_train_test_validation_setting_results():
 
             print(str_result)
 
-
-# get_train_test_validation_setting_results()
+#get_train_test_validation_setting_results()
 

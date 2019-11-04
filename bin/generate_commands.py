@@ -434,11 +434,11 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     subprocess.call("mkdir {}".format(job_folder_path), shell=True)
     # subprocess.call("mkdir {}".format(result_folder_path), shell=True)
     batch_size = [32]
-    lst_learning_rate = [0.0001, 0.001]
+    lst_learning_rate = [0.0001, 0.001, 0.01]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
-    after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
-    comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
-    #comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
+    # after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
+    # comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
+    comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
     last_2_hidden_layer_list = ["256_128", "512_256", "1024_512", "1024_1024"]
 
     # training_dataset_list = ["Davis"]
@@ -447,6 +447,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     training_dataset_list = ["Davis_Filtered"]
     training_dataset_list = ["Davis_Filtered"]
     training_dataset_list = ["PDBBind_Refined"]
+    training_dataset_list = ["Davis"]
     # use below line for train test validation
     train_val_test = 1
     # target_feature = "sequencematrix1000"
@@ -483,6 +484,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                       "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500",
                       "sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
 
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
     temp_group_job_list = []
     job_number = 0
     all_job_submission_fl = open("{}/{}.sh".format(job_folder_path, job_group_name), "w")
@@ -575,7 +577,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     all_job_submission_fl.close()
 
 # generate_protein_cnn_commands("davis_filtered_dataset_ebi_gpu_combined_best_encodings", 20)
-generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
+
 # generate_protein_cnn_commands("pdbbind_refined_kansil_dataset_pairwise_sequencematrix500_SIMK990101LEQ500_GRAR740104LEQ500_MIYS850102LEQ500_KESO980101LEQ500_ZHAC000106LEQ500_ZHAC000103LEQ500_blosum62LEQ500", 1)
 # generate_protein_cnn_commands("davis_dataset_filtered_ebi_gpu_encoding_blosum62_SIMK990101", 20)
 # generate_protein_cnn_commands("pdbbind_refined_dataset_all_encodings_varying_channel", 1)
@@ -585,6 +587,10 @@ generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_enco
 # python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000
 # bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 40960 -R 'rusage[mem=40960]' -o ../log_files/pdbbind_experiment_07062019/1000_Deneme.out "python cnn_playground.py 1024_1024 1024 1024_1024 0.01 32 PDBBind ecfp4 sequencematrix1000"
 # comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data
+
+# final runs
+# generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
+generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
 
 """
 
