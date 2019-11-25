@@ -519,12 +519,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
 
                                             # KanSil  Jobs
-                                            all_job_submission_fl.write(
-                                                "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
-                                                                                        (job_number), num_of_jobs_at_each_group))
+                                            # all_job_submission_fl.write(
+                                            #     "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
+                                            #                                             (job_number), num_of_jobs_at_each_group))
 
                                             # GPU Jobs
-                                            # all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
+                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
 
                                             #
                                             #all_job_submission_fl.write(
@@ -557,12 +557,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
         all_job_submission_fl.write("chmod +x ./{}_{}.sh\n".format(job_number+1, num_of_jobs_at_each_group))
 
         # kansil jobs
-        all_job_submission_fl.write("./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number+1), num_of_jobs_at_each_group, job_group_name, (job_number+1), num_of_jobs_at_each_group))
+        # all_job_submission_fl.write("./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number+1), num_of_jobs_at_each_group, job_group_name, (job_number+1), num_of_jobs_at_each_group))
 
         # GPU jobs
-        # all_job_submission_fl.write(
-        #    "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
-        #        job_group_name, job_number+1, job_number+1))
+        all_job_submission_fl.write(
+           "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+               job_group_name, job_number+1, job_number+1))
 
         # CPU jobs
         #all_job_submission_fl.write(
@@ -590,7 +590,8 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
 # final runs
 # generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
-generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
+# generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
+generate_protein_cnn_commands("davis_dataset_ebi_gpu_only_combined_best_encoding", 5)
 
 """
 
