@@ -1,23 +1,3 @@
-chmod +x ./1_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/1_5.out "./1_5.sh"
-chmod +x ./2_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/2_5.out "./2_5.sh"
-chmod +x ./3_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/3_5.out "./3_5.sh"
-chmod +x ./4_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/4_5.out "./4_5.sh"
-chmod +x ./5_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/5_5.out "./5_5.sh"
-chmod +x ./6_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/6_5.out "./6_5.sh"
-chmod +x ./7_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/7_5.out "./7_5.sh"
-chmod +x ./8_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/8_5.out "./8_5.sh"
-chmod +x ./9_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/9_5.out "./9_5.sh"
-chmod +x ./10_5.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/10_5.out "./10_5.sh"
 chmod +x ./11_5.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/davis_dataset_ebi_gpu_only_combined_best_encoding/11_5.out "./11_5.sh"
 chmod +x ./12_5.sh
