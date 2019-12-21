@@ -1,5 +1,5 @@
 import os
-from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl# , eprint
+from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
 import itertools
 import torch
 import numpy as np
