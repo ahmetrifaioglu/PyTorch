@@ -1,5 +1,5 @@
 import os
-from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl# , eprint
+from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl# , eprint
 import itertools
 import torch
 import numpy as np
@@ -210,14 +210,32 @@ def get_sequence_matrix(seq, size, aaindex_enconding=None):
     return torch_arr
 
 
-def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=None):
+def save_all_flattened_sequence_matrices(dataset_name, size, aaindex_enconding=None):
+    print(dataset_name, size, aaindex_enconding)
+    fasta_fl_path = "../trainingFiles/{}/helper_files/targets.fasta".format(dataset_name)
     prot_id_seq_dict = get_prot_id_seq_dict_from_fasta_fl(fasta_fl_path)
+
+    feature_name = ""
+    if aaindex_enconding:
+        feature_name = "{}LEQ{}".format(aaindex_enconding.split(".")[0], size)
+    else:
+        feature_name = "sequencematrix"
+
     str_header = "target id\t" + "\t".join([str(num) for num in list(range(size*size))])
     count = 0
-    print(str_header)
+    output_fl_name = ""
+    if feature_name=="sequencematrix":
+        output_fl_name = "{}{}_normalized.tsv".format(feature_name, size)
+    else:
+        output_fl_name = "{}.tsv".format(feature_name, size)
+
+    output_fl =open("../trainingFiles/{}/target_feature_vectors/{}".format(dataset_name, output_fl_name),"w")
+    output_fl.write(str_header+"\n")
+    # print(str_header)
     for prot_id, seq in prot_id_seq_dict.items():
         count += 1
-        eprint(count)
+        if count %100 == 0:
+            print(count)
         seq_torch_matrix = None
         if aaindex_enconding==None:
             seq_torch_matrix = get_sequence_matrix(seq, size)
@@ -227,9 +245,28 @@ def save_all_flattened_sequence_matrices(fasta_fl_path, size, aaindex_enconding=
         # print(seq_torch_matrix)
         flattened_seq_matrix_arr = np.array(seq_torch_matrix.contiguous().view(-1))
         # print(flattened_seq_matrix_arr)
-        print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
+        #print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
+        output_fl.write(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
 
-# python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/sequencematrix500_normalized.tsv
+    output_fl.close()
+
+save_all_flattened_sequence_matrices("Davis", 1000, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("Davis", 1000, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("Davis", 1000, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("Davis", 1000, "blosum62.txt")
+
+save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "blosum62.txt")
+
+
+
+# save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
+
+
+
+# save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000103.txt")
 # save_all_flattened_sequence_matrices("/Users/trman/OneDrive/Projects/PyTorch/trainingFiles/PDBBind/helper_files/targets.fasta", 500)
 
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/target_feature_vectors/sequencematrix1000_normalized.tsv
@@ -474,6 +511,7 @@ def create_dti_dataset_for_pdbbind():
     # print(train_val_indices)
     # finally print this
     # print(test_indices)
+
 # 2 asamali once dti datasini yazdirdim sonra train test val datasini
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/dti_datasets/comp_targ_affinity_general.csv
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/data/folds/train_fold_setting1_general.txt

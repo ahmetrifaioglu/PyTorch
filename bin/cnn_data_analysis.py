@@ -536,4 +536,4 @@ def calculate_performances_for_simboost():
         # print(predictions)
         get_scores_generic(labels_values, predictions, "test", True)
 
-calculate_performances_for_simboost()
+# calculate_performances_for_simboost()

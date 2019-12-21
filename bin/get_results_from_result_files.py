@@ -12,7 +12,7 @@ def get_5_fold_results_fold_thresholds():
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_kansil_only_combined_best_encoding"
-
+    # result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_ebi_gpu_only_combined_best_encoding"
     metric_list = get_validation_test_metric_list_of_scores()
 
     str_header = "fl_name\tepoch_num"
@@ -20,43 +20,44 @@ def get_5_fold_results_fold_thresholds():
         str_header += "\t{}_mean\t{}_std".format(metric, metric)
     print(str_header)
     for fl in os.listdir(result_file_path):
-        results_df  = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
+        if fl.endswith(".tsv"):
+            results_df  = pd.read_csv(os.path.join(result_file_path, fl), sep="\t")
 
-        best_metric_result_dict=dict()
-        for metric in metric_list:
-            if metric != "test MSE":
-                best_metric_result_dict[metric] = [-1,-1,-1,-1,-1]
-            else:
-                best_metric_result_dict[metric] = [1000000, 1000000, 1000000, 1000000, 1000000]
-        # print(best_metric_result_dict)
-        for ind, row in results_df.iterrows():
-
+            best_metric_result_dict=dict()
             for metric in metric_list:
-                fold_results = [float(rslt) for rslt in row[metric].split(",")]
-                #print(fold_results)
-                for i in range(len(fold_results)):
-                    if metric == "test MSE":
-                        if fold_results[i]< best_metric_result_dict[metric][i]:
-                            best_metric_result_dict[metric][i] = fold_results[i]
-                    else:
-                        if fold_results[i]> best_metric_result_dict[metric][i]:
-                            best_metric_result_dict[metric][i] = fold_results[i]
+                if metric != "test MSE":
+                    best_metric_result_dict[metric] = [-1,-1,-1,-1,-1]
+                else:
+                    best_metric_result_dict[metric] = [1000000, 1000000, 1000000, 1000000, 1000000]
+            # print(best_metric_result_dict)
+            for ind, row in results_df.iterrows():
 
-        # print(best_metric_result_dict)
-        mean_std_results_dict = dict()
-        for metric in metric_list:
-            mean_rslt = statistics.mean(best_metric_result_dict[metric])
-            stddev_rslt = statistics.pstdev(best_metric_result_dict[metric])
-            mean_std_results_dict[metric] = (mean_rslt, stddev_rslt)
+                for metric in metric_list:
+                    fold_results = [float(rslt) for rslt in row[metric].split(",")]
+                    #print(fold_results)
+                    for i in range(len(fold_results)):
+                        if metric == "test MSE":
+                            if fold_results[i]< best_metric_result_dict[metric][i]:
+                                best_metric_result_dict[metric][i] = fold_results[i]
+                        else:
+                            if fold_results[i]> best_metric_result_dict[metric][i]:
+                                best_metric_result_dict[metric][i] = fold_results[i]
 
-        # print(mean_std_results_dict["test MSE"])
-        str_result = "{}\t{}".format(fl,str(100))
-        for metric in metric_list:
-            str_result += "\t{}\t{}".format(mean_std_results_dict[metric][0], mean_std_results_dict[metric][1])
-        print(str_result)
+            # print(best_metric_result_dict)
+            mean_std_results_dict = dict()
+            for metric in metric_list:
+                mean_rslt = statistics.mean(best_metric_result_dict[metric])
+                stddev_rslt = statistics.pstdev(best_metric_result_dict[metric])
+                mean_std_results_dict[metric] = (mean_rslt, stddev_rslt)
+
+            # print(mean_std_results_dict["test MSE"])
+            str_result = "{}\t{}".format(fl,str(100))
+            for metric in metric_list:
+                str_result += "\t{}\t{}".format(mean_std_results_dict[metric][0], mean_std_results_dict[metric][1])
+            print(str_result)
 
 
-get_5_fold_results_fold_thresholds()
+# get_5_fold_results_fold_thresholds()
 
 
 def get_train_test_validation_setting_results():
