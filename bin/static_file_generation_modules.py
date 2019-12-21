@@ -231,7 +231,6 @@ def save_all_flattened_sequence_matrices(dataset_name, size, aaindex_enconding=N
 
     output_fl =open("../trainingFiles/{}/target_feature_vectors/{}".format(dataset_name, output_fl_name),"w")
     output_fl.write(str_header+"\n")
-    # print(str_header)
     for prot_id, seq in prot_id_seq_dict.items():
         count += 1
         if count %100 == 0:
