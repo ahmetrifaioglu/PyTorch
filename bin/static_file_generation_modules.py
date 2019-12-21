@@ -535,9 +535,6 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "Davis_Filtered")
-# create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "Davis")
-# create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "Davis")
-# create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "Davis")
 # sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500
 def get_single_protein_family_associated_compounds(dataset_name, family_name):
     import numpy as np
