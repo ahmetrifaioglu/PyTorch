@@ -773,7 +773,7 @@ def create_filtered_davis_train_test_indices_folds_for_simboost():
         if lst_filt_davis_fl[line_ind]!="":
             comp_id, tar_id, bioact_val = lst_filt_davis_fl[line_ind].split(",")
             filt_davis_ind_comp_tar_pair_dict[line_ind] = "{},{}".format(comp_id, tar_id)
-            # filt_davis_ind_comp_tar_pair_dict["{},{}".format(comp_id, tar_id)] = line_ind
+            #filt_davis_ind_comp_tar_pair_dict["{},{}".format(comp_id, tar_id)] = line_ind
     # print(filt_davis_comp_tar_pair_ind_dict)
 
 
