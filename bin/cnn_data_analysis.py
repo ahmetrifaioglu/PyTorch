@@ -161,6 +161,7 @@ def plot_bioact_dist_quad(fasta_fl_path, interval, dataset_name):
     p.yaxis.major_label_text_font_size = "15pt"
 
     show(p)
+
     p.output_backend = "svg"
     export_svgs(p, filename="../figures/{}_{}_bioact_val_dist.svg".format(dataset_name, interval))
     export_png(p, filename="../figures/{}_{}_bioact_val_dist.png".format(dataset_name, interval))
@@ -521,14 +522,14 @@ def calculate_performances_for_deepchem_pdbind():
 def calculate_performances_for_simboost():
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/simboost_predictions"
+    result_file_path = "../result_files/simboost_predictions/Davis_Filtered"
 
-    for i in range(5):
+    for i in range(3):
         # print(i)
-        df_predictions = pd.read_csv("{}/pred_fold_{}_.csv".format(result_file_path, i+1),
+        df_predictions = pd.read_csv("{}/test_pred_fold_{}_.csv".format(result_file_path, i+1),
                                      sep=",")
 
-        df_labels = pd.read_csv("{}/label_fold_{}_.csv".format(result_file_path, i+1),
+        df_labels = pd.read_csv("{}/test_label_fold_{}_.csv".format(result_file_path, i+1),
                                      sep=",")
 
         predictions = list(df_predictions.loc[:, "x"])
@@ -537,3 +538,158 @@ def calculate_performances_for_simboost():
         get_scores_generic(labels_values, predictions, "test", True)
 
 # calculate_performances_for_simboost()
+
+def plot_predicted_vs_real_figures(method_name, dataset_name):
+    from bokeh.plotting import figure, show, output_file
+    import numpy as np
+    from bokeh.io import export_svgs
+    from bokeh.io import export_png
+
+    df = pd.read_csv("../result_files/{}_predictions/{}/{}_test_label_predicted_fold_1.tsv".format(method_name, dataset_name, method_name), sep="\t")
+    # print(df)
+    p = figure(plot_width=1400, plot_height=1400, title=dataset_name)
+    p.circle(df["Label"], df["Pred"], size=20, color="navy", alpha=0.5)
+    p.line(list(np.arange(4.5,11.0, 0.5)),list(np.arange(4.5,11.0, 0.5)), line_color='red', line_width=5, line_dash="dashed")
+
+    p.xaxis.axis_label = 'Measured Bioactivity Value'
+    p.xaxis.axis_label_text_font_size = "20pt"
+    p.xaxis.major_label_text_font_size = "20pt"
+    p.yaxis.axis_label = 'Predicted Bioactivity Value'
+    p.yaxis.axis_label_text_font_size = "20pt"
+    p.yaxis.major_label_text_font_size = "20pt"
+    p.title.text_font_size = '20pt'
+    p.title.align = "center"
+    show(p)
+    p.output_backend = "svg"
+    export_svgs(p, filename="../figures/{}_measured_predicted.svg".format(method_name))
+    export_png(p, filename="../figures/{}_measured_predicted.png".format(method_name))
+
+# plot_predicted_vs_real_figures("deepdta", "Davis")
+
+def add_channel_column_to_results(results_fl_path):
+    fl_results = open("../result_files/pdbbind_refined_different_channel_perf_results_combined.txt", "r")
+    lst_fl_results = fl_results.read().split("\n")
+    fl_results.close()
+    for line in lst_fl_results:
+        cols  = line.split("\t")
+        if "Inception" in cols[0]:
+            features = cols[0].split("ecfp4-")[1].split("-")[0]
+            print("{}\t{}".format(features, "\t".join(cols)))
+
+# add_channel_column_to_results("")
+
+def plot_performance_results_based_on_channels():
+    from bokeh.plotting import figure, show, output_file
+    import numpy as np
+    from bokeh.io import export_svgs
+    from bokeh.io import export_png
+    from bokeh.io import show, output_file
+    from bokeh.models import ColumnDataSource
+    from bokeh.palettes import Spectral7
+    from bokeh.transform import factor_cmap
+
+
+    output_file("colormapped_bars.html")
+
+    """
+    encoding_ZHAC000103_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500
+    sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500
+    sequencematrix500_ZHAC000103LEQ500_blosum62LEQ500
+    sequencematrix500_GRAR740104LEQ500_SIMK990101LEQ500
+    sequencematrix500_GRAR740104LEQ500_blosum62LEQ500
+    sequencematrix500_blosum62LEQ500
+    sequencematrix500
+    """
+
+    fruits = ["proposed_encoding+ZHAC000103+GRAR740104+SIMK990101+blosum62", "proposed_encoding+GRAR740104+SIMK990101", "proposed_encoding+ZHAC000103+blosum62", "proposed_encoding+GRAR740104+blosum62", "proposed_encoding+ZHAC000103+GRAR740104",  "proposed_encoding+blosum62", "proposed_encoding"]
+    #fruits = ["encoding_ZHAC000103_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500", "2",
+    #          "3", "4",
+    #          "5", "6", "7"]
+    counts = [2.494448545, 2.532216751, 2.563455896, 2.625423895, 2.635092517,  2.653060487, 2.695833344]
+
+    source = ColumnDataSource(data=dict(fruits=fruits, counts=counts))
+
+    p = figure(x_range=fruits, plot_height=1500, plot_width=2800, toolbar_location=None, title="")
+    p.vbar(x='fruits', top='counts', width=0.9, source=source,
+           line_color='white', legend="fruits", fill_color=factor_cmap('fruits', palette=Spectral7, factors=fruits))
+
+    p.xgrid.grid_line_color = None
+    p.y_range.start = 2.45
+    p.y_range.end = 2.75
+    p.xaxis.axis_label = 'Input Channel'
+    p.xaxis.axis_label_text_font_size = "30pt"
+    p.xaxis.major_label_text_font_size = "30pt"
+    p.yaxis.axis_label = 'Mean Squared Error'
+    p.yaxis.axis_label_text_font_size = "30pt"
+    p.yaxis.major_label_text_font_size = "30pt"
+    p.title.text_font_size = '30pt'
+    p.title.align = "center"
+    p.legend.label_text_font_size = "20pt"
+
+    p.xaxis.major_label_text_font_size = '0pt'
+    # p.legend.location = (660, 0)
+    # p.legend.orientation = "horizontal"
+    # p.legend.location = "top_center"
+
+    show(p)
+
+    p.output_backend = "svg"
+    export_svgs(p, filename="../figures/pdbbind_refined_channel_error_bars.svg")
+    export_png(p, filename="../figures/pdbbind_refined_channel_error_bars.png")
+
+# plot_performance_results_based_on_channels()
+
+def get_human_kinome_target_ids_chembl_ids_dict():
+    kinome_chembl_sing_prot_uniprot_dict = dict()
+    kinome_uniprot_chembl_sing_prot_dict = dict()
+    uniprot_chembl_mapping_fl = open("../trainingFiles/others/chembl25_uniprot_mapping.txt")
+    lst_uniprot_chembl_mapping_fl  = uniprot_chembl_mapping_fl.read().split("\n")
+    uniprot_chembl_mapping_fl.close()
+
+    for line in lst_uniprot_chembl_mapping_fl[1:-1]:
+        uniprot_id, chembl_id, name, t_type = line.split("\t")
+        if t_type == "SINGLE PROTEIN":
+            kinome_chembl_sing_prot_uniprot_dict[chembl_id] = uniprot_id
+            kinome_uniprot_chembl_sing_prot_dict[uniprot_id] = chembl_id
+    # print(kinome_chembl_sing_prot_uniprot_dict)
+    human_kinome_uniprot_id_fl = open("../trainingFiles/others/human_kinome_target_ids.tab")
+    lst_human_kinome_uniprot_id = human_kinome_uniprot_id_fl.read().split("\n")
+    human_kinome_uniprot_id_fl.close()
+
+    human_kinome_available_chembl_id_dict = dict()
+    for line in lst_human_kinome_uniprot_id[1:-1]:
+        uniprot_id, entry_name, gene_names, status, length = line.split("\t")
+
+        if uniprot_id in kinome_uniprot_chembl_sing_prot_dict:
+            human_kinome_available_chembl_id_dict[kinome_uniprot_chembl_sing_prot_dict[uniprot_id]] = 0
+    return human_kinome_available_chembl_id_dict
+
+# print(len(get_human_kinome_target_ids_chembl_ids_dict()))
+
+def get_biaoctivities_for_aval_human_kinome():
+    import pandas as pd
+    import math
+    human_kinome_available_chembl_id_dict = get_human_kinome_target_ids_chembl_ids_dict()
+
+    df_bioact_data = pd.read_csv("../../Bioactivity-Space-Visualization-Data-Analysis/inputFiles/chembl25_preprocessed_sp_b_pchembl_data.txt" , sep = "\t", index_col=False)
+    for ind, row in df_bioact_data.iterrows():
+        if row["Target_CHEMBL_ID"] in human_kinome_available_chembl_id_dict:
+            human_kinome_available_chembl_id_dict[row["Target_CHEMBL_ID"]] += 1
+            print("{},{},{}".format(row["Target_CHEMBL_ID"], row["Compound_CHEMBL_ID"], -1*math.log10(row["standard_value"]*(10**-6))))
+
+    """
+    # This part is used to create human_kinome_chembl_bioact_count file under helper files.
+    # ../trainingFiles/kinome/helper_files/human_kinome_chembl_bioact_count.tsv
+    print("ChEMBLID\tcount")
+    for key in human_kinome_available_chembl_id_dict:
+        print("{}\t{}".format(key, human_kinome_available_chembl_id_dict[key]))
+    """
+    """
+    bioact_data_fl = open("../../Bioactivity-Space-Visualization-Data-Analysis/inputFiles/chembl25_preprocessed_sp_b_pchembl_data.txt", "r")
+    lst_bioact_data = bioact_data_fl.read().split("\n")
+    bioact_data_fl.close()
+    for line in lst_bioact_data:
+        print(line)
+    """
+
+get_biaoctivities_for_aval_human_kinome()

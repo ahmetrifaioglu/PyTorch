@@ -245,9 +245,10 @@ def save_all_flattened_sequence_matrices(dataset_name, size, aaindex_enconding=N
         flattened_seq_matrix_arr = np.array(seq_torch_matrix.contiguous().view(-1))
         # print(flattened_seq_matrix_arr)
         #print(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
-        output_fl.write(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr]))
+        output_fl.write(prot_id + "\t" + "\t".join([str(val) for val in flattened_seq_matrix_arr])+"\n")
 
     output_fl.close()
+
 
 save_all_flattened_sequence_matrices("Davis", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("Davis", 1000, "GRAR740104.txt")
@@ -531,6 +532,19 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
             output_fl.write(line)
             output_fl.close()
 
+
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "Davis")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "Davis")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "Davis")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "Davis")
+
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "PDBBind_Refined")
+
+
+
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
@@ -706,7 +720,7 @@ def create_pdbind_train_validation_test_folds_based_on_their_predictions():
     """
 # create_pdbind_train_validation_test_folds_based_on_their_predictions()
 
-def create_deepdta_train_test_indices_folds_simboost():
+def create_davis_train_test_indices_folds_for_simboost():
     import json
     #indices are starts with 1 in R therefore we increased all indices by 1
     output_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis/data/folds_simboost"
@@ -738,4 +752,68 @@ def create_deepdta_train_test_indices_folds_simboost():
 
 
 
-# create_deepdta_train_test_indices_folds_simboost()
+# create_davis_train_test_indices_folds_for_simboost()
+
+
+def create_filtered_davis_train_test_indices_folds_for_simboost():
+    import json
+    import pandas as pd
+    output_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis_Filtered/data/folds_simboost"
+    train_validation_fold_lst = json.load(open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis_Filtered/data/folds/train_fold_setting1.txt"))
+    test_fold_lst = json.load(open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis_Filtered/data/folds/test_fold_setting1.txt"))
+
+    # print(train_validation_fold_lst)
+    # print(test_fold_lst)
+    # read filtered davis bioactivity file
+    filt_davis_ind_comp_tar_pair_dict = dict()
+    filt_davis_fl = open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis_Filtered/dti_datasets/comp_targ_affinity.csv", "r")
+    lst_filt_davis_fl = filt_davis_fl.read().split("\n")
+    filt_davis_fl.close()
+    for line_ind in range(len(lst_filt_davis_fl)):
+        if lst_filt_davis_fl[line_ind]!="":
+            comp_id, tar_id, bioact_val = lst_filt_davis_fl[line_ind].split(",")
+            filt_davis_ind_comp_tar_pair_dict[line_ind] = "{},{}".format(comp_id, tar_id)
+            # filt_davis_ind_comp_tar_pair_dict["{},{}".format(comp_id, tar_id)] = line_ind
+    # print(filt_davis_comp_tar_pair_ind_dict)
+
+
+    # read original davis bioactivity file
+    org_davis_comp_tar_pair_ind_dict = dict()
+    org_davis_fl = open(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/Davis/dti_datasets/comp_targ_affinity.csv",
+        "r")
+    lst_org_davis_fl = org_davis_fl.read().split("\n")
+    org_davis_fl.close()
+
+    for line_ind in range(len(lst_org_davis_fl)):
+        if lst_org_davis_fl[line_ind] != "":
+            comp_id, tar_id, bioact_val = lst_org_davis_fl[line_ind].split(",")
+            org_davis_comp_tar_pair_ind_dict["{},{}".format(comp_id, tar_id)] = line_ind
+
+
+
+    # indices are starts with 1 in R therefore we increased all indices by 1
+    for fold_id in range(len(train_validation_fold_lst)):
+        out_validation_fl = open("{}/validation_fold_{}.csv".format(output_path, fold_id + 1), "w")
+        out_validation_fl.write("indices\n")
+
+        out_train_fl = open("{}/train_fold_{}.csv".format(output_path, fold_id + 1), "w")
+        out_train_fl.write("indices\n")
+
+        for fold_id2 in range(len(train_validation_fold_lst)):
+            if fold_id==fold_id2:
+                out_validation_fl.write("\n".join([str(org_davis_comp_tar_pair_ind_dict[filt_davis_ind_comp_tar_pair_dict[ind]]+1) for ind in train_validation_fold_lst[fold_id2]]))
+            else:
+                out_train_fl.write("\n".join([str(org_davis_comp_tar_pair_ind_dict[filt_davis_ind_comp_tar_pair_dict[ind]]+1) for ind in train_validation_fold_lst[fold_id2]])+"\n")
+        out_train_fl.close()
+        out_validation_fl.close()
+
+    out_test_fl = open("{}/test.csv".format(output_path), "w")
+    out_test_fl.write("indices\n")
+    out_test_fl.write("\n".join([str(org_davis_comp_tar_pair_ind_dict[filt_davis_ind_comp_tar_pair_dict[ind]]+1) for ind in test_fold_lst]))
+    out_test_fl.close()
+
+
+
+
+# create_filtered_davis_train_test_indices_folds_for_simboost()
