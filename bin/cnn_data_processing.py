@@ -18,6 +18,7 @@ compound_target_pair_dataset = "comp_targ_affinity.csv"
 
 def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or_compound, feature_lst):
     #sorted(feature_lst)
+    print(feature_lst)
     target_matrix_max_value_dict = get_max_values_for_target_types(feature_lst)
     training_dataset_path = "{}/{}".format(training_files_path, training_data_name)
     comp_feature_vector_path = "{}/compound_feature_vectors".format(training_dataset_path)
