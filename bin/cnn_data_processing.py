@@ -253,6 +253,7 @@ def get_aa_match_encodings_max_value(aaindex_enconding):
 def get_max_values_for_target_types(tar_feature_list):
     tar_feat_max_dict = dict()
     tar_feat_max_dict["sequencematrix500"] = 210.0
+    tar_feat_max_dict["sequencematrix1000"] = 210.0
     for tar_feat in tar_feature_list[1:]:
         tar_feat = tar_feat.split("LEQ")[0]
         tar_feat_max_dict[tar_feat] = get_aa_match_encodings_max_value(tar_feat)
