@@ -385,7 +385,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
                 for item in test_target_ids:
                     test_all_tar_ids.append(item)
             # print(test_all_tar_ids)
-            print_predictions = False
+            print_predictions = True
             if print_predictions:
                 print("=====PREDICTIONS=====")
                 for ind in range(len(test_all_tar_ids)):

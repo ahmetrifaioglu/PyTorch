@@ -11,8 +11,8 @@ def get_5_fold_results_fold_thresholds():
 
     from evaluation_metrics import get_validation_test_metric_list_of_scores
 
-    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_kansil_only_combined_best_encoding"
-    # result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_ebi_gpu_only_combined_best_encoding"
+    # result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_kansil_only_combined_best_encoding"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/davis_dataset_ebi_gpu_only_combined_best_encoding"
     metric_list = get_validation_test_metric_list_of_scores()
 
     str_header = "fl_name\tepoch_num"
@@ -57,7 +57,7 @@ def get_5_fold_results_fold_thresholds():
             print(str_result)
 
 
-# get_5_fold_results_fold_thresholds()
+get_5_fold_results_fold_thresholds()
 
 
 def get_train_test_validation_setting_results():
