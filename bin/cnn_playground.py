@@ -47,7 +47,7 @@ def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last
     return model
 
 
-def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, comp_tar_pair_dataset, fold_epoch_results, fold=None):
+def get_scores(labels, predictions, validation_test, total_training_loss, total_validation_test_loss, epoch, fold_epoch_results, fold=None):
     score_dict = {"rm2": None, "CI (DEEPDTA)": None, "MSE": None, "RMSE": None, "Pearson": None,
                   "Spearman": None, "CI (Challenge)": None, "Average AUC": None,
                   "Precision 5.0": None, "Recall 5.0": None, "F1-Score 5.0": None, "Accuracy 5.0": None, "MCC 5.0": None,
@@ -115,7 +115,7 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
 
 
 
-def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
+def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
     arguments = [str(argm) for argm in sys.argv[1:]]
     print("Arguments::", "-".join(arguments))
     torch.manual_seed(123)
@@ -221,10 +221,10 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, comp_tar_pair_dataset, validation_fold_epoch_results, fold)
+                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, validation_fold_epoch_results, fold)
                 print("------------------------------------------------------------------------------")
                 get_scores(test_labels, test_predictions, "Test", total_training_loss,
-                           total_test_loss, epoch, comp_tar_pair_dataset, test_fold_epoch_results, fold)
+                           total_test_loss, epoch, test_fold_epoch_results, fold)
 
 
                 if epoch==n_epoch-1:
@@ -269,7 +269,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
     result_fl.close()
 
 
-def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test, model_nm, dropout):
+def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
     arguments = [str(argm) for argm in sys.argv[1:]]
     print("Arguments:", "-".join(arguments))
 
@@ -365,7 +365,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             if regression_classifier == "r":
                 print("==============================================================================")
                 get_scores(validation_labels, validation_predictions, "validation", total_training_loss,
-                                total_validation_loss, epoch, comp_tar_pair_dataset, validation_epoch_results)
+                                total_validation_loss, epoch, validation_epoch_results)
 
             print("Epoch {} validation loss:".format(epoch), total_validation_loss)
 
@@ -406,7 +406,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
         if regression_classifier == "r":
             print("==============================================================================")
             get_scores(test_labels, test_predictions, "test", total_training_loss,
-                       total_test_loss, epoch, comp_tar_pair_dataset, test_epoch_results)
+                       total_test_loss, epoch, test_epoch_results)
         """
         if epoch==n_epoch-1:
             pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
@@ -454,5 +454,5 @@ experiment_name = sys.argv[12]
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
 
 
-# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind_Refined", "r", batch_size, train_validation_test, model_name, dropout_prob)
-train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "Davis_Filtered", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
