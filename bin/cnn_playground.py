@@ -234,7 +234,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         if min(mse_results) >= 0.30:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
                     elif training_dataset=="Davis_Filtered":
-                        if min(mse_results) >= 0.68:
+                        if min(mse_results) >= 0.60:
                             sys.exit("Terminating training since minimum MSE is higher than the threshold!")
 
 
