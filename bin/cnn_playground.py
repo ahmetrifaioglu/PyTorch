@@ -153,6 +153,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
             total_training_loss, total_validation_loss, total_test_loss = 0.0, 0.0, 0.0
             total_training_count, total_validation_count, total_test_count = 0, 0, 0
             validation_predictions, validation_labels, test_predictions, test_labels = [], [], [], []
+            test_all_comp_ids, test_all_tar_ids =  [], []
             batch_number = 0
             model.train()
             for i, data in enumerate(train_loader):
@@ -207,6 +208,16 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                     for item in test_y_pred:
                         test_predictions.append(float(item.item()))
 
+                    test_all_comp_ids.extend(test_compound_ids)
+                    test_all_tar_ids.extend(test_target_ids)
+                # test_predictions, test_labels
+                print_predictions = True
+                if print_predictions:
+                    print("=====PREDICTIONS=====")
+                    for ind in range(len(test_all_tar_ids)):
+                        print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind],
+                                                      test_predictions[ind]))
+                    print("=====PREDICTIONS=====")
 
             if regression_classifier == "r":
                 print("==============================================================================")
@@ -443,5 +454,5 @@ experiment_name = sys.argv[12]
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
 
 
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind_Refined", "r", batch_size, train_validation_test, model_name, dropout_prob)
-# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "Davis", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "PDBBind_Refined", "r", batch_size, train_validation_test, model_name, dropout_prob)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "Davis_Filtered", "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
