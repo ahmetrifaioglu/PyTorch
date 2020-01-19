@@ -266,7 +266,11 @@ save_all_flattened_sequence_matrices("kinome", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "blosum62.txt")
 """
-
+save_all_flattened_sequence_matrices("kinome", 500)
+save_all_flattened_sequence_matrices("kinome", 500, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("kinome", 500, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("kinome", 500, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("kinome", 500, "blosum62.txt")
 
 
 # save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
@@ -557,6 +561,10 @@ create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "k
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "kinome")
 """
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "kinome")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "kinome")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "kinome")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "kinome")
 
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
@@ -880,6 +888,7 @@ def kinome_add_chembl_id_to_fasta_file():
 
 
 # kinome_add_chembl_id_to_fasta_file()
+#  the order of compound and targets are wrong
 def kinome_add_uniprot_id_bioact_fl():
     import pandas as pd
     human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict = get_human_kinome_target_ids_chembl_ids_dict()
@@ -887,7 +896,7 @@ def kinome_add_uniprot_id_bioact_fl():
         "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/dti_datasets/comp_targ_affinity_clustered.csv",
         header=None)
     for ind, row in df_kinome_biact.iterrows():
-        print("{}_{},{},{}".format(kinome_chembl_sing_prot_uniprot_dict[row[0]], row[0], row[1], row[2]))
+        print("{},{}_{},{}".format(row[0], row[1], kinome_chembl_sing_prot_uniprot_dict[row[0]], row[2]))
 # python cnn_data_analysis.py > ../trainingFiles/kinome/helper_files/targets.fasta
 # add_chembl_id_to_fasta_file()
 
@@ -954,4 +963,4 @@ def create_folds_for_kinome():
     # print(test_indices)
     # print(len(training_indices), len(validation_indices), len(test_indices))
 
-create_folds_for_kinome()
+# create_folds_for_kinome()
