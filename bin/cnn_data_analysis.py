@@ -1,3 +1,4 @@
+"""
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch
@@ -6,13 +7,14 @@ from torch.utils.data.sampler import SubsetRandomSampler, BatchSampler, Sequenti
 import sklearn
 from sklearn import preprocessing
 import math
-import os
+
 import itertools
 import torch.nn as nn
 import sys
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
 from evaluation_metrics import get_scores_generic, get_list_of_scores
-
+"""
+import os
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
 
@@ -561,10 +563,14 @@ def plot_predicted_vs_real_figures(method_name, dataset_name):
     p.title.align = "center"
     show(p)
     p.output_backend = "svg"
-    export_svgs(p, filename="../figures/{}_measured_predicted.svg".format(method_name))
-    export_png(p, filename="../figures/{}_measured_predicted.png".format(method_name))
-
-# plot_predicted_vs_real_figures("deepdta", "Davis")
+    export_svgs(p, filename="../figures/{}_{}_measured_predicted.svg".format(method_name, dataset_name))
+    export_png(p, filename="../figures/{}_{}_measured_predicted.png".format(method_name, dataset_name))
+"""
+plot_predicted_vs_real_figures("mbapred", "Davis_Filtered")
+plot_predicted_vs_real_figures("mbapred", "Davis")
+plot_predicted_vs_real_figures("deepdta", "Davis_Filtered")
+plot_predicted_vs_real_figures("deepdta", "Davis")
+"""
 
 def add_channel_column_to_results(results_fl_path):
     fl_results = open("../result_files/pdbbind_refined_different_channel_perf_results_combined.txt", "r")
@@ -662,14 +668,35 @@ def get_human_kinome_target_ids_chembl_ids_dict():
 
         if uniprot_id in kinome_uniprot_chembl_sing_prot_dict:
             human_kinome_available_chembl_id_dict[kinome_uniprot_chembl_sing_prot_dict[uniprot_id]] = 0
-    return human_kinome_available_chembl_id_dict
+    return human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict
 
 # print(len(get_human_kinome_target_ids_chembl_ids_dict()))
 
-def get_biaoctivities_for_aval_human_kinome():
+def get_chemblid_smiles_dict():
+    isFirst = True
+    prob_count = 0
+    # there should be a header in the smiles file
+    compound_smiles_dict = dict()
+    # print("DENEME../trainingFiles/{}".format(rep_fl))
+    with open("/Users/trman/Downloads/chembl_25_chemreps.txt") as f:
+        for line in f:
+            if isFirst:
+                isFirst = False
+            else:
+                # print(line)
+                line = line.split("\n")[0]
+                temp_parts = line.split("\t")
+                # print(temp_parts)
+                chembl_id, smiles = temp_parts[0], temp_parts[1]
+                # chembl_id, smiles, _, _ = line.split("\t")
+                # print(chembl_id, smiles)
+                compound_smiles_dict[chembl_id] = smiles
+    return compound_smiles_dict
+
+def get_bioactivities_for_aval_human_kinome():
     import pandas as pd
     import math
-    human_kinome_available_chembl_id_dict = get_human_kinome_target_ids_chembl_ids_dict()
+    human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict = get_human_kinome_target_ids_chembl_ids_dict()
 
     df_bioact_data = pd.read_csv("../../Bioactivity-Space-Visualization-Data-Analysis/inputFiles/chembl25_preprocessed_sp_b_pchembl_data.txt" , sep = "\t", index_col=False)
     for ind, row in df_bioact_data.iterrows():
@@ -692,4 +719,70 @@ def get_biaoctivities_for_aval_human_kinome():
         print(line)
     """
 
-get_biaoctivities_for_aval_human_kinome()
+# get_biaoctivities_for_aval_human_kinome()
+
+def cluster_fps(fps,cutoff=0.2):
+    from rdkit import DataStructs
+    from rdkit.ML.Cluster import Butina
+
+    # first generate the distance matrix:
+    dists = []
+    nfps = len(fps)
+    # print(fps)
+    for i in range(1,nfps):
+        sims = DataStructs.BulkTanimotoSimilarity(fps[i],fps[:i])
+        dists.extend([1-x for x in sims])
+
+    # now cluster the data:
+    cs = Butina.ClusterData(dists,nfps,cutoff,isDistData=True)
+    return cs
+
+def cluster_compounds():
+    import pandas as pd
+    import rdkit
+    from rdkit.Chem import AllChem
+    from rdkit import Chem
+    chembl25_smiles_dict = get_chemblid_smiles_dict()
+    df_kinome_biact = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/dti_datasets/comp_targ_affinity.csv", header = None)
+    set_target_ids = set(df_kinome_biact[0])
+    # print(set_target_ids)
+    grouped_by_target_ids = df_kinome_biact.groupby([0])
+    prob_count = 0
+    original_total = 0
+    clustered_total  = 0
+
+    for target in set_target_ids:
+        lst_target_comp_ids = list(grouped_by_target_ids.get_group(target)[1])
+        fingerprints = []
+        valid_comp_ids = []
+        for comp_id in lst_target_comp_ids:
+            try:
+                sml = chembl25_smiles_dict[comp_id]
+                #print(sml)
+                m1 = Chem.MolFromSmiles(sml)
+
+                fp1 = AllChem.GetMorganFingerprintAsBitVect(m1, 2,1024)
+                #print(fp1)
+                fingerprints.append(fp1)
+                valid_comp_ids.append(comp_id)
+
+            except:
+                prob_count += 1
+        clusters = cluster_fps(fingerprints, cutoff=0.3)
+        original_total += len(fingerprints)
+        clustered_total += len(clusters)
+        # print(len(fingerprints), len(clusters))
+        # print(clusters)
+        for clust in clusters:
+            rep_comp_ind = clust[0]
+            bioact_val = float(df_kinome_biact[(df_kinome_biact[0] ==target) & (df_kinome_biact[1] == valid_comp_ids[rep_comp_ind]) ][2])
+            # print(row)
+            print("{},{},{}".format(target, valid_comp_ids[rep_comp_ind], bioact_val))
+
+    # print(original_total, clustered_total)
+
+    # print(prob_count)
+        # print(lst_target_comp_ids)
+
+# cluster_compounds()
+

@@ -249,7 +249,7 @@ def save_all_flattened_sequence_matrices(dataset_name, size, aaindex_enconding=N
 
     output_fl.close()
 
-
+"""
 save_all_flattened_sequence_matrices("Davis", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("Davis", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("Davis", 1000, "SIMK990101.txt")
@@ -259,6 +259,13 @@ save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "blosum62.txt")
+"""
+save_all_flattened_sequence_matrices("kinome", 1000)
+save_all_flattened_sequence_matrices("kinome", 1000, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "blosum62.txt")
+
 
 
 
@@ -433,6 +440,8 @@ def create_ecfp4_feature_file_for_pdbbind_ligands():
 # python static_file_generation_modules.py > ../trainingFiles/PDBBind/compound_feature_vectors/ecfp4_normalized_general.tsv
 # create_ecfp4_feature_file_for_pdbbind_ligands()
 
+
+
 def create_dti_dataset_for_pdbbind():
     import math
 
@@ -532,7 +541,7 @@ def create_single_target_feature_vector_files_using_combined(feature_name, datas
             output_fl.write(line)
             output_fl.close()
 
-
+"""
 create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "Davis")
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "Davis")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "Davis")
@@ -542,7 +551,11 @@ create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "P
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "PDBBind_Refined")
-
+"""
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "kinome")
 
 
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
@@ -817,3 +830,94 @@ def create_filtered_davis_train_test_indices_folds_for_simboost():
 
 
 # create_filtered_davis_train_test_indices_folds_for_simboost()
+
+
+# after running this script, fasta file downloaded from uniprot
+def create_targets_chemblid_uniprotid_fl():
+    all_target_lst_fl = open(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets.txt", "r")
+    lst_target_ids = all_target_lst_fl.read().split("\n")
+    all_target_lst_fl.close()
+    human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict = get_human_kinome_target_ids_chembl_ids_dict()
+
+    for id in lst_target_ids:
+        print("{}\t{}".format(id, kinome_chembl_sing_prot_uniprot_dict[id]))
+
+
+def kinome_add_chembl_id_to_fasta_file():
+    targets_fasta_fl = open(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets_only_uniprot_id.fasta", "r")
+    lst_target_fasta_fl = targets_fasta_fl.read().split("\n")
+    targets_fasta_fl.close()
+
+
+    target_list_fl = open(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets.txt",
+        "r")
+    lst_target_list = target_list_fl.read().split("\n")
+    target_list_fl.close()
+
+    human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict = get_human_kinome_target_ids_chembl_ids_dict()
+    uniprot_to_chembl_dict = dict()
+
+    for id in lst_target_list:
+        uniprot_to_chembl_dict[kinome_chembl_sing_prot_uniprot_dict[id]] = id
+
+    for line in lst_target_fasta_fl:
+        if line.startswith(">"):
+            header_parts = line.split("|")
+            # print(header_parts)
+            new_header = "{}|{}_{}|{}".format(header_parts[0], header_parts[1],
+                                              uniprot_to_chembl_dict[header_parts[1]], header_parts[2])
+            print(new_header)
+        else:
+            print(line)
+        # chemblid = seq.split(" ")[0]
+        # str_seq = "".join(seq.split("\n")[1:])
+        # if chemblid in lst_target_ids:
+        #    print(">XXX|{}|XXXX".format(chemblid))
+        #    print(str_seq)
+
+
+# kinome_add_chembl_id_to_fasta_file()
+def kinome_add_uniprot_id_bioact_fl():
+    import pandas as pd
+    human_kinome_available_chembl_id_dict, kinome_chembl_sing_prot_uniprot_dict = get_human_kinome_target_ids_chembl_ids_dict()
+    df_kinome_biact = pd.read_csv(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/dti_datasets/comp_targ_affinity_clustered.csv",
+        header=None)
+    for ind, row in df_kinome_biact.iterrows():
+        print("{}_{},{},{}".format(kinome_chembl_sing_prot_uniprot_dict[row[0]], row[0], row[1], row[2]))
+# python cnn_data_analysis.py > ../trainingFiles/kinome/helper_files/targets.fasta
+# add_chembl_id_to_fasta_file()
+
+# kinome_add_uniprot_id_bioact_fl()
+
+
+def create_ecfp4_feature_file_general():
+    from operator import itemgetter
+    import math
+    import numpy as np
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+    from cnn_data_analysis import get_chemblid_smiles_dict
+    chembl25_compound_smiles_dict = get_chemblid_smiles_dict()
+    str_header = "compound id\t" + "\t".join([str(num) for num in range(1024)])
+    print(str_header)
+    df_kinome_biact = pd.read_csv(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/dti_datasets/comp_targ_affinity.csv",
+        header=None)
+    set_comp_ids = set(df_kinome_biact[1])
+    # print(len(set_comp_ids))
+    count = 0
+    for comp_id in set_comp_ids:
+        count += 1
+        # print(count)
+        m = Chem.MolFromSmiles(chembl25_compound_smiles_dict[comp_id])
+        fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
+        print(comp_id + "\t" + "\t".join([str(float(dim)) for dim in fp]))
+
+
+
+
+# create_ecfp4_feature_file_general()
