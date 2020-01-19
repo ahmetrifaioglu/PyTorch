@@ -491,6 +491,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
     target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
     target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
+    target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
     temp_group_job_list = []
     job_number = 0
     all_job_submission_fl = open("{}/{}.sh".format(job_folder_path, job_group_name), "w")
