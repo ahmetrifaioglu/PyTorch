@@ -259,13 +259,13 @@ save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 1000, "blosum62.txt")
-"""
+
 save_all_flattened_sequence_matrices("kinome", 1000)
 save_all_flattened_sequence_matrices("kinome", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "blosum62.txt")
-
+"""
 
 
 
@@ -551,12 +551,12 @@ create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "P
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "PDBBind_Refined")
-"""
+
 create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "kinome")
-
+"""
 
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
@@ -918,3 +918,40 @@ def create_ecfp4_feature_file_general():
         print(comp_id + "\t" + "\t".join([str(float(dim)) for dim in fp]))
 
 #create_ecfp4_feature_file_general()
+
+def create_folds_for_kinome():
+    from random import shuffle
+    df_kinome_biact = pd.read_csv(
+        "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/dti_datasets/comp_targ_affinity.csv",
+        header=None)
+    training_indices = []
+    validation_indices = []
+    test_indices = []
+    target_ind_dict =  dict()
+    for ind, row in df_kinome_biact.iterrows():
+        if row[0] in target_ind_dict:
+            target_ind_dict[row[0]].append(ind)
+        else:
+            target_ind_dict[row[0]] = [ind]
+    for tar in target_ind_dict.keys():
+        # print(target_ind_dict[tar])
+        shuffle(target_ind_dict[tar])
+        training_validation_size = int(0.8 * len(target_ind_dict[tar]))
+
+        test_size = len(target_ind_dict[tar]) - training_validation_size
+        training_size = int(0.8 * training_validation_size)
+
+        validation_size = training_validation_size - training_size
+        training_data = target_ind_dict[tar][:training_size]
+        validation_data = target_ind_dict[tar][training_size:training_size+validation_size]
+        test_data = target_ind_dict[tar][-test_size:]
+        # print(training_data, validation_data, test_data)
+        # print(len(target_ind_dict[tar]), len(training_data), len(validation_data), len(test_data))
+        training_indices.extend(training_data)
+        validation_indices.extend(validation_data)
+        test_indices.extend(test_data)
+    # print([training_indices, validation_indices])
+    # print(test_indices)
+    # print(len(training_indices), len(validation_indices), len(test_indices))
+
+create_folds_for_kinome()

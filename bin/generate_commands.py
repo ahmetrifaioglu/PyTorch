@@ -436,10 +436,12 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     batch_size = [32]
     lst_learning_rate = [0.0001, 0.001, 0.01]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
+    after_flattened_conv_layer_neurons = [256, 512, 1024]
     # after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
     # comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
     comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
     last_2_hidden_layer_list = ["256_128", "512_256", "1024_512", "1024_1024"]
+    last_2_hidden_layer_list = ["512_256", "1024_512", "1024_1024"]
 
     # training_dataset_list = ["Davis"]
     # training_dataset_list = ["PDBBind_Refined"]
@@ -450,6 +452,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     training_dataset_list = ["Davis"]
     training_dataset_list = ["PDBBind_Refined"]
     training_dataset_list = ["Davis_Filtered"]
+    training_dataset_list = ["kinome"]
     # use below line for train test validation
     train_val_test = 1
     # target_feature = "sequencematrix1000"
@@ -595,7 +598,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 # generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_ebi_gpu_only_combined_best_encoding", 5)
-generate_protein_cnn_commands("davis_filtered_dataset_ebi_gpu_only_combined_best_encoding", 5)
+# generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 5)
 
 # generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_1000_combined_best_encodings", 1)
 
