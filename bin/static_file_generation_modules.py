@@ -917,7 +917,4 @@ def create_ecfp4_feature_file_general():
         fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
         print(comp_id + "\t" + "\t".join([str(float(dim)) for dim in fp]))
 
-
-
-
-# create_ecfp4_feature_file_general()
+#create_ecfp4_feature_file_general()
