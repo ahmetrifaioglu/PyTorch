@@ -599,7 +599,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 # generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_ebi_gpu_only_combined_best_encoding", 5)
-# generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 5)
+generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 5)
 
 # generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_1000_combined_best_encodings", 1)
 
