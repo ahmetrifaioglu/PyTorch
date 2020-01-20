@@ -1,13 +1,13 @@
 chmod +x ./1_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/1_1.out "./1_1.sh"
+
 chmod +x ./2_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/2_1.out "./2_1.sh"
 chmod +x ./3_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/3_1.out "./3_1.sh"
+
 chmod +x ./4_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/4_1.out "./4_1.sh"
 chmod +x ./5_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/5_1.out "./5_1.sh"
+
 chmod +x ./6_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/6_1.out "./6_1.sh"
 chmod +x ./7_1.sh
@@ -55,7 +55,7 @@ bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15
 chmod +x ./28_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/28_1.out "./28_1.sh"
 chmod +x ./29_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/29_1.out "./29_1.sh"
+
 chmod +x ./30_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/30_1.out "./30_1.sh"
 chmod +x ./31_1.sh
@@ -111,13 +111,13 @@ bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15
 chmod +x ./56_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/56_1.out "./56_1.sh"
 chmod +x ./57_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/57_1.out "./57_1.sh"
+
 chmod +x ./58_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/58_1.out "./58_1.sh"
 chmod +x ./59_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/59_1.out "./59_1.sh"
 chmod +x ./60_1.sh
-bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/60_1.out "./60_1.sh"
+
 chmod +x ./61_1.sh
 bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu "num=1:j_exclusive=yes" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding/61_1.out "./61_1.sh"
 chmod +x ./62_1.sh
