@@ -532,7 +532,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
                                             #                                             (job_number), num_of_jobs_at_each_group))
 
                                             # GPU Jobs
-                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
+                                            all_job_submission_fl.write("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
 
                                             #
                                             #all_job_submission_fl.write(
@@ -569,7 +569,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 
         # GPU jobs
         all_job_submission_fl.write(
-           "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+           "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
                job_group_name, job_number+1, job_number+1))
 
         # CPU jobs
