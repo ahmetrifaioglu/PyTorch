@@ -27,7 +27,7 @@ warnings.filterwarnings(action='ignore')
 cwd = os.getcwd()
 project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
-n_epoch = 80
+n_epoch = 76
 num_of_folds = 5
 
 def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
@@ -407,7 +407,7 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             print("==============================================================================")
             get_scores(test_labels, test_predictions, "test", total_training_loss,
                        total_test_loss, epoch, test_epoch_results)
-        if epoch >= 40:
+        if epoch >= 40 and epoch % 5 == 0:
             torch.save(model, "{}/trained_models/{}/{}-{}".format(project_file_path, training_dataset, "-".join(arguments), epoch))
         """
         if epoch==n_epoch-1:
