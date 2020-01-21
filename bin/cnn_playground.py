@@ -27,7 +27,7 @@ warnings.filterwarnings(action='ignore')
 cwd = os.getcwd()
 project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
-n_epoch = 100
+n_epoch = 80
 num_of_folds = 5
 
 def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
