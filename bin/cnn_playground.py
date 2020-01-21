@@ -407,8 +407,8 @@ def full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hi
             print("==============================================================================")
             get_scores(test_labels, test_predictions, "test", total_training_loss,
                        total_test_loss, epoch, test_epoch_results)
-
-        torch.save(model, "{}/trained_models/{}/{}-{}".format(project_file_path, training_dataset, "-".join(arguments), epoch))
+        if epoch >= 40:
+            torch.save(model, "{}/trained_models/{}/{}-{}".format(project_file_path, training_dataset, "-".join(arguments), epoch))
         """
         if epoch==n_epoch-1:
             pred_fl = open("../result_files/{}_full_prediction_500.tsv".format("_".join(sys.argv[1:])), "w")
