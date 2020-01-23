@@ -1007,4 +1007,21 @@ def create_dummy_test_bioact_file_for_test():
             chembl_id, uniprot_id =tar.split("\t")
             print("{},{}_{},-1.0".format(comp_id, uniprot_id, chembl_id))
 
-create_dummy_test_bioact_file_for_test()
+# create_dummy_test_bioact_file_for_test()
+
+def create_formatted_kinase_model_prediction_file():
+    df_uniprot_gene_symbol = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/others/human_kinome_target_ids.tab", sep="\t")
+    print("Drug Name\tGene Names\tEntry Name\tTarget UniProt ID\tTarget ChEMBL ID\tPredicted Value")
+    df_raw_prediction_fl = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/mbapred_kinome_dataset_ebi_gpu_only_combined_best_encoding_predictions.txt", header=None, sep="\t")
+    for ind, row in df_raw_prediction_fl.iterrows():
+        drug_name = row[0]
+        uniprotid, chemblid = row[1].split("_")
+        predicted_pkd_val = row[3]
+        row_uniprot_gene_symbol = df_uniprot_gene_symbol.loc[df_uniprot_gene_symbol['Entry'] == uniprotid]
+        gene_names = row_uniprot_gene_symbol.iloc[0]["Gene names"]
+        entry_name = row_uniprot_gene_symbol.iloc[0]["Entry name"]
+
+        print("{}\t{}\t{}\t{}\t{}\t{}".format(drug_name, gene_names, entry_name, uniprotid, chemblid, (10**-predicted_pkd_val)*(10**6)))
+    # (10**-7.522878745280337)*10**6
+
+create_formatted_kinase_model_prediction_file()

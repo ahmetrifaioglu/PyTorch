@@ -1,4 +1,3 @@
-"""
 import pandas as pd
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torch
@@ -10,10 +9,10 @@ import math
 
 import itertools
 import torch.nn as nn
-import sys
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
+import sys
 from evaluation_metrics import get_scores_generic, get_list_of_scores
-"""
+
 import os
 cwd = os.getcwd()
 training_files_path = "{}/../trainingFiles".format(cwd)
@@ -571,6 +570,7 @@ plot_predicted_vs_real_figures("mbapred", "Davis")
 plot_predicted_vs_real_figures("deepdta", "Davis_Filtered")
 plot_predicted_vs_real_figures("deepdta", "Davis")
 """
+#plot_predicted_vs_real_figures("mbapred", "kinome")
 
 def add_channel_column_to_results(results_fl_path):
     fl_results = open("../result_files/pdbbind_refined_different_channel_perf_results_combined.txt", "r")
@@ -786,3 +786,28 @@ def cluster_compounds():
 
 # cluster_compounds()
 
+def analyze_kinase_predictions():
+    df_preprocessed_chembl25 = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/Bioactivity-Space-Visualization-Data-Analysis/inputFiles/chembl25_preprocessed_sp_b_pchembl_data.txt", sep="\t", index_col=False)
+    # print(df_preprocessed_chembl25)
+    df_prediction_file = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/mbapred_kinase_model_predictions_four_drug.tsv", sep="\t")
+    # Drug Name	Gene Names	Entry Name	Target UniProt ID	Target ChEMBL ID	Predicted Value
+    drug_name_dict = {"Rapamycin":"CHEMBL413", "BEZ235":"CHEMBL1879463", "Alsterpaullone":"CHEMBL50894", "Staurosporine":"CHEMBL388978"}
+    for ind, row in df_prediction_file.iterrows():
+        tar_chem_id = row["Target ChEMBL ID"]
+        drug_name = row["Drug Name"]
+        comp_chembl_id = drug_name_dict[drug_name]
+        prediction = row["Predicted Value"]
+        chembl25_row = df_preprocessed_chembl25[((df_preprocessed_chembl25['Target_CHEMBL_ID'] == tar_chem_id) & (df_preprocessed_chembl25['Compound_CHEMBL_ID'] == comp_chembl_id))]
+
+
+        if not chembl25_row.empty:
+            measured_value = chembl25_row["standard_value"]
+            measured_value = str(measured_value.values.tolist()[0])
+            lst_parts = [str(part) for part in row.values.tolist()]
+            lst_parts.append(measured_value)
+            print("\t".join(lst_parts))
+        else:
+            lst_parts = [str(part) for part in row.values.tolist()]
+            print("\t".join(lst_parts))
+        # Target_CHEMBL_ID	Compound_CHEMBL_ID
+analyze_kinase_predictions()
