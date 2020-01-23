@@ -59,9 +59,9 @@ def load_model(model_fl):
         device = "cuda"
     else:
         print("CPU is available on this device!")
-
-    test_loader = get_cnn_test_data_loader("kinome", ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
     model = torch.load(model_fl)
+    test_loader = get_cnn_test_data_loader("kinome", ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
+
 
     total_test_count = 0
     total_test_loss = 0.0
@@ -100,4 +100,4 @@ def load_model(model_fl):
             print("=====PREDICTIONS=====")
 
 
-load_model("512_512-256-512_256-0.001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-99")
+load_model("../../512_512-256-512_256-0.001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-99")
