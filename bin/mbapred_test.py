@@ -60,7 +60,7 @@ def load_model(model_fl):
     else:
         print("CPU is available on this device!")
 
-    test_loader = get_cnn_test_data_loader(kinome, ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
+    test_loader = get_cnn_test_data_loader("kinome", ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
     model = torch.load(model_fl)
 
     total_test_count = 0
