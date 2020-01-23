@@ -78,8 +78,6 @@ def load_model(model_fl):
 
             test_y_pred = None
             test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
-            loss_test = criterion(test_y_pred.squeeze(), tst_labels)
-            total_test_loss += float(loss_test.item())
             for item in tst_labels:
                 test_labels.append(float(item.item()))
 

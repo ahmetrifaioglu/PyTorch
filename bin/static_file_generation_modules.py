@@ -995,7 +995,7 @@ def create_dummy_test_bioact_file_for_test():
     import math
     import numpy as np
     import pandas as pd
-    target_list_fl = open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets.txt", "r")
+    target_list_fl = open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets_chemblid_uniprotid.txt", "r")
     lst_target_list = target_list_fl.read().split("\n")
     target_list_fl.close()
 
@@ -1004,6 +1004,7 @@ def create_dummy_test_bioact_file_for_test():
     for ind, row in df_comp_id_smiles.iterrows():
         comp_id = row["ID"]
         for tar in lst_target_list:
-            print("{},{},-1.0".format(comp_id, tar))
+            chembl_id, uniprot_id =tar.split("\t")
+            print("{},{}_{},-1.0".format(comp_id, uniprot_id, chembl_id))
 
-# create_dummy_test_bioact_file_for_test()
+create_dummy_test_bioact_file_for_test()
