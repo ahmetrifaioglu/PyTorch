@@ -1,9 +1,9 @@
 import os
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
 import itertools
-import torch
+# import torch
 import numpy as np
-import torch.nn as nn
+# import torch.nn as nn
 import subprocess
 import pandas as pd
 
@@ -265,13 +265,13 @@ save_all_flattened_sequence_matrices("kinome", 1000, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 1000, "blosum62.txt")
-"""
+
 save_all_flattened_sequence_matrices("kinome", 500)
 save_all_flattened_sequence_matrices("kinome", 500, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "blosum62.txt")
-
+"""
 
 # save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
 
@@ -560,12 +560,12 @@ create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "k
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "kinome")
-"""
+
 create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "kinome")
-
+"""
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
@@ -963,4 +963,47 @@ def create_folds_for_kinome():
     # print(test_indices)
     # print(len(training_indices), len(validation_indices), len(test_indices))
 
-# create_folds_for_kinome()
+#create_folds_for_kinome()
+
+
+
+def create_ecfp4_feature_file_given_smiles_file(smiles_file_path):
+    from operator import itemgetter
+    import math
+    import numpy as np
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+    import pandas as pd
+
+    df_smiles = pd.read_csv(smiles_file_path, sep="\t")
+    str_header = "compound id\t" + "\t".join([str(num) for num in range(1024)])
+    print(str_header)
+    count = 0
+    for ind, row in df_smiles.iterrows():
+        count += 1
+        comp_id = row["ID"]
+        smiles = row["SMILES"]
+        # print(count)
+        m = Chem.MolFromSmiles(smiles)
+        fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
+        print(comp_id + "\t" + "\t".join([str(float(dim)) for dim in fp]))
+
+#create_ecfp4_feature_file_given_smiles_file("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/test_compound_smiles.tsv")
+
+def create_dummy_test_bioact_file_for_test():
+    from operator import itemgetter
+    import math
+    import numpy as np
+    import pandas as pd
+    target_list_fl = open("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/targets.txt", "r")
+    lst_target_list = target_list_fl.read().split("\n")
+    target_list_fl.close()
+
+    df_comp_id_smiles = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/test_compound_smiles.tsv", sep="\t")
+
+    for ind, row in df_comp_id_smiles.iterrows():
+        comp_id = row["ID"]
+        for tar in lst_target_list:
+            print("{},{},-1.0".format(comp_id, tar))
+
+# create_dummy_test_bioact_file_for_test()
