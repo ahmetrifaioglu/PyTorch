@@ -272,6 +272,10 @@ save_all_flattened_sequence_matrices("kinome", 500, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "blosum62.txt")
 """
+save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "blosum62.txt")
 
 # save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
 
@@ -566,6 +570,11 @@ create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "ki
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "kinome")
 """
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "PDBBind_Refined")
+
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
@@ -1024,4 +1033,4 @@ def create_formatted_kinase_model_prediction_file():
         print("{}\t{}\t{}\t{}\t{}\t{}".format(drug_name, gene_names, entry_name, uniprotid, chemblid, (10**-predicted_pkd_val)*(10**6)))
     # (10**-7.522878745280337)*10**6
 
-create_formatted_kinase_model_prediction_file()
+#create_formatted_kinase_model_prediction_file()
