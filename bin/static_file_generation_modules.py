@@ -1,9 +1,9 @@
 import os
 from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
 import itertools
-# import torch
+import torch
 import numpy as np
-# import torch.nn as nn
+import torch.nn as nn
 import subprocess
 import pandas as pd
 
