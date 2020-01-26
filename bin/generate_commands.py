@@ -454,6 +454,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     training_dataset_list = ["PDBBind_Refined"]
     training_dataset_list = ["Davis_Filtered"]
     training_dataset_list = ["kinome"]
+    training_dataset_list = ["PDBBind_Refined"]
     # use below line for train test validation
     train_val_test = 1
     # target_feature = "sequencematrix1000"
@@ -493,6 +494,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
     target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
     target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
     target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
     temp_group_job_list = []
     job_number = 0
     all_job_submission_fl = open("{}/{}.sh".format(job_folder_path, job_group_name), "w")
@@ -600,7 +602,8 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 # generate_protein_cnn_commands("pdbbind_refined_dataset_kansil_combined_best_encodings", 1)
 # generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_ebi_gpu_only_combined_best_encoding", 5)
-generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 1)
+# generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 1)
+generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_gpu_only_combined_best_encoding", 1)
 
 # generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_1000_combined_best_encodings", 1)
 
