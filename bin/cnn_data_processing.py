@@ -26,7 +26,8 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     feat_vec_path = tar_feature_vector_path if target_or_compound == "target" else comp_feature_vector_path
     common_column = "target id" if target_or_compound=="target" else "compound id"
     df_dti_data = pd.read_csv("{}/dti_datasets/comp_targ_affinity.csv".format(training_dataset_path), header=None)
-    set_training_target_ids = set(df_dti_data.ix[:,1])
+    # set_training_target_ids = set(df_dti_data.ix[:,1])
+    set_training_target_ids = set(df_dti_data.iloc[:, [1]])
     available_targets  =set ()
     df_combined_features = dict()
     count = 0
