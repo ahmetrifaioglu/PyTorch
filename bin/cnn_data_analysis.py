@@ -545,32 +545,41 @@ def plot_predicted_vs_real_figures(method_name, dataset_name):
     import numpy as np
     from bokeh.io import export_svgs
     from bokeh.io import export_png
+    method_name_corrected = ""
+    method_name_corrected = "MDeePred" if method_name=="mbapred" else method_name_corrected
+    method_name_corrected = "DeepDTA" if method_name == "deepdta" else method_name_corrected
+    method_name_corrected = "SimBoost" if method_name == "simboost" else method_name_corrected
 
     df = pd.read_csv("../result_files/{}_predictions/{}/{}_test_label_predicted_fold_1.tsv".format(method_name, dataset_name, method_name), sep="\t")
     # print(df)
-    p = figure(plot_width=1400, plot_height=1400, title=dataset_name)
+    p = figure(plot_width=1400, plot_height=1400, title="{} - {}".format(method_name_corrected, dataset_name))
     p.circle(df["Label"], df["Pred"], size=20, color="navy", alpha=0.5)
-    p.line(list(np.arange(4.5,11.0, 0.5)),list(np.arange(4.5,11.0, 0.5)), line_color='red', line_width=5, line_dash="dashed")
+    p.line(list(np.arange(2.0,11.0, 0.5)),list(np.arange(2.0,11.0, 0.5)), line_color='red', line_width=5, line_dash="dashed")
 
-    p.xaxis.axis_label = 'Measured Bioactivity Value'
-    p.xaxis.axis_label_text_font_size = "20pt"
-    p.xaxis.major_label_text_font_size = "20pt"
-    p.yaxis.axis_label = 'Predicted Bioactivity Value'
-    p.yaxis.axis_label_text_font_size = "20pt"
-    p.yaxis.major_label_text_font_size = "20pt"
-    p.title.text_font_size = '20pt'
+    p.xaxis.axis_label = 'Measured Bioactivity Value (pKd)'
+    p.xaxis.axis_label_text_font_size = "40pt"
+    p.xaxis.major_label_text_font_size = "40pt"
+    p.yaxis.axis_label = 'Predicted Bioactivity Value (pKd)'
+    p.yaxis.axis_label_text_font_size = "40pt"
+    p.yaxis.major_label_text_font_size = "40pt"
+    p.title.text_font_size = '40pt'
     p.title.align = "center"
     show(p)
     p.output_backend = "svg"
     export_svgs(p, filename="../figures/{}_{}_measured_predicted.svg".format(method_name, dataset_name))
     export_png(p, filename="../figures/{}_{}_measured_predicted.png".format(method_name, dataset_name))
-"""
-plot_predicted_vs_real_figures("mbapred", "Davis_Filtered")
-plot_predicted_vs_real_figures("mbapred", "Davis")
-plot_predicted_vs_real_figures("deepdta", "Davis_Filtered")
-plot_predicted_vs_real_figures("deepdta", "Davis")
-"""
-#plot_predicted_vs_real_figures("mbapred", "kinome")
+
+# plot_predicted_vs_real_figures("mbapred", "Davis_Filtered")
+# plot_predicted_vs_real_figures("mbapred", "Davis")
+# plot_predicted_vs_real_figures("mbapred", "PDBBind_Refined")
+
+# plot_predicted_vs_real_figures("deepdta", "Davis_Filtered")
+# plot_predicted_vs_real_figures("deepdta", "Davis")
+
+# plot_predicted_vs_real_figures("simboost", "Davis")
+
+plot_predicted_vs_real_figures("mbapred", "kinome")
+# plot_predicted_vs_real_figures("mbapred", "PDBBind_Refined")
 
 def add_channel_column_to_results(results_fl_path):
     fl_results = open("../result_files/pdbbind_refined_different_channel_perf_results_combined.txt", "r")
@@ -810,4 +819,5 @@ def analyze_kinase_predictions():
             lst_parts = [str(part) for part in row.values.tolist()]
             print("\t".join(lst_parts))
         # Target_CHEMBL_ID	Compound_CHEMBL_ID
-analyze_kinase_predictions()
+
+# analyze_kinase_predictions()

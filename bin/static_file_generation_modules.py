@@ -140,7 +140,7 @@ def get_aa_match_encodings():
             aa_match_encoding_dict[aa_pair[::-1]] = encod_int
             encod_int += 1
     return aa_match_encoding_dict
-
+# print(get_aa_match_encodings())
 
 def get_aa_match_encodings_generic(aaindex_enconding, full_matrix=False):
     aa_list = get_aa_list()
@@ -175,6 +175,7 @@ def get_aa_match_encodings_generic(aaindex_enconding, full_matrix=False):
     return aa_match_encoding_dict
 
 # get_aa_match_encodings_generic("ZHAC000103.txt", True)
+# print(get_aa_match_encodings_generic("blosum62.txt", False))
 
 def get_sequence_matrix(seq, size, aaindex_enconding=None):
     aa_match_encoding_dict = None
@@ -271,12 +272,12 @@ save_all_flattened_sequence_matrices("kinome", 500, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("kinome", 500, "blosum62.txt")
-"""
+
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000103.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "blosum62.txt")
-
+"""
 # save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
 
 
@@ -569,12 +570,12 @@ create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "ki
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "kinome")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "kinome")
-"""
+
 create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ500", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "PDBBind_Refined")
-
+"""
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
