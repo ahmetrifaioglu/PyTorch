@@ -60,7 +60,8 @@ def load_model(model_fl):
     else:
         print("CPU is available on this device!")
     model = torch.load(model_fl)
-    torch.save(model.state_dict(), "../{}/trained_models/kinome/kinome_state_dict.pth")
+    print(model.state_dict())
+    # torch.save(model.state_dict(), "../{}/trained_models/kinome/kinome_state_dict.pth")
     test_loader = get_cnn_test_data_loader("kinome", ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
 
     test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [], [], []
