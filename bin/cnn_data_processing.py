@@ -28,7 +28,7 @@ def get_numpy_target_dict_combined_feature_vectors(training_data_name, target_or
     df_dti_data = pd.read_csv("{}/dti_datasets/comp_targ_affinity.csv".format(training_dataset_path), header=None)
     # set_training_target_ids = set(df_dti_data.ix[:,1])
     set_training_target_ids = set(df_dti_data.iloc[:, 1])
-    print(set_training_target_ids)
+    # print(set_training_target_ids)
     available_targets  =set ()
     df_combined_features = dict()
     count = 0
