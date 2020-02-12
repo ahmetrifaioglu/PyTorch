@@ -67,6 +67,7 @@ def load_model(model_fl):
     test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [], [], []
     total_test_count = 0
     total_test_loss = 0.0
+    """
     model.eval()
     with torch.no_grad():  # torch.set_grad_enabled(False):
 
@@ -98,7 +99,7 @@ def load_model(model_fl):
             for ind in range(len(test_all_tar_ids)):
                 print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             print("=====PREDICTIONS=====")
-
+    """
 
 load_model("../../1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-89")
 #1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-98
