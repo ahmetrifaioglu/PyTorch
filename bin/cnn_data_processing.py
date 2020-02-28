@@ -155,7 +155,7 @@ def get_test_list_target_dict_combined_feature_vectors(training_data_name, targe
     common_column = "target id" if target_or_compound=="target" else "compound id"
     df_combined_features = dict()
     count = 0
-    with open("{}/test_{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
+    with open("{}/aacrtest_{}_normalized.tsv".format(feat_vec_path, feature_lst[0])) as f:
         for line in f:
             line = line.split("\n")[0]
             line = line.split("\t")
