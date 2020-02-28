@@ -20,7 +20,7 @@ from sklearn import preprocessing,metrics
 import sklearn
 from cnn_models import CompFCNNTarCNNModuleInception, CompFCNNTarCNN4Layers, CompFCNNTarCNNModule2Layers, CompFCNNTarCNN4LayersStride
 from evaluation_metrics import r_squared_error, get_rm2, squared_error_zero, get_k, get_cindex, get_aupr, get_list_of_scores
-from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader, get_aa_match_encodings_max_value
+from cnn_data_processing import get_cnn_test_val_folds_train_data_loader, get_cnn_train_test_full_training_data_loader, get_aa_match_encodings_max_value, get_cnn_test_data_loader
 
 warnings.filterwarnings(action='ignore')
 
