@@ -189,10 +189,10 @@ class CNNBioactivityTestDataset(Dataset):
         label = torch.tensor(float(biact_val)).type(torch.FloatTensor)
         return comp_feats, tar_feats, label, comp_id, tar_id
 
-def get_cnn_test_data_loader(training_data_name, comp_feature_list, tar_feature_list, batch_size=32):
+def get_cnn_test_data_loader(training_data_name, comp_feature_list, tar_feature_list, test_dataset_name, batch_size=32):
     import numpy as np
     import json
-    compound_target_pair_dataset = "test_comp_targ_affinity.csv"
+    compound_target_pair_dataset = test_dataset_name
 
 
     test = list(range(1384))

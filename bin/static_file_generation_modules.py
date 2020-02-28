@@ -1,9 +1,9 @@
 import os
-from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
+# from cnn_common_modules import get_prot_id_seq_dict_from_fasta_fl
 import itertools
-import torch
+# import torch
 import numpy as np
-import torch.nn as nn
+# import torch.nn as nn
 import subprocess
 import pandas as pd
 
@@ -938,6 +938,31 @@ def create_ecfp4_feature_file_general():
 
 #create_ecfp4_feature_file_general()
 
+
+def create_ecfp4_features_given_smiles_dict(smiles_dict):
+    from operator import itemgetter
+    import math
+    import numpy as np
+    from rdkit import Chem
+    from rdkit.Chem import AllChem
+    # chembl25_compound_smiles_dict = get_chemblid_smiles_dict()
+    str_header = "compound id\t" + "\t".join([str(num) for num in range(1024)])
+    print(str_header)
+
+    for comp_id in smiles_dict:
+        # print(count)
+        m = Chem.MolFromSmiles(smiles_dict[comp_id])
+        fp = AllChem.GetMorganFingerprintAsBitVect(m, 2, nBits=1024).ToBitString()
+        print(comp_id + "\t" + "\t".join([str(float(dim)) for dim in fp]))
+
+"""
+drug_smiles_dict = {"SORAFENIB_CHEMBL1336":"CNC(=O)C1=NC=CC(OC2=CC=C(NC(=O)NC3=CC(=C(Cl)C=C3)C(F)(F)F)C=C2)=C1",
+"REGORAFENIB_CHEMBL1946170":"CNC(=O)c1cc(Oc2ccc(NC(=O)Nc3ccc(Cl)c(c3)C(F)(F)F)c(F)c2)ccn1",
+"SUNITINIB_CHEMBL535":"CCN(CC)CCNC(=O)C1=C(C)NC(\C=C2/C(=O)NC3=C2C=C(F)C=C3)=C1C",
+"LENVATINIB_CHEMBL1289601":"COc1cc2nccc(Oc3ccc(NC(=O)NC4CC4)c(Cl)c3)c2cc1C(=O)N"}
+create_ecfp4_features_given_smiles_dict(drug_smiles_dict)
+"""
+
 def create_folds_for_kinome():
     from random import shuffle
     df_kinome_biact = pd.read_csv(
@@ -975,7 +1000,48 @@ def create_folds_for_kinome():
 
 #create_folds_for_kinome()
 
+def create_n_fold_files(dataset_name):
+    import pickle
+    import numpy as np
+    import math
+    import json
+    import pandas as pd
+    from random import shuffle
 
+    dataset_path = "../trainingFiles/{}/dti_datasets/comp_targ_affinity.csv".format(dataset_name)
+    dti_dataset_df = pd.read_csv(dataset_path, header=None)
+    # print(len(dti_dataset_df))
+    shuffled_indices = list(range(len(dti_dataset_df)))
+    shuffle(shuffled_indices)
+    # print(shuffled_indices)
+    train_folds = []
+    number_of_samples_each_fold = int(len(dti_dataset_df)/6)
+    for i in range(5):
+
+        train_folds.append(shuffled_indices[i*number_of_samples_each_fold:(i+1)*number_of_samples_each_fold])
+
+
+    test_folds = shuffled_indices[5*number_of_samples_each_fold:]
+    assert [ind for fold in train_folds for ind in fold] + test_folds == shuffled_indices
+
+    train_folds_fl = open("../trainingFiles/{}/data/folds/train_fold_setting1.txt".format(dataset_name), "w")
+    train_folds_fl.write(str(train_folds))
+    train_folds_fl.close()
+
+    test_folds_fl = open("../trainingFiles/{}/data/folds/test_fold_setting1.txt".format(dataset_name), "w")
+    test_folds_fl.write(str(test_folds))
+    test_folds_fl.close()
+
+
+
+    """
+    # training_test_val_indices
+
+    # print(sorted([ind for fold in train_folds for ind in fold]+test_folds, reverse=True))
+    # print(affinity_matrix[2,16])
+    # print(affinity_matrix.flatten()[900])
+    """
+# create_n_fold_files("kinome")
 
 def create_ecfp4_feature_file_given_smiles_file(smiles_file_path):
     from operator import itemgetter
@@ -1009,7 +1075,7 @@ def create_dummy_test_bioact_file_for_test():
     lst_target_list = target_list_fl.read().split("\n")
     target_list_fl.close()
 
-    df_comp_id_smiles = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/test_compound_smiles.tsv", sep="\t")
+    df_comp_id_smiles = pd.read_csv("/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/trainingFiles/kinome/helper_files/aacr_test_compound_smiles.tsv", sep="\t")
 
     for ind, row in df_comp_id_smiles.iterrows():
         comp_id = row["ID"]

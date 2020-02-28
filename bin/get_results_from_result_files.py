@@ -66,6 +66,7 @@ def get_train_test_validation_setting_results():
 
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/pdbbind_refined_dataset_kansil_combined_best_encodings"
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/pdbbind_refined_dataset_ebi_gpu_only_combined_best_encoding"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding"
     validation_test_list = get_validation_test_metric_list_of_scores()
     # print(validation_test_list)
     str_header = "\t".join(["fl_name\thyperparams\tepoch_num", "\t".join(validation_test_list)])
@@ -122,5 +123,5 @@ def get_train_test_validation_setting_results():
 
             print(str_result)
 
-# get_train_test_validation_setting_results()
+get_train_test_validation_setting_results()
 

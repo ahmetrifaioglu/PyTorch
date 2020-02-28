@@ -27,7 +27,7 @@ warnings.filterwarnings(action='ignore')
 cwd = os.getcwd()
 project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
-n_epoch = 81
+n_epoch = 2
 num_of_folds = 5
 
 def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
@@ -132,6 +132,8 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
         print("CPU is available on this device!")
 
     loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size)
+    other_test_loader = get_cnn_test_data_loader(training_dataset, comp_feature_list,
+                                           tar_feature_list, "aacr_test_comp_targ_affinity.csv")
 
     validation_fold_epoch_results, test_fold_epoch_results = [], []
 
@@ -153,7 +155,9 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
             total_training_loss, total_validation_loss, total_test_loss = 0.0, 0.0, 0.0
             total_training_count, total_validation_count, total_test_count = 0, 0, 0
             validation_predictions, validation_labels, test_predictions, test_labels = [], [], [], []
+            other_test_predictions, other_test_labels = [], []
             test_all_comp_ids, test_all_tar_ids =  [], []
+            other_test_all_comp_ids, other_test_all_tar_ids = [], []
             batch_number = 0
             model.train()
             for i, data in enumerate(train_loader):
@@ -192,32 +196,55 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         validation_predictions.append(float(item.item()))
 
                 for i, data in enumerate(test_loader):
-                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels, test_compound_ids, test_target_ids = data
-                    test_comp_feature_vectors, test_target_feature_vectors, tst_labels = Variable(test_comp_feature_vectors).to(
+                    other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels, other_test_compound_ids, other_test_target_ids = data
+                    other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels = Variable(other_test_comp_feature_vectors).to(
                         device), Variable(
-                        test_target_feature_vectors).to(device), Variable(tst_labels).to(device)
+                        other_test_target_feature_vectors).to(device), Variable(other_tst_labels).to(device)
 
-                    total_test_count += test_comp_feature_vectors.shape[0]
+                    total_test_count += other_test_comp_feature_vectors.shape[0]
 
-                    test_y_pred  = model(test_comp_feature_vectors, test_target_feature_vectors)
-                    loss_test = criterion(test_y_pred.squeeze(), tst_labels)
+                    other_test_y_pred  = model(other_test_comp_feature_vectors, other_test_target_feature_vectors)
+                    loss_test = criterion(other_test_y_pred.squeeze(), other_tst_labels)
                     total_test_loss += float(loss_test.item())
-                    for item in tst_labels:
+                    for item in other_tst_labels:
                         test_labels.append(float(item.item()))
 
-                    for item in test_y_pred:
+                    for item in other_test_y_pred:
                         test_predictions.append(float(item.item()))
 
-                    test_all_comp_ids.extend(test_compound_ids)
-                    test_all_tar_ids.extend(test_target_ids)
+                    test_all_comp_ids.extend(other_test_compound_ids)
+                    test_all_tar_ids.extend(other_test_target_ids)
+
+                for i, data in enumerate(other_test_loader):
+                    other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels, other_test_compound_ids, other_test_target_ids = data
+                    other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels = Variable(other_test_comp_feature_vectors).to(
+                        device), Variable(
+                        other_test_target_feature_vectors).to(device), Variable(other_tst_labels).to(device)
+
+
+
+                    other_test_y_pred  = model(other_test_comp_feature_vectors, other_test_target_feature_vectors)
+                    for item in other_tst_labels:
+                        other_test_labels.append(float(item.item()))
+
+                    for item in other_test_y_pred:
+                        other_test_predictions.append(float(item.item()))
+
+                    other_test_all_comp_ids.extend(other_test_compound_ids)
+                    other_test_all_tar_ids.extend(other_test_target_ids)
                 # test_predictions, test_labels
                 print_predictions = True
                 if print_predictions:
-                    print("=====PREDICTIONS=====")
+                    print("=====TEST PREDICTIONS=====")
                     for ind in range(len(test_all_tar_ids)):
                         print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind],
                                                       test_predictions[ind]))
-                    print("=====PREDICTIONS=====")
+                    print("=====TEST PREDICTIONS=====")
+                    print("=====OTHER TEST PREDICTIONS=====")
+                    for ind in range(len(other_test_all_tar_ids)):
+                        print("{}\t{}\t{}\t{}".format(other_test_all_comp_ids[ind], other_test_all_tar_ids[ind], other_test_labels[ind],
+                                                      other_test_predictions[ind]))
+                    print("=====OTHER TEST PREDICTIONS=====")
 
             if regression_classifier == "r":
                 print("==============================================================================")
@@ -456,5 +483,5 @@ experiment_name = sys.argv[12]
 #            (training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, comp_tar_pair_dataset, regression_classifier, batch_size, train_val_test=False)
 
 
-full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
-# train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+# full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
