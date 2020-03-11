@@ -28,7 +28,7 @@ cwd = os.getcwd()
 project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
 n_epoch = 100
-num_of_folds = 5
+# num_of_folds = 5
 
 def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
     model=None
@@ -109,15 +109,17 @@ def get_scores(labels, predictions, validation_test, total_training_loss, total_
     for key in prec_rec_f1_acc_mcc_threshold_dict.keys():
         
     """
+    return score_dict
 
 
 
 
 
 
-def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name):
+def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_lst, tar_num_of_last_neurons, fc1, fc2, learn_rate, regression_classifier, batch_size, train_val_test, model_nm, dropout, experiment_name, num_of_folds):
     arguments = [str(argm) for argm in sys.argv[1:]]
     print("Arguments::", "-".join(arguments))
+    str_arguments = "-".join(arguments)
     torch.manual_seed(123)
     np.random.seed(123)
 
@@ -137,7 +139,9 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
     validation_fold_epoch_results, test_fold_epoch_results = [], []
 
-    for fold in range(num_of_folds):
+    for fold in range(num_of_folds, num_of_folds+1):
+        best_val_fold_mse_score = 1000000000
+        best_test_fold_mse_score = 1000000000
         test_fold_epoch_results.append([])
         validation_fold_epoch_results.append([])
         train_loader, valid_loader = loader_fold_dict[fold]
@@ -250,12 +254,18 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                     """
             if regression_classifier == "r":
                 print("==============================================================================")
-                get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, validation_fold_epoch_results, fold)
+                val_score_dict = get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, validation_fold_epoch_results, fold)
                 print("------------------------------------------------------------------------------")
-                get_scores(test_labels, test_predictions, "Test", total_training_loss,
+                test_score_dict = get_scores(test_labels, test_predictions, "Test", total_training_loss,
                            total_test_loss, epoch, test_fold_epoch_results, fold)
 
 
+                if val_score_dict["MSE"]<best_val_fold_mse_score:
+                    torch.save(model.state_dict(),
+                               "{}/trained_models/kinome/kinome_best_val_state_dict.pth".format(project_file_path, str_arguments))
+                if test_score_dict["MSE"]<best_test_fold_mse_score:
+                    torch.save(model.state_dict(),
+                               "{}/trained_models/kinome/kinome_best_val_state_dict.pth".format(project_file_path, str_arguments))
                 if epoch==n_epoch-1:
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]
@@ -475,6 +485,7 @@ train_validation_test = bool(sys.argv[9])
 model_name = sys.argv[10]
 dropout_prob = float(sys.argv[11])
 experiment_name = sys.argv[12]
+fold_num = sys.argv[13]
 
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
@@ -486,4 +497,4 @@ experiment_name = sys.argv[12]
 
 
 # full_training(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
-train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name)
+train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_hidden_layer_neurons, after_flattened_conv_layer_neurons, last_2_hidden_layer_list[0], last_2_hidden_layer_list[1], learn_rate, "r", batch_size, train_validation_test, model_name, dropout_prob, experiment_name, fold_num)

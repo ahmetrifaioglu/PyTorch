@@ -277,6 +277,13 @@ def get_validation_test_metric_list_of_scores():
     # print(validation_test_list)
     return validation_test_metric_list
 
+def get_validation_test_metric_list_of_scores_2():
+    score_list =  get_list_of_scores()
+    test_score_list = ["Test {}".format(scr) for scr in score_list]
+    validation_score_list = ["Validation {}".format(scr) for scr in score_list]
+    validation_test_metric_list = test_score_list + validation_score_list
+    # print(validation_test_list)
+    return validation_test_metric_list
 
 def get_scores_generic(labels, predictions, validation_test, single_line_print=False):
     score_dict = {"rm2": None, "CI (DEEPDTA)": None, "MSE": None, "RMSE": None, "Pearson": None,
