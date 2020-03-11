@@ -261,9 +261,14 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
 
                 if val_score_dict["MSE"]<best_val_fold_mse_score:
+                    print("Model (Validation) is being saved.\tEpoch:{}\tOld MSE:{}\tNew MSE:{}".format(epoch, best_val_fold_mse_score, val_score_dict["MSE"]))
                     torch.save(model.state_dict(),
                                "{}/trained_models/kinome/kinome_best_val_state_dict.pth".format(project_file_path, str_arguments))
                 if test_score_dict["MSE"]<best_test_fold_mse_score:
+                    print("Model (Test) is being saved.\tEpoch:{}\tOld MSE:{}\tNew MSE:{}".format(epoch,
+                                                                                                  best_test_fold_mse_score,
+                                                                                                        test_score_dict[
+                                                                                                            "MSE"]))
                     torch.save(model.state_dict(),
                                "{}/trained_models/kinome/kinome_best_val_state_dict.pth".format(project_file_path, str_arguments))
                 if epoch==n_epoch-1:
