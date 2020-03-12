@@ -218,7 +218,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
                     test_all_comp_ids.extend(other_test_compound_ids)
                     test_all_tar_ids.extend(other_test_target_ids)
-                """
+
                 for i, data in enumerate(other_test_loader):
                     other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels, other_test_compound_ids, other_test_target_ids = data
                     other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels = Variable(other_test_comp_feature_vectors).to(
@@ -236,7 +236,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
                     other_test_all_comp_ids.extend(other_test_compound_ids)
                     other_test_all_tar_ids.extend(other_test_target_ids)
-                """
+
                 # test_predictions, test_labels
                 print_predictions = True
                 if print_predictions:
