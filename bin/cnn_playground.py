@@ -245,13 +245,13 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind],
                                                       test_predictions[ind]))
                     print("=====TEST PREDICTIONS=====")
-                    """
+
                     print("=====OTHER TEST PREDICTIONS=====")
                     for ind in range(len(other_test_all_tar_ids)):
                         print("{}\t{}\t{}\t{}".format(other_test_all_comp_ids[ind], other_test_all_tar_ids[ind], other_test_labels[ind],
                                                       other_test_predictions[ind]))
                     print("=====OTHER TEST PREDICTIONS=====")
-                    """
+
             if regression_classifier == "r":
                 print("==============================================================================")
                 val_score_dict = get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, validation_fold_epoch_results, fold)
@@ -490,7 +490,7 @@ train_validation_test = bool(sys.argv[9])
 model_name = sys.argv[10]
 dropout_prob = float(sys.argv[11])
 experiment_name = sys.argv[12]
-fold_num = sys.argv[13]
+fold_num = int(sys.argv[13])
 
 
 # train_networks(["ecfp4"], ["sequencematrix500"], [1024, 512], 64, 256, 256, 0.001, "xxx", "r", 32)
