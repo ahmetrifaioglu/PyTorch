@@ -134,8 +134,8 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
         print("CPU is available on this device!")
 
     loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size)
-    other_test_loader = get_cnn_test_data_loader(training_dataset, comp_feature_list,
-                                           tar_feature_list, "aacr_test_comp_targ_affinity.csv")
+    #other_test_loader = get_cnn_test_data_loader(training_dataset, comp_feature_list,
+    #                                       tar_feature_list, "aacr_test_comp_targ_affinity.csv")
 
     validation_fold_epoch_results, test_fold_epoch_results = [], []
 
@@ -218,7 +218,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
                     test_all_comp_ids.extend(other_test_compound_ids)
                     test_all_tar_ids.extend(other_test_target_ids)
-
+                """
                 for i, data in enumerate(other_test_loader):
                     other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels, other_test_compound_ids, other_test_target_ids = data
                     other_test_comp_feature_vectors, other_test_target_feature_vectors, other_tst_labels = Variable(other_test_comp_feature_vectors).to(
@@ -236,7 +236,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
 
                     other_test_all_comp_ids.extend(other_test_compound_ids)
                     other_test_all_tar_ids.extend(other_test_target_ids)
-
+                """
                 # test_predictions, test_labels
                 print_predictions = True
                 if print_predictions:
@@ -245,13 +245,13 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                         print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind],
                                                       test_predictions[ind]))
                     print("=====TEST PREDICTIONS=====")
-
+                    """
                     print("=====OTHER TEST PREDICTIONS=====")
                     for ind in range(len(other_test_all_tar_ids)):
                         print("{}\t{}\t{}\t{}".format(other_test_all_comp_ids[ind], other_test_all_tar_ids[ind], other_test_labels[ind],
                                                       other_test_predictions[ind]))
                     print("=====OTHER TEST PREDICTIONS=====")
-
+                    """
             if regression_classifier == "r":
                 print("==============================================================================")
                 val_score_dict = get_scores(validation_labels, validation_predictions, "Validation", total_training_loss, total_validation_loss, epoch, validation_fold_epoch_results, fold)
