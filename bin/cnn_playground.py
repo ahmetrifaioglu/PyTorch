@@ -134,8 +134,8 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
         print("CPU is available on this device!")
 
     loader_fold_dict, test_loader = get_cnn_test_val_folds_train_data_loader(training_dataset, comp_feature_list, tar_feature_list, batch_size)
-    #other_test_loader = get_cnn_test_data_loader(training_dataset, comp_feature_list,
-    #                                       tar_feature_list, "aacr_test_comp_targ_affinity.csv")
+    other_test_loader = get_cnn_test_data_loader(training_dataset, comp_feature_list,
+                                           tar_feature_list, "aacr_test_comp_targ_affinity.csv")
 
     validation_fold_epoch_results, test_fold_epoch_results = [], []
 
