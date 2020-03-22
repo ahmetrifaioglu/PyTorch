@@ -56,7 +56,7 @@ def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last
     return model
 
 
-def load_model():
+def load_model(model_fl):
     torch.manual_seed(123)
     np.random.seed(123)
     use_gpu = torch.cuda.is_available()
@@ -83,10 +83,23 @@ def load_model():
     experiment_name = sys.argv[12]
     fold_num = int(sys.argv[13])
     """
+    #model_fl = "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth"
+    params = model_fl.split("kinome_best_val_")[1].split("-")
+    comp_h_1 = int(params[0].split("_")[0])
+    comp_h_2 = int(params[0].split("_")[1])
+    tar_after_flat = int(params[1])
+    last_h_1 = int(params[2].split("_")[0])
+    last_h_2 = int(params[2].split("_")[1])
+    tar_feats = params[7]
+    dropout = float(params[10])
+    #print()
     #kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth
-    model = get_model("CompFCNNTarCNNModuleInception", "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"), 1024, 256, 1024, 1024, 512, 256, 0.25)
+    #print("CompFCNNTarCNNModuleInception", tar_feats.split("_"), 1024, tar_after_flat, comp_h_1, comp_h_2,last_h_1,last_h_2, dropout)
+    #print("CompFCNNTarCNNModuleInception", "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"), 1024, 256, 1024, 1024, 512, 256, 0.25)
+    model = get_model("CompFCNNTarCNNModuleInception", tar_feats.split("_"), 1024, tar_after_flat, comp_h_1, comp_h_2,last_h_1,last_h_2, dropout)
+    # model = get_model("CompFCNNTarCNNModuleInception", "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"), 1024, 256, 1024, 1024, 512, 256, 0.25)
     #print(model.state_dict())
-    model.load_state_dict(torch.load("../trained_models/kinome/kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth"))
+    model.load_state_dict(torch.load("../trained_models/kinome/{}".format(model_fl)))
     model = model.to(device)
     model.eval()
     #print("================================================================================")
@@ -137,6 +150,7 @@ def load_model():
 
 
 
-load_model()
+load_model("kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth")
+# load_model("kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth")
 # 1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-98
 # load_model("../../1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-98")
