@@ -99,7 +99,7 @@ def load_model(model_fl):
     model = get_model("CompFCNNTarCNNModuleInception", tar_feats.split("_"), 1024, tar_after_flat, comp_h_1, comp_h_2,last_h_1,last_h_2, dropout)
     # model = get_model("CompFCNNTarCNNModuleInception", "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"), 1024, 256, 1024, 1024, 512, 256, 0.25)
     #print(model.state_dict())
-    model.load_state_dict(torch.load("../trained_models/kinome/{}".format(model_fl)))
+    model.load_state_dict(torch.load("{}/trained_models/kinome/{}".format(project_file_path, model_fl)))
     model = model.to(device)
     model.eval()
     #print("================================================================================")
