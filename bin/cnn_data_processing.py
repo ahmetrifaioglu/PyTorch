@@ -290,7 +290,7 @@ def get_cnn_train_test_full_training_data_loader(training_data_name, comp_featur
 
 def get_aa_match_encodings_max_value(aaindex_enconding):
     import math
-    encoding_fl = open("../../../trainingFiles/encodings/{}.txt".format(aaindex_enconding))
+    encoding_fl = open("{}/encodings/{}.txt".format(training_files_path, aaindex_enconding))
     lst_encoding_fl = encoding_fl.read().split("\n")
     encoding_fl.close()
     starting_ind = -1
