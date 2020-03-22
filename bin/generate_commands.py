@@ -605,7 +605,7 @@ def generate_protein_cnn_commands(job_group_name, num_of_jobs_at_each_group):
 # generate_protein_cnn_commands("davis_dataset_kansil_only_combined_best_encoding", 1)
 # generate_protein_cnn_commands("davis_dataset_ebi_gpu_only_combined_best_encoding", 5)
 # generate_protein_cnn_commands("kinome_dataset_ebi_gpu_only_combined_best_encoding", 1)
-generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_gpu_only_combined_best_encoding", 1)
+# generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_gpu_only_combined_best_encoding", 1)
 
 # generate_protein_cnn_commands("pdbbind_refined_dataset_ebi_1000_combined_best_encodings", 1)
 
@@ -621,3 +621,36 @@ comp_feature_list = sys.argv[7].split("_")# ["ecfp4"]
 tar_feature_list = sys.argv[8].split("_")# ["sequencematrix500"]
 
 """
+
+
+def generate_kinase_test_aacr(job_group_name):
+    import subprocess
+    model_files = [
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-0_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-1_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-2_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-3_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-0_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-1_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-2_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-3_state_dict.pth",
+        "kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth"]
+    job_folder_path = "job_commands/{}".format(job_group_name)
+    subprocess.call("mkdir {}".format(job_folder_path), shell=True)
+
+    all_job_submission_fl = open("{}/test_predictions_{}.sh".format(job_folder_path, job_group_name), "w")
+
+
+    for model_fl in model_files:
+
+        all_job_submission_fl.write(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/{}/test_preds_{}.out \"python mdeepred_test.py {}\"\n".format(
+                job_group_name, model_fl, model_fl))
+
+        all_job_submission_fl.write("\n")
+        all_job_submission_fl.write("sleep 1\n")
+
+    all_job_submission_fl.close()
+
+generate_kinase_test_aacr("kinome_dataset_ebi_gpu_only_combined_best_encoding")

@@ -149,8 +149,9 @@ def load_model(model_fl):
             print("=====PREDICTIONS=====")
 
 
-
-load_model("kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth")
+import sys
+model_fl = sys.argv[1]
+load_model(model_fl)
 # load_model("kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth")
 # 1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-98
 # load_model("../../1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-1-CompFCNNTarCNNModuleInception-0.1-kinome_dataset_ebi_gpu_only_combined_best_encoding-98")
