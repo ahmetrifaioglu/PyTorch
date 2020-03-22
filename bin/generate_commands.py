@@ -645,7 +645,7 @@ def generate_kinase_test_aacr(job_group_name):
     for model_fl in model_files:
 
         all_job_submission_fl.write(
-            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/{}/test_preds_{}.out \"python mdeepred_test.py {}\"\n".format(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 15360 -R 'rusage[mem=15360]' -o ../../../log_files/{}/test_preds_{}.out \"python ../../mdeepred_test.py {}\"\n".format(
                 job_group_name, model_fl, model_fl))
 
         all_job_submission_fl.write("\n")
