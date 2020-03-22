@@ -85,17 +85,17 @@ def load_model():
     """
     #kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth
     model = get_model("CompFCNNTarCNNModuleInception", "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"), 1024, 256, 1024, 1024, 512, 256, 0.25)
-    print(model.state_dict())
+    #print(model.state_dict())
     model.load_state_dict(torch.load("../trained_models/kinome/kinome_best_val_1024_1024-256-512_256-0.0001-32-kinome-ecfp4-sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000-0-CompFCNNTarCNNModuleInception-0.25-kinome_dataset_ebi_gpu_only_combined_best_encoding-4_state_dict.pth"))
-    #model.eval()
-    print("================================================================================")
-    print("================================================================================")
-    print("================================================================================")
-    print(model.state_dict())
+    model.eval()
+    #print("================================================================================")
+    #print("================================================================================")
+    #print("================================================================================")
+    #print(model.state_dict())
     #model = torch.load(model_fl)
     # print(model.state_dict())
     #torch.save(model.state_dict(), "{}/trained_models/kinome/kinome_state_dict.pth".format(project_file_path))
-    """q
+
     test_loader = get_cnn_test_data_loader("kinome", ["ecfp4"], "sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000".split("_"))
 
     test_predictions, test_labels, test_all_comp_ids, test_all_tar_ids = [], [], [], []
@@ -133,7 +133,7 @@ def load_model():
             for ind in range(len(test_all_tar_ids)):
                 print("{}\t{}\t{}\t{}".format(test_all_comp_ids[ind], test_all_tar_ids[ind], test_labels[ind], test_predictions[ind]))
             print("=====PREDICTIONS=====")
-    """
+
 
 
 load_model()
