@@ -27,7 +27,7 @@ warnings.filterwarnings(action='ignore')
 cwd = os.getcwd()
 project_file_path = "{}PyTorch".format(cwd.split("PyTorch")[0])
 
-n_epoch = 100
+n_epoch = 200
 # num_of_folds = 5
 
 def get_model(model_name, tar_feature_list, num_of_com_features, tar_num_of_last_neurons, comp_hidden_first, comp_hidden_second, fc1, fc2, dropout):
@@ -265,7 +265,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                     best_val_fold_mse_score = val_score_dict["MSE"]
 
                     torch.save(model.state_dict(),
-                               "{}/trained_models/kinome/kinome_best_val-{}_state_dict.pth".format(project_file_path, str_arguments))
+                               "{}/trained_models/{}/{}_best_val-{}_state_dict.pth".format(project_file_path, training_dataset, training_dataset, str_arguments))
                 if test_score_dict["MSE"]<best_test_fold_mse_score:
                     print("Model (Test) is being saved.\tEpoch:{}\tOld MSE:{}\tNew MSE:{}".format(epoch,
                                                                                                   best_test_fold_mse_score,
@@ -273,7 +273,7 @@ def train_networks(training_dataset, comp_feature_list, tar_feature_list, comp_h
                                                                                                             "MSE"]))
                     best_test_fold_mse_score = test_score_dict["MSE"]
                     torch.save(model.state_dict(),
-                               "{}/trained_models/kinome/kinome_best_test-{}_state_dict.pth".format(project_file_path, str_arguments))
+                               "{}/trained_models/{}/{}_best_test-{}_state_dict.pth".format(project_file_path, training_dataset, training_dataset, str_arguments))
                 if epoch==n_epoch-1:
                     #print(len(test_fold_epoch_results[-1]))
                     mse_results = [epoch_score_dict["MSE"] for epoch_score_dict in test_fold_epoch_results[-1]]

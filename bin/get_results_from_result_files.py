@@ -136,7 +136,8 @@ def get_five_fold_xval_results_from_logs():
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/pdbbind_refined_dataset_ebi_gpu_only_combined_best_encoding"
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding"
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/kinome_five_fold_best"
-
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/ebi_kinome_top_2_logs"
+    #ebi_kinome_top_2_logs
     validation_test_list = get_validation_test_metric_list_of_scores_2()
     # print(validation_test_list)
     str_header = "\t".join(["fl_name\thyperparams\tfold\tepoch_num", "\t".join(validation_test_list)])
@@ -145,7 +146,8 @@ def get_five_fold_xval_results_from_logs():
 
 
     for fl in os.listdir(result_file_path):
-        if fl.endswith("out"):
+        #if fl.endswith("out"):
+        if fl.startswith("out."):
             # print(fl)
             result_fl = open(os.path.join(result_file_path, fl), "r")
             lst_result_fl = result_fl.read().split("\n")
@@ -213,6 +215,7 @@ def get_five_fold_xval_results_from_logs():
 def get_average_5_fold_results():
     import pandas as pd
     result_file = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/kinome_dataset_5_fold_ebi_gpu_only_combined_best_encoding_best_models.tsv"
+    result_file = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/result_files/ebi_kinome_top_2_logs.tsv"
     df_result = pd.read_csv(result_file, sep="\t")
     fl_fold_dict = dict()
     for ind, row in df_result.iterrows():
@@ -223,11 +226,11 @@ def get_average_5_fold_results():
         test_mse = row["Test MSE"]
         val_mse = row["Validation MSE"]
         epoch_num = row["epoch_num"]
-
+        fl_name = hype_params[:-2]
         if  fl_name not in fl_fold_dict:
             fl_fold_dict[fl_name] = [[100, 100] for _ in range(5)]
 
-        if test_mse < fl_fold_dict[fl_name][fold_num-1][0]:
+        if val_mse < fl_fold_dict[fl_name][fold_num-1][0]:
             fl_fold_dict[fl_name][fold_num - 1][0] = test_mse
             fl_fold_dict[fl_name][fold_num - 1][1] = epoch_num
 

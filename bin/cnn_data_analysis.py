@@ -578,7 +578,7 @@ def plot_predicted_vs_real_figures(method_name, dataset_name):
 
 # plot_predicted_vs_real_figures("simboost", "Davis")
 
-plot_predicted_vs_real_figures("mbapred", "kinome")
+# plot_predicted_vs_real_figures("mbapred", "kinome")
 # plot_predicted_vs_real_figures("mbapred", "PDBBind_Refined")
 
 def add_channel_column_to_results(results_fl_path):
@@ -821,3 +821,26 @@ def analyze_kinase_predictions():
         # Target_CHEMBL_ID	Compound_CHEMBL_ID
 
 # analyze_kinase_predictions()
+
+
+def produce_final_accr_predictions():
+    import pandas as pd
+    five_fold_pred_df = pd.read_csv("../result_files/aacr_drugs_five_fold_prediction.tsv", sep="\t")
+    human_kinome_target_ids_df = pd.read_csv("../trainingFiles/others/human_kinome_target_ids.tab", sep="\t")
+    print("DrugID\tTargetUniProtID\tTargetChEMBLID\tEntryName\tGeneNames\tPredictedBioactVal")
+    for ind, row in five_fold_pred_df.iterrows():
+        #print(row)
+        #print(row["DrugID"])
+        uniprot_id, chembl_id = row["TargetID"].split("_")
+        entry_name = human_kinome_target_ids_df.loc[human_kinome_target_ids_df["Entry"]==uniprot_id]["Entry name"].values[0]
+        gene_names = human_kinome_target_ids_df.loc[human_kinome_target_ids_df["Entry"]==uniprot_id]["Gene names"].values[0]
+        predictions = [row["Fold{}".format(i+1)]for i in range(5)]
+        #print(predictions)
+        predictions = sorted(predictions)
+        #print(predictions)
+        if abs(predictions[2]-predictions[1])<0.25 and abs(predictions[2]-predictions[3])<0.25:
+            print("{}\t{}\t{}\t{}\t{}\t{}".format(row["DrugID"], uniprot_id, chembl_id, entry_name, gene_names, (10**-row["Fold2"])*10**6))
+        elif min(predictions)<5.0:
+       s     print("{}\t{}\t{}\t{}\t{}\t{}".format(row["DrugID"], uniprot_id, chembl_id, entry_name, gene_names, (10**-min(predictions))*10**6))
+
+produce_final_accr_predictions()

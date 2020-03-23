@@ -653,4 +653,4 @@ def generate_kinase_test_aacr(job_group_name):
 
     all_job_submission_fl.close()
 
-generate_kinase_test_aacr("kinome_dataset_ebi_gpu_only_combined_best_encoding")
+# generate_kinase_test_aacr("kinome_dataset_ebi_gpu_only_combined_best_encoding")
