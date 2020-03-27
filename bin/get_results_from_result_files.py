@@ -137,6 +137,7 @@ def get_five_fold_xval_results_from_logs():
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/kinome_dataset_ebi_gpu_only_combined_best_encoding"
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/kinome_five_fold_best"
     result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/ebi_kinome_top_2_logs"
+    result_file_path = "/Users/trman/OneDrive - ceng.metu.edu.tr/Projects/PyTorch/log_files/"
     #ebi_kinome_top_2_logs
     validation_test_list = get_validation_test_metric_list_of_scores_2()
     # print(validation_test_list)
@@ -147,7 +148,7 @@ def get_five_fold_xval_results_from_logs():
 
     for fl in os.listdir(result_file_path):
         #if fl.endswith("out"):
-        if fl.startswith("out."):
+        if fl=="31_5.out":
             # print(fl)
             result_fl = open(os.path.join(result_file_path, fl), "r")
             lst_result_fl = result_fl.read().split("\n")
@@ -209,7 +210,7 @@ def get_five_fold_xval_results_from_logs():
 
 
 
-# get_five_fold_xval_results_from_logs()
+get_five_fold_xval_results_from_logs()
 
 
 def get_average_5_fold_results():
@@ -244,4 +245,4 @@ def get_average_5_fold_results():
         str_result += "\t{}".format(total_score/5.0)
         print(str_result)
 
-get_average_5_fold_results()
+# get_average_5_fold_results()

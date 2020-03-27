@@ -654,3 +654,164 @@ def generate_kinase_test_aacr(job_group_name):
     all_job_submission_fl.close()
 
 # generate_kinase_test_aacr("kinome_dataset_ebi_gpu_only_combined_best_encoding")
+
+def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
+    import subprocess
+    job_folder_path = "job_commands/{}".format(job_group_name)
+    result_folder_path = "../../../result_files/{}".format(job_group_name)
+    subprocess.call("mkdir {}".format(job_folder_path), shell=True)
+    # subprocess.call("mkdir {}".format(result_folder_path), shell=True)
+    batch_size = [32]
+    lst_learning_rate = [0.0001, 0.001, 0.01]
+    lst_learning_rate = [0.0001, 0.001]
+    after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
+    after_flattened_conv_layer_neurons = [256, 512, 1024]
+    # after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
+    # comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
+    comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
+    last_2_hidden_layer_list = ["256_128", "512_256", "1024_512", "1024_1024"]
+    last_2_hidden_layer_list = ["512_256", "1024_512", "1024_1024"]
+
+    training_dataset_list = ["PDBBind_Refined"]
+    training_dataset_list = ["Davis"]
+    training_dataset_list = ["Davis_Filtered"]
+    training_dataset_list = ["kinome"]
+    # use below line for train test validation
+    train_val_test = True
+    # target_feature = "sequencematrix1000"
+    total_number_of_jobs = 0
+    dropout = [0.10, 0.25]
+    model_list = ["CompFCNNTarCNNModuleInception", "CompFCNNTarCNNModule2Layers", "CompFCNNTarCNN4LayersStride"]
+    model_list = ["CompFCNNTarCNNModuleInception"]
+    # model_list = ["CompFCNNTarCNN2"]
+    target_feature = ["sequencematrix500", "sequencematrix500_blosum62LEQ500", "sequencematrix500_SIMK990101LEQ500",
+                      "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500"]
+    """
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500",
+    "sequencematrix500_ZHAC000103LEQ500_blosum62LEQ500",
+    "sequencematrix500_ZHAC000103LEQ500_SIMK990101LEQ500",
+    "sequencematrix500_GRAR740104LEQ500_blosum62LEQ500",
+    "sequencematrix500_GRAR740104LEQ500_SIMK990101LEQ500",
+    "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500",
+    "sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
+
+
+    GRAR740104LEQ500
+    SIMK990101
+    sequencematrix500_blosum62LEQ500
+    """
+
+    target_feature = ["sequencematrix500", "sequencematrix500_SIMK990101LEQ500", "sequencematrix500_GRAR740104LEQ500",
+                      "sequencematrix500_MIYS850102LEQ500", "sequencematrix500_KESO980101LEQ500",
+                      "sequencematrix500_ZHAC000106LEQ500", "sequencematrix500_ZHAC000103LEQ500",
+                      "sequencematrix500_blosum62LEQ500"]
+
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500",
+                      "sequencematrix500_ZHAC000103LEQ500_blosum62LEQ500",
+                      "sequencematrix500_ZHAC000103LEQ500_SIMK990101LEQ500",
+                      "sequencematrix500_GRAR740104LEQ500_blosum62LEQ500",
+                      "sequencematrix500_GRAR740104LEQ500_SIMK990101LEQ500",
+                      "sequencematrix500_blosum62LEQ500_SIMK990101LEQ500",
+                      "sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
+
+    target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
+    target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
+    target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
+    target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
+    setting = 2
+    temp_group_job_list = []
+    job_number = 0
+    epoch = 200
+    all_job_submission_fl = open("{}/{}.sh".format(job_folder_path, job_group_name), "w")
+    # job_group_name = "kinase_model_training"
+    for b_s in batch_size:
+        for tr_data in training_dataset_list:
+            for conv_flat in after_flattened_conv_layer_neurons:
+                for last_fcc in last_2_hidden_layer_list:
+                    for l_r in lst_learning_rate:
+                        for comp_hid in comp_2_hidden_layer_list:
+                            for do in dropout:
+                                for model in model_list:
+                                    for tar_feat in target_feature:
+                                        # print(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do)
+                                        # command_str = "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" " \
+                                        #              "-M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python ../../cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {} {}\"".format(
+                                        #            job_group_name,
+                                        #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do,
+                                        #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do, job_group_name)
+
+                                        command_str = "python ../../main_training.py --td {} --setting {} --cf {} --tf {} --chln {} --tlnaf {} --lhln {} --lr {} --bs {} --model {} --dropout {} --en {} --epoch {} --train_val_test {}".format(
+                                            tr_data, setting, "ecfp4", tar_feat, comp_hid, conv_flat, last_fcc, l_r, b_s, model, do, job_group_name, epoch, train_val_test)
+
+                                        # print(total_number_of_jobs % num_of_jobs_at_each_group)
+                                        if ((total_number_of_jobs + 1) % num_of_jobs_at_each_group) == 0:
+                                            # print(total_number_of_jobs)
+                                            temp_group_job_list.append(command_str)
+                                            job_number += 1
+                                            all_job_submission_fl.write(
+                                                "chmod +x ./{}_{}.sh\n".format(job_number, num_of_jobs_at_each_group))
+
+                                            # KanSil  Jobs
+                                            # all_job_submission_fl.write(
+                                            #     "./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number), num_of_jobs_at_each_group, job_group_name,
+                                            #                                             (job_number), num_of_jobs_at_each_group))
+
+                                            # GPU Jobs
+                                            all_job_submission_fl.write(
+                                                "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 25600 -R 'rusage[mem=25600]' -o ../../../result_files/{}/log_files/{}_{}.out \"./{}_{}.sh\"\n".format(
+                                                    job_group_name, job_number, num_of_jobs_at_each_group, job_number,
+                                                    num_of_jobs_at_each_group))
+
+                                            #
+                                            # all_job_submission_fl.write(
+                                            #    "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(
+                                            #         job_group_name, job_number, num_of_jobs_at_each_group, job_number, num_of_jobs_at_each_group))
+                                            job_fl = open("./{}/{}_{}.sh".format(job_folder_path, job_number,
+                                                                                 num_of_jobs_at_each_group), "w")
+                                            job_fl.write("#!/bin/sh\n")
+                                            if job_number == 1:
+                                                job_fl.write("mkdir {}\n".format(result_folder_path))
+                                                job_fl.write("mkdir ../../../result_files/{}/log_files\n".format(job_group_name))
+                                            for job in temp_group_job_list:
+                                                job_fl.write(job + "\n")
+                                                job_fl.write("sleep 1\n")
+                                            job_fl.close()
+                                            temp_group_job_list = []
+
+                                        else:
+                                            temp_group_job_list.append(command_str)
+                                            # lst_params = []
+                                            # print("bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 5120 -R 'rusage[mem=5120]' -o ../log_files/pdbbind_experiment_2_channel_model_2_15062019/normalized_{}_{}_{}_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {} {} {} {}\"".format(comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do, comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, train_val_test, model, do))
+                                            # print(
+                                            #    "bsub -q research-rh74 -P gpu -M 15360 -R 'rusage[mem=15360]' -o ../log_files/pdbbind_experiment_12062019/normalized_{}_{}_{}_{}_{}_{}_{}.out \"python cnn_playground.py {} {} {} {} {} {} ecfp4 {}\"".format(
+                                            #        comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, target_feature, comp_hid,
+                                            #        conv_flat, last_fcc, l_r, b_s, tr_data, target_feature))
+                                        total_number_of_jobs += 1
+
+    if len(temp_group_job_list) != 0:
+        job_fl = open("./{}/{}_{}.sh".format(job_folder_path, job_number + 1, num_of_jobs_at_each_group), "w")
+        job_fl.write("#!/bin/sh\n")
+        all_job_submission_fl.write("chmod +x ./{}_{}.sh\n".format(job_number + 1, num_of_jobs_at_each_group))
+
+        # kansil jobs
+        # all_job_submission_fl.write("./{}_{}.sh > ../../../result_files/{}/{}_{}.out\n".format((job_number+1), num_of_jobs_at_each_group, job_group_name, (job_number+1), num_of_jobs_at_each_group))
+
+        # GPU jobs
+        all_job_submission_fl.write(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 25600 -R 'rusage[mem=25600]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+                job_group_name, job_number + 1, job_number + 1))
+
+        # CPU jobs
+        # all_job_submission_fl.write(
+        #    "bsub -q research-rh74 -M 5120 -R 'rusage[mem=5120]' -o ../../../log_files/{}/{}_{}.out \"./{}_{}.sh\"\n".format(
+        #        job_group_name, job_number+1, num_of_jobs_at_each_group, job_number+1, num_of_jobs_at_each_group))
+
+        for job in temp_group_job_list:
+            job_fl.write(job + "\n")
+            job_fl.write("sleep 1\n")
+        job_fl.close()
+
+    all_job_submission_fl.close()
+
+generate_mdeepred_commands("kinase_model_training", 1)
