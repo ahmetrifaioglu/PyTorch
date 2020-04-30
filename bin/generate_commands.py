@@ -819,4 +819,4 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_mdeepred_commands("ACE2_model_training", 1)
+generate_mdeepred_commands("ACE2_model_training", 5)
