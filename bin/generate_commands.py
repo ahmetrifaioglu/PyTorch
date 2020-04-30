@@ -723,6 +723,7 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
     target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
     target_feature = ["sequencematrix500_ZHAC000103LEQ500_GRAR740104LEQ500_SIMK990101LEQ500_blosum62LEQ500"]
     target_feature = ["sequencematrix1000_ZHAC000103LEQ1000_GRAR740104LEQ1000_SIMK990101LEQ1000_blosum62LEQ1000"]
+    ext_file = "drugbank_ecfp4_normalized.tsv"
     setting = 2
     temp_group_job_list = []
     job_number = 0
@@ -745,8 +746,8 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
                                         #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do,
                                         #    comp_hid, conv_flat, last_fcc, l_r, b_s, tr_data, tar_feat, train_val_test, model, do, job_group_name)
 
-                                        command_str = "python ../../main_training.py --td {} --setting {} --cf {} --tf {} --chln {} --tlnaf {} --lhln {} --lr {} --bs {} --model {} --dropout {} --en {} --epoch {} --train_val_test {}".format(
-                                            tr_data, setting, "ecfp4", tar_feat, comp_hid, conv_flat, last_fcc, l_r, b_s, model, do, job_group_name, epoch, train_val_test)
+                                        command_str = "python ../../main_training.py --td {} --setting {} --cf {} --tf {} --chln {} --tlnaf {} --lhln {} --lr {} --bs {} --model {} --dropout {} --en {} --epoch {} --train_val_test {} --ext_test_feat_vec {}".format(
+                                            tr_data, setting, "ecfp4", tar_feat, comp_hid, conv_flat, last_fcc, l_r, b_s, model, do, job_group_name, epoch, train_val_test, ext_file)
 
                                         # print(total_number_of_jobs % num_of_jobs_at_each_group)
                                         if ((total_number_of_jobs + 1) % num_of_jobs_at_each_group) == 0:
