@@ -549,6 +549,7 @@ def plot_predicted_vs_real_figures(method_name, dataset_name):
     method_name_corrected = "MDeePred" if method_name=="mbapred" else method_name_corrected
     method_name_corrected = "DeepDTA" if method_name == "deepdta" else method_name_corrected
     method_name_corrected = "SimBoost" if method_name == "simboost" else method_name_corrected
+    method_name_corrected = "CGKronRLS" if method_name == "simboost" else method_name_corrected
 
     df = pd.read_csv("../result_files/{}_predictions/{}/{}_test_label_predicted_fold_1.tsv".format(method_name, dataset_name, method_name), sep="\t")
     # print(df)
@@ -841,6 +842,6 @@ def produce_final_accr_predictions():
         if abs(predictions[2]-predictions[1])<0.25 and abs(predictions[2]-predictions[3])<0.25:
             print("{}\t{}\t{}\t{}\t{}\t{}".format(row["DrugID"], uniprot_id, chembl_id, entry_name, gene_names, (10**-row["Fold2"])*10**6))
         elif min(predictions)<5.0:
-       s     print("{}\t{}\t{}\t{}\t{}\t{}".format(row["DrugID"], uniprot_id, chembl_id, entry_name, gene_names, (10**-min(predictions))*10**6))
+            print("{}\t{}\t{}\t{}\t{}\t{}".format(row["DrugID"], uniprot_id, chembl_id, entry_name, gene_names, (10**-min(predictions))*10**6))
 
 produce_final_accr_predictions()

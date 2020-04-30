@@ -664,20 +664,24 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
     batch_size = [32]
     lst_learning_rate = [0.0001, 0.001, 0.01]
     lst_learning_rate = [0.0001, 0.001]
+    lst_learning_rate = [0.0001, 0.001, 0.01]
     after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
     after_flattened_conv_layer_neurons = [256, 512, 1024]
+    after_flattened_conv_layer_neurons = [64, 128, 256, 512, 1024]
     # after_flattened_conv_layer_neurons = [128, 256, 512, 1024]
     # comp_2_hidden_layer_list = ["1024_512", "1024_256", "1024_1024"]
     comp_2_hidden_layer_list = ["512_512", "1024_512", "1024_256", "1024_1024"]
     last_2_hidden_layer_list = ["256_128", "512_256", "1024_512", "1024_1024"]
     last_2_hidden_layer_list = ["512_256", "1024_512", "1024_1024"]
+    last_2_hidden_layer_list = ["256_128", "512_256", "1024_512", "1024_1024"]
 
     training_dataset_list = ["PDBBind_Refined"]
     training_dataset_list = ["Davis"]
     training_dataset_list = ["Davis_Filtered"]
     training_dataset_list = ["kinome"]
+    training_dataset_list = ["ACE2"]
     # use below line for train test validation
-    train_val_test = True
+    train_val_test = 0
     # target_feature = "sequencematrix1000"
     total_number_of_jobs = 0
     dropout = [0.10, 0.25]
@@ -759,7 +763,7 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
 
                                             # GPU Jobs
                                             all_job_submission_fl.write(
-                                                "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 25600 -R 'rusage[mem=25600]' -o ../../../result_files/{}/log_files/{}_{}.out \"./{}_{}.sh\"\n".format(
+                                                "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../result_files/{}/log_files/{}_{}.out \"./{}_{}.sh\"\n".format(
                                                     job_group_name, job_number, num_of_jobs_at_each_group, job_number,
                                                     num_of_jobs_at_each_group))
 
@@ -799,7 +803,7 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
 
         # GPU jobs
         all_job_submission_fl.write(
-            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 25600 -R 'rusage[mem=25600]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+            "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
                 job_group_name, job_number + 1, job_number + 1))
 
         # CPU jobs
@@ -814,4 +818,4 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
 
     all_job_submission_fl.close()
 
-generate_mdeepred_commands("kinase_model_training", 1)
+generate_mdeepred_commands("ACE2_model_training", 1)

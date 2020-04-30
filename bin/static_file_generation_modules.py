@@ -4,7 +4,7 @@ import itertools
 # import torch
 import numpy as np
 # import torch.nn as nn
-import subprocess
+import subprFocess
 import pandas as pd
 
 cwd = os.getcwd()
@@ -278,6 +278,12 @@ save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "GRAR740104.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "SIMK990101.txt")
 save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "blosum62.txt")
 """
+
+save_all_flattened_sequence_matrices("kinome", 1000)
+save_all_flattened_sequence_matrices("kinome", 1000, "ZHAC000103.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "GRAR740104.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "SIMK990101.txt")
+save_all_flattened_sequence_matrices("kinome", 1000, "blosum62.txt")
 # save_all_flattened_sequence_matrices("PDBBind_Refined", 500, "ZHAC000106.txt")
 
 
@@ -576,6 +582,11 @@ create_single_target_feature_vector_files_using_combined("GRAR740104LEQ500", "PD
 create_single_target_feature_vector_files_using_combined("SIMK990101LEQ500", "PDBBind_Refined")
 create_single_target_feature_vector_files_using_combined("blosum62LEQ500", "PDBBind_Refined")
 """
+create_single_target_feature_vector_files_using_combined("ZHAC000103LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("GRAR740104LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("SIMK990101LEQ1000", "kinome")
+create_single_target_feature_vector_files_using_combined("blosum62LEQ1000", "kinome")
+
 # create_single_target_feature_vector_files_using_combined("MIYS850102LEQ500", "PDBBind_Refined")
 # create_single_target_feature_vector_files_using_combined("KESO980101LEQ500", "Davis_Filtered")
 # create_single_target_feature_vector_files_using_combined("ZHAC000106LEQ500", "Davis_Filtered")
