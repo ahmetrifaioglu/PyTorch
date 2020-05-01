@@ -768,7 +768,7 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
                                             #        job_group_name, job_number, num_of_jobs_at_each_group, job_number,
                                             #        num_of_jobs_at_each_group))
                                             all_job_submission_fl.write(
-                                                "bsub -q research-rh74 -P gpu -M 10240 -R 'rusage[mem=10240]' -o ../../../result_files/{}/log_files/{}_{}.out \"./{}_{}.sh\"\n".format(
+                                                "bsub -q research-rh74 -P gpu -M 20480 -R 'rusage[mem=20480]' -o ../../../result_files/{}/log_files/{}_{}.out \"./{}_{}.sh\"\n".format(
                                                     job_group_name, job_number, num_of_jobs_at_each_group, job_number,
                                                     num_of_jobs_at_each_group))
 
@@ -811,7 +811,7 @@ def generate_mdeepred_commands(job_group_name, num_of_jobs_at_each_group):
         #    "bsub -g /my_gpu_group -q research-rh74 -P gpu -gpu \"num=1:j_exclusive=yes\" -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
         #        job_group_name, job_number + 1, job_number + 1))
         all_job_submission_fl.write(
-            "bsub -q research-rh74 -P gpu -M 10240 -R 'rusage[mem=10240]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
+            "bsub -q research-rh74 -P gpu -M 20480 -R 'rusage[mem=20480]' -o ../../../log_files/{}/{}.out \"./{}.sh\"\n".format(
                 job_group_name, job_number + 1, job_number + 1))
 
         # CPU jobs
